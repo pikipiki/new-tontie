@@ -1,0 +1,16 @@
+{
+  "title": "Tontie v1",
+  "subtitle": "Native Canvas port (ffdec logic) — SWF reference at ?ruffle=1.",
+  "controls": {
+    "numpad": "Numpad 1–9: each key matches the hole where a Tontie appears. 0 pauses.",
+    "focus": "Click the game area first so keyboard input is captured (same as the original site).",
+    "numlock": "If the numpad misbehaves, toggle Num Lock or click the game again."
+  },
+  "attribution": {
+    "prefix": "Original game",
+    "suffix": " — reverse engineering in reference/."
+  },
+  "errors": {
+    "rootMissing": "Missing #root element."
+  }
+}

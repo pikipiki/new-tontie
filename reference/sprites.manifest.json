@@ -1,0 +1,43 @@
+{
+  "source": "ffdec export — main timeline frame 51 (400×400 gameplay)",
+  "paths": {
+    "mob": "/game/sprites/mob.png",
+    "mobsSheet": "/game/sprites/mobs-sheet.png",
+    "holeBase": "/game/sprites/hole/base.png",
+    "holeRim": "/game/sprites/hole/rim.png",
+    "board": "/game/sprites/board.png",
+    "boardGameplay": "/game/sprites/board-gameplay-clean.png",
+    "boardGameplayRaw": "/game/sprites/board-gameplay.png"
+  },
+  "board": {
+    "sourceWidth": 400,
+    "sourceHeight": 400,
+    "cropX": 0,
+    "cropY": 0,
+    "cropWidth": 400,
+    "cropHeight": 400
+  },
+  "mobsSheet": {
+    "width": 236,
+    "height": 148,
+    "count": 5,
+    "frameWidth": 47
+  },
+  "mobDraw": {
+    "width": 56,
+    "height": 72,
+    "anchorX": 8,
+    "anchorY": 52
+  },
+  "holeDraw": {
+    "width": 72,
+    "height": 72
+  },
+  "hammerStrike": {
+    "frameCount": 8,
+    "width": 107,
+    "height": 85,
+    "anchorX": 54,
+    "anchorY": 78
+  }
+}

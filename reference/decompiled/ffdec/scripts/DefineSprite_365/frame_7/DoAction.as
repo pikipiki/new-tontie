@@ -1,0 +1,2 @@
+gotoAndStop("be");
+play();

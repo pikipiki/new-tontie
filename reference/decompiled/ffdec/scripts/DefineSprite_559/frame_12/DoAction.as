@@ -1,0 +1,2 @@
+stop();
+lifemater.gotoAndStop(life);

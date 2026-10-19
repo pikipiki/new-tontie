@@ -1,0 +1,12 @@
+stop();
+medama_m.medama.gotoAndPlay("mabataki");
+hp = 6;
+attack = 45;
+score = 30;
+_parent.item = "life2";
+_parent._parent._parent._parent.hp = hp;
+_parent._parent._parent._parent.attack = attack;
+_parent._parent._parent._parent.score = score;
+_parent._parent.life = hp;
+_parent._parent.damage = - attack;
+_parent._parent.point = score;

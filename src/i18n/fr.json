@@ -1,0 +1,16 @@
+{
+  "title": "Tontie v1",
+  "subtitle": "Port natif Canvas (logique ffdec) — référence SWF via ?ruffle=1.",
+  "controls": {
+    "numpad": "Pavé numérique 1–9 : chaque touche correspond au trou où apparaît un Tontie. 0 = pause.",
+    "focus": "Clique dans la zone de jeu avant de jouer pour que le clavier soit capté (comme sur le site d’origine).",
+    "numlock": "Si le pavé ne répond plus, vérifie Num Lock ou reclique la fenêtre de jeu."
+  },
+  "attribution": {
+    "prefix": "Jeu original",
+    "suffix": " — reverse engineering dans reference/."
+  },
+  "errors": {
+    "rootMissing": "Élément #root introuvable."
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "generatedFrom": "DefineSprite_458",
+  "spawnFormula": "Math.floor(Math.random() * _root.lv + 5) /* DefineSprite_459 */",
+  "entries": [
+    {
+      "frame": 5,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_5/PlaceObject2_81_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 1,
+      "attack": 10,
+      "score": 5
+    },
+    {
+      "frame": 6,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_6/PlaceObject2_273_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 2,
+      "attack": 15,
+      "score": 10
+    },
+    {
+      "frame": 7,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_7/PlaceObject2_279_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 3,
+      "attack": 0,
+      "score": 5,
+      "item": "life",
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 8,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_8/PlaceObject2_295_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 1,
+      "attack": 15,
+      "score": 20,
+      "gotoStop": "\"red\""
+    },
+    {
+      "frame": 9,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_9/PlaceObject2_299_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 1,
+      "attack": 25,
+      "score": 10,
+      "item": "coin3",
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 10,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_10/PlaceObject2_304_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 4,
+      "attack": 0,
+      "score": 15,
+      "item": "coin2",
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 11,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_11/PlaceObject2_315_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 1,
+      "attack": 30,
+      "score": 20,
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 12,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_12/PlaceObject2_319_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 1,
+      "attack": 0,
+      "score": 0,
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 13,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_13/PlaceObject2_330_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 4,
+      "attack": 35,
+      "score": 25,
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 14,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_14/PlaceObject2_339_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 500,
+      "attack": 500,
+      "score": 500,
+      "enemyI": "boss",
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 15,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_15/PlaceObject2_351_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 5,
+      "attack": 40,
+      "score": 30,
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 16,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_16/PlaceObject2_366_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 6,
+      "attack": 45,
+      "score": 30,
+      "gotoStop": "\"bom_head\""
+    },
+    {
+      "frame": 17,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_17/PlaceObject2_372_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 8,
+      "attack": 50,
+      "score": 30,
+      "item": "coin3",
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 18,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_18/PlaceObject2_380_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 1,
+      "attack": 0,
+      "score": 0,
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 19,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_19/PlaceObject2_389_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 1,
+      "attack": -30,
+      "score": 50,
+      "item": "coin2",
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 20,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_20/PlaceObject2_402_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 4,
+      "attack": 65,
+      "score": 25,
+      "item": "life2",
+      "nikai": true,
+      "hitMode": 2,
+      "counterDamage": 40,
+      "gotoStop": "\"bom_head\""
+    },
+    {
+      "frame": 21,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_21/PlaceObject2_406_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 1,
+      "attack": 0,
+      "score": 0,
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 22,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_22/PlaceObject2_408_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 45,
+      "attack": 70,
+      "score": 40,
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 23,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_23/PlaceObject2_411_2/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 1,
+      "attack": 0,
+      "score": 0,
+      "gotoStop": "\"info\""
+    },
+    {
+      "frame": 24,
+      "source": "reference/decompiled/ffdec/scripts/DefineSprite_458/frame_24/PlaceObject2_423_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "hp": 777,
+      "attack": 60,
+      "score": 1000,
+      "enemyI": "boss",
+      "gotoStop": "\"info\""
+    }
+  ]
+}

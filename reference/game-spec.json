@@ -1,0 +1,89 @@
+{
+  "source": "https://www.eyezmaze.com/game/tontie.swf",
+  "decompiler": "JPEXS ffdec 22.0.2 (reference/tools/ffdec-cli.jar)",
+  "rea": {
+    "open_binary": "unsupported — Flash SWF",
+    "evidence": "reference/reverse-engineering.md",
+    "reconstructionTarget": "native-typescript-canvas",
+    "runtimeDependencyToRemove": ["@ruffle-rs/ruffle", "public/game/tontie.swf"],
+    "evidenceChain": ["reference/tontie.swf", "reference/decompiled/ffdec", "game-spec.json"]
+  },
+  "artifact": {
+    "sha256": "2b91801d763ff6c1fdf52d461849e11e4c3fa31a9dd6aea3b836f4dfff9f8193",
+    "bytes": 360757
+  },
+  "runtime": {
+    "fps": 17,
+    "frameSize": { "width": 400, "height": 400 },
+    "flashVersion": 6
+  },
+  "round": {
+    "timerSeconds": 60,
+    "levelVariable": "_root.lv",
+    "maxLevels": 20,
+    "bossLevels": [10, 20],
+    "bossHoleIndex": 8,
+    "bossLabels": { "10": "boss", "20": "boss2" }
+  },
+  "timingFrames": {
+    "kakuritu_org": "fps * 2",
+    "koma": "fps",
+    "top_stay": "fps * 4",
+    "bossStayFrames": "fps * 120"
+  },
+  "difficultyScalars": {
+    "up_time": 1,
+    "up_time_mx": 80,
+    "up_kakuritu": 2.5,
+    "up_kakuritu_mx": 3,
+    "up_char": 1,
+    "up_char_mx": 6,
+    "up_top": 1.5,
+    "up_top_mx": 50
+  },
+  "economy": {
+    "moneyCap": 999,
+    "shopPause": true,
+    "shopLevels": [10, 20]
+  },
+  "shopPrices": [10, 50, 80, 90, 120, 150, 200, 300],
+  "enemyTypes": {
+    "0": "empty / cleared",
+    "1": "standard monster (todome)",
+    "2": "two-hit (nikai) monster",
+    "4": "boss phase helper",
+    "boss": "stage boss at hole d8"
+  },
+  "sampleEnemyStats": [
+    { "attack": 0, "score": 5, "note": "basic" },
+    { "attack": 25, "score": 15 },
+    { "attack": 30, "score": 20 },
+    { "attack": 35, "score": 25 },
+    { "attack": 40, "score": 30 },
+    { "attack": 50, "score": 30 },
+    { "attack": -30, "score": 50 },
+    { "attack": 500, "score": 500, "boss": "lv10" },
+    { "attack": 60, "score": 1000, "boss": "lv20" }
+  ],
+  "items": [
+    "life",
+    "coin",
+    "stone",
+    "gun",
+    "allcoin",
+    "alllife",
+    "utsuwa",
+    "wing",
+    "hammer1",
+    "hammer2",
+    "hammer3",
+    "hammer4",
+    "sekiban1",
+    "sekiban2",
+    "sekiban3"
+  ],
+  "controls": {
+    "numpad1to9": "holes d1–d9 (numpad layout 7-8-9 / 4-5-6 / 1-2-3)",
+    "numpad0": "pause"
+  }
+}
