@@ -8,7 +8,10 @@ void i18n.use(initReactI18next).init({
     fr: { translation: fr },
     en: { translation: en },
   },
-  lng: 'fr',
+  lng:
+    typeof navigator !== 'undefined' && !navigator.language.startsWith('fr')
+      ? 'en'
+      : 'fr',
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
 })

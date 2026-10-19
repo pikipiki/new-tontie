@@ -6,7 +6,7 @@ export function stateFingerprint(state: GameState): string {
     .map((h) => {
       const slot = state.holes[h as keyof typeof state.holes]
       const e = slot.enemy
-      return `${slot.phase[0]}${e.kind[0]}${e.hp}`
+      return slot.phase.charAt(0) + e.kind.charAt(0) + String(e.hp)
     })
     .join('')
 

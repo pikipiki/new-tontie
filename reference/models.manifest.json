@@ -1,282 +1,303 @@
 {
   "generator": "scripts/blender/batch_export.py",
   "blender": "5.2.2 LTS",
-  "mobDepth": 0.2,
-  "worldPerPx": 0.0075,
   "boardWidth": 4.2,
   "holeRadius": 0.3,
   "pitDepth": 1.1,
+  "textureSize": 128,
   "mobs": {
     "5": {
       "glb": "public/game/models/mobs/5.glb",
-      "vertices": 1836,
-      "faces": 1834,
+      "parts": 8,
+      "faces": 9316,
+      "eyes": 1,
       "size": [
-        0.368,
-        0.728,
-        0.2
+        0.492,
+        0.758,
+        0.386
       ],
-      "source": "public/game/sprites/mobs/5.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "6": {
       "glb": "public/game/models/mobs/6.glb",
-      "vertices": 1940,
-      "faces": 1938,
+      "parts": 8,
+      "faces": 9316,
+      "eyes": 1,
       "size": [
-        0.39,
-        0.728,
-        0.2
+        0.492,
+        0.758,
+        0.386
       ],
-      "source": "public/game/sprites/mobs/6.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "7": {
       "glb": "public/game/models/mobs/7.glb",
-      "vertices": 1400,
-      "faces": 1404,
+      "parts": 3,
+      "faces": 2190,
+      "eyes": 0,
       "size": [
-        0.585,
-        0.382,
-        0.2
+        0.656,
+        0.455,
+        0.453
       ],
-      "source": "public/game/sprites/mobs/7.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "8": {
       "glb": "public/game/models/mobs/8.glb",
-      "vertices": 2698,
-      "faces": 2696,
+      "parts": 3,
+      "faces": 2649,
+      "eyes": 0,
       "size": [
-        0.63,
-        0.652,
-        0.2
+        0.46,
+        0.216,
+        0.46
       ],
-      "source": "public/game/sprites/mobs/8.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "9": {
       "glb": "public/game/models/mobs/9.glb",
-      "vertices": 1938,
-      "faces": 1936,
+      "parts": 8,
+      "faces": 9316,
+      "eyes": 1,
       "size": [
-        0.39,
-        0.728,
-        0.2
+        0.305,
+        0.47,
+        0.239
       ],
-      "source": "public/game/sprites/mobs/9.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "10": {
       "glb": "public/game/models/mobs/10.glb",
-      "vertices": 1826,
-      "faces": 1824,
+      "parts": 4,
+      "faces": 6948,
+      "eyes": 0,
       "size": [
-        0.375,
-        0.728,
-        0.2
+        0.452,
+        0.697,
+        0.344
       ],
-      "source": "public/game/sprites/mobs/10.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "11": {
       "glb": "public/game/models/mobs/11.glb",
-      "vertices": 2650,
-      "faces": 2658,
+      "parts": 10,
+      "faces": 10354,
+      "eyes": 1,
       "size": [
-        0.54,
-        0.832,
-        0.2
+        0.486,
+        0.441,
+        0.238
       ],
-      "source": "public/game/sprites/mobs/11.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "12": {
       "glb": "public/game/models/mobs/12.glb",
-      "vertices": 3398,
-      "faces": 3396,
+      "parts": 4,
+      "faces": 1050,
+      "eyes": 0,
       "size": [
-        0.322,
-        0.428,
-        0.2
+        0.3,
+        0.421,
+        0.3
       ],
-      "source": "public/game/sprites/mobs/12.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "13": {
       "glb": "public/game/models/mobs/13.glb",
-      "vertices": 2750,
-      "faces": 2758,
+      "parts": 10,
+      "faces": 10354,
+      "eyes": 1,
       "size": [
-        0.54,
-        0.832,
-        0.2
+        0.484,
+        0.464,
+        0.243
       ],
-      "source": "public/game/sprites/mobs/13.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "14": {
       "glb": "public/game/models/mobs/14.glb",
-      "vertices": 2808,
-      "faces": 2808,
+      "parts": 13,
+      "faces": 10391,
+      "eyes": 1,
       "size": [
-        0.585,
-        0.788,
-        0.2
+        0.462,
+        0.428,
+        0.262
       ],
-      "source": "public/game/sprites/mobs/14.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "15": {
       "glb": "public/game/models/mobs/15.glb",
-      "vertices": 2744,
-      "faces": 2744,
+      "parts": 13,
+      "faces": 10391,
+      "eyes": 1,
       "size": [
-        0.562,
-        0.788,
-        0.2
+        0.462,
+        0.428,
+        0.262
       ],
-      "source": "public/game/sprites/mobs/15.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "16": {
       "glb": "public/game/models/mobs/16.glb",
-      "vertices": 2684,
-      "faces": 2682,
+      "parts": 4,
+      "faces": 3161,
+      "eyes": 0,
       "size": [
-        0.63,
-        0.652,
-        0.2
+        0.736,
+        0.377,
+        0.736
       ],
-      "source": "public/game/sprites/mobs/16.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "17": {
       "glb": "public/game/models/mobs/17.glb",
-      "vertices": 2164,
-      "faces": 2162,
+      "parts": 5,
+      "faces": 7460,
+      "eyes": 0,
       "size": [
-        0.472,
-        0.637,
-        0.2
+        0.295,
+        0.455,
+        0.255
       ],
-      "source": "public/game/sprites/mobs/17.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "18": {
       "glb": "public/game/models/mobs/18.glb",
-      "vertices": 3862,
-      "faces": 3870,
+      "parts": 8,
+      "faces": 5848,
+      "eyes": 1,
       "size": [
-        0.39,
-        0.428,
-        0.2
+        0.237,
+        0.26,
+        0.237
       ],
-      "source": "public/game/sprites/mobs/18.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "19": {
       "glb": "public/game/models/mobs/19.glb",
-      "vertices": 2604,
-      "faces": 2604,
+      "parts": 9,
+      "faces": 11084,
+      "eyes": 1,
       "size": [
-        0.592,
-        0.848,
-        0.2
+        0.502,
+        0.455,
+        0.231
       ],
-      "source": "public/game/sprites/mobs/19.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "20": {
       "glb": "public/game/models/mobs/20.glb",
-      "vertices": 2162,
-      "faces": 2164,
+      "parts": 13,
+      "faces": 13490,
+      "eyes": 1,
       "size": [
-        0.637,
-        1.192,
-        0.2
+        0.569,
+        0.608,
+        0.566
       ],
-      "source": "public/game/sprites/mobs/20.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "21": {
       "glb": "public/game/models/mobs/21.glb",
-      "vertices": 3398,
-      "faces": 3396,
+      "parts": 4,
+      "faces": 1050,
+      "eyes": 0,
       "size": [
-        0.322,
-        0.428,
-        0.2
+        0.3,
+        0.421,
+        0.3
       ],
-      "source": "public/game/sprites/mobs/21.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "22": {
       "glb": "public/game/models/mobs/22.glb",
-      "vertices": 3258,
-      "faces": 3256,
+      "parts": 8,
+      "faces": 12331,
+      "eyes": 1,
       "size": [
-        0.69,
-        0.817,
-        0.2
+        0.679,
+        0.852,
+        0.511
       ],
-      "source": "public/game/sprites/mobs/22.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "23": {
       "glb": "public/game/models/mobs/23.glb",
-      "vertices": 3388,
-      "faces": 3386,
+      "parts": 4,
+      "faces": 1050,
+      "eyes": 0,
       "size": [
-        0.322,
-        0.42,
-        0.2
+        0.3,
+        0.421,
+        0.3
       ],
-      "source": "public/game/sprites/mobs/23.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "24": {
       "glb": "public/game/models/mobs/24.glb",
-      "vertices": 2652,
-      "faces": 2650,
+      "parts": 22,
+      "faces": 14599,
+      "eyes": 1,
       "size": [
-        0.78,
-        1.125,
-        0.2
+        0.665,
+        0.628,
+        0.609
       ],
-      "source": "public/game/sprites/mobs/24.png"
-    },
-    "treasure": {
-      "glb": "public/game/models/mobs/treasure.glb",
-      "vertices": 1400,
-      "faces": 1404,
-      "size": [
-        0.585,
-        0.382,
-        0.2
-      ],
-      "source": "public/game/sprites/mobs/treasure.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "default": {
       "glb": "public/game/models/mobs/default.glb",
-      "vertices": 1964,
-      "faces": 1962,
+      "parts": 8,
+      "faces": 9316,
+      "eyes": 1,
       "size": [
-        0.42,
-        0.72,
-        0.2
+        0.492,
+        0.758,
+        0.386
       ],
-      "source": "public/game/sprites/mob.png"
+      "source": "procedural/blender (sprite-matched)"
     },
     "shop": {
       "glb": "public/game/models/mobs/shop.glb",
-      "vertices": 1964,
-      "faces": 1962,
+      "parts": 10,
+      "faces": 1300,
+      "eyes": 0,
       "size": [
-        0.42,
-        0.72,
-        0.2
+        0.545,
+        0.625,
+        0.307
       ],
-      "source": "public/game/sprites/mob.png"
+      "source": "procedural/blender (sprite-matched)"
+    },
+    "treasure": {
+      "glb": "public/game/models/mobs/treasure.glb",
+      "parts": 4,
+      "faces": 426,
+      "eyes": 0,
+      "size": [
+        0.38,
+        0.33,
+        0.288
+      ],
+      "source": "procedural/blender (sprite-matched)"
     }
   },
   "props": {
     "hammer": {
       "glb": "public/game/models/hammer.glb",
-      "vertices": 1572,
-      "faces": 1574,
+      "faces": 1632,
       "size": [
-        0.735,
-        0.412,
-        0.16
+        0.716,
+        0.3,
+        0.272
       ],
-      "source": "public/game/sprites/hammer/01.png"
+      "pivot": "grip at origin, head centre at x = -0.52",
+      "source": "procedural/blender (DefineSprite_261 shape)"
     },
     "board": {
       "glb": "public/game/models/board.glb",
-      "vertices": 4745,
-      "faces": 3692,
+      "faces": 3312,
       "size": [
         4.2,
         1.41,

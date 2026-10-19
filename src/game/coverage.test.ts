@@ -17,11 +17,12 @@ describe('reconstruction coverage', () => {
   })
 
   it('game-spec items are handled in applyItem', () => {
-    const items = gameSpec.items as string[]
     const state = createInitialState()
-    for (const raw of items) {
+    for (const raw of gameSpec.items) {
       const id = raw as ItemId
-      expect(() => applyItem(state, id)).not.toThrow()
+      expect(() => {
+        applyItem(state, id)
+      }).not.toThrow()
     }
   })
 

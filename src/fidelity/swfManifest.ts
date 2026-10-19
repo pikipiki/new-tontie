@@ -15,6 +15,8 @@ export async function verifyCanonicalSwf(): Promise<boolean> {
     return false
   }
   const hash = await crypto.subtle.digest('SHA-256', buf)
-  const hex = [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('')
+  const hex = [...new Uint8Array(hash)]
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
   return hex === CANONICAL_SWF.sha256
 }

@@ -7,7 +7,10 @@ export type SpawnDecision =
   | { type: 'shop' }
 
 /** DefineSprite_459/frame_1 onClipEvent(load) */
-export function rollSpawnDecision(state: GameState, random: () => number): SpawnDecision {
+export function rollSpawnDecision(
+  state: GameState,
+  random: () => number,
+): SpawnDecision {
   const { level } = state
   let k: number
 
