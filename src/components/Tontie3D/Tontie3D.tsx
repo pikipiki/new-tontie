@@ -4,21 +4,27 @@ import { useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { SHOP_OFFERS } from '@/game/shop'
 import { GAME_HEIGHT, GAME_WIDTH } from '@/game/spec'
+import { CAMERA_POSITION, CAMERA_TARGET } from '@/game3d/layout3d'
 import { TontieScene3D } from '@/game3d/TontieScene3D'
 import { useTontieGame } from '@/hooks/useTontieGame'
 import type { GameState } from '@/game/types'
 
 for (let i = 5; i <= 24; i++) {
-  useGLTF.preload(`/game/models/mobs/${i}.glb`)
+  useGLTF.preload(`/game/models/mobs/${String(i)}.glb`)
 }
 useGLTF.preload('/game/models/mobs/default.glb')
 useGLTF.preload('/game/models/mobs/treasure.glb')
 useGLTF.preload('/game/models/mobs/shop.glb')
 useGLTF.preload('/game/models/board.glb')
-useGLTF.preload('/game/models/hole.glb')
 useGLTF.preload('/game/models/hammer.glb')
 
-function HudOverlay({ state, shopIndex }: { state: ReturnType<typeof useTontieGame>['state']; shopIndex: number }) {
+function HudOverlay({
+  state,
+  shopIndex,
+}: {
+  state: ReturnType<typeof useTontieGame>['state']
+  shopIndex: number
+}) {
   if (state.phase === 'paused') {
     return (
       <Box
@@ -52,9 +58,17 @@ function HudOverlay({ state, shopIndex }: { state: ReturnType<typeof useTontieGa
           fontSize: 12,
         }}
       >
-        <Typography variant="subtitle2" sx={{ textAlign: 'center', mb: 1 }}>SHOP</Typography>
+        <Typography variant="subtitle2" sx={{ textAlign: 'center', mb: 1 }}>
+          SHOP
+        </Typography>
         {SHOP_OFFERS.map((o, i) => (
-          <Typography key={o.label} sx={{ opacity: i === shopIndex ? 1 : 0.75, fontWeight: i === shopIndex ? 700 : 400 }}>
+          <Typography
+            key={o.label}
+            sx={{
+              opacity: i === shopIndex ? 1 : 0.75,
+              fontWeight: i === shopIndex ? 700 : 400,
+            }}
+          >
             {i + 1}. {o.label} — ${o.price}
           </Typography>
         ))}
@@ -85,11 +99,22 @@ function HudOverlay({ state, shopIndex }: { state: ReturnType<typeof useTontieGa
 }
 
 function HudStatsOverlay({ state }: { state: GameState }) {
-  if (state.phase === 'shop' || state.phase === 'gameOver' || state.phase === 'win' || state.phase === 'paused') {
+  if (
+    state.phase === 'shop' ||
+    state.phase === 'gameOver' ||
+    state.phase === 'win' ||
+    state.phase === 'paused'
+  ) {
     return null
   }
   const heartSlots = 8
-  const filled = Math.max(0, Math.min(heartSlots, Math.ceil((state.hp / Math.max(1, state.hpMax)) * heartSlots)))
+  const filled = Math.max(
+    0,
+    Math.min(
+      heartSlots,
+      Math.ceil((state.hp / Math.max(1, state.hpMax)) * heartSlots),
+    ),
+  )
   const roundSec = Math.ceil(state.roundFramesLeft / 17)
 
   return (
@@ -115,18 +140,44 @@ function HudStatsOverlay({ state }: { state: GameState }) {
           background: 'linear-gradient(180deg, #4a9fd8 0%, #5a8fd4 70%)',
         }}
       />
-      <Box sx={{ position: 'absolute', top: 6, left: 8, fontSize: 14, letterSpacing: 1 }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 6,
+          left: 8,
+          fontSize: 14,
+          letterSpacing: 1,
+        }}
+      >
         {'♥'.repeat(filled)}
-        <Box component="span" sx={{ opacity: 0.35 }}>{'♥'.repeat(heartSlots - filled)}</Box>
+        <Box component="span" sx={{ opacity: 0.35 }}>
+          {'♥'.repeat(heartSlots - filled)}
+        </Box>
       </Box>
-      <Box sx={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', fontSize: 22 }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 8,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          fontSize: 22,
+        }}
+      >
         {roundSec}
       </Box>
       <Box sx={{ position: 'absolute', top: 8, right: 8, fontSize: 11 }}>
         $ {String(state.money).padStart(3, '0')}
       </Box>
       {state.gun > 0 && (
-        <Box sx={{ position: 'absolute', top: 30, right: 8, fontSize: 10, color: '#e0f7fa' }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 30,
+            right: 8,
+            fontSize: 10,
+            color: '#e0f7fa',
+          }}
+        >
           RAY GUN {state.gunAmmo}
         </Box>
       )}
@@ -160,7 +211,11 @@ export function Tontie3D() {
 
   return (
     <Box>
-      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mb: 1 }}>
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{ display: 'block', textAlign: 'center', mb: 1 }}
+      >
         Port 3D — modèles Blender (sprites → volume), logique ffdec
       </Typography>
       <Box
@@ -185,8 +240,13 @@ export function Tontie3D() {
       >
         <Canvas
           shadows
+          flat
           dpr={[1, 2]}
           gl={{ alpha: false, antialias: true }}
+          camera={{ position: CAMERA_POSITION, fov: 43, near: 0.08, far: 40 }}
+          onCreated={({ camera }) => {
+            camera.lookAt(...CAMERA_TARGET)
+          }}
           style={{ width: GAME_WIDTH, height: GAME_HEIGHT, display: 'block' }}
         >
           <TontieScene3D state={state} />

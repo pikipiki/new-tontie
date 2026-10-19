@@ -90,14 +90,22 @@ const mobCatalogTmp = path.join(tmpDir, 'mob-catalog')
 if (fs.existsSync(mobCatalogTmp)) {
   fs.rmSync(mobCatalogTmp, { recursive: true })
 }
-console.log('Exporting enemy catalog sprites (DefineSprite_458)…')
-runJava(['-export', 'sprite', mobCatalogTmp, swf, '-exportIds', '458'])
+// DefineSprite_458 frame → child sprite placed at the lowest depth (from -swf2xml).
+// Rendering 458 directly advances the child timelines (hit clouds); child frame 1 is the idle pose.
+const MOB_CHILD_SPRITE = {
+  5: 81, 6: 273, 7: 279, 8: 295, 9: 299, 10: 304, 11: 315, 12: 319, 13: 330, 14: 339,
+  15: 351, 16: 366, 17: 372, 18: 380, 19: 389, 20: 402, 21: 406, 22: 408, 23: 411, 24: 423,
+}
+console.log('Exporting enemy idle sprites (DefineSprite_458 children)…')
+runJava(['-export', 'sprite', mobCatalogTmp, swf, '-exportIds', Object.values(MOB_CHILD_SPRITE).join(',')])
 const mobsOut = path.join(outDir, 'mobs')
 fs.mkdirSync(mobsOut, { recursive: true })
-for (let f = 5; f <= 24; f++) {
-  const src = path.join(mobCatalogTmp, `DefineSprite_458/${f}.png`)
+for (const [frame, id] of Object.entries(MOB_CHILD_SPRITE)) {
+  const src = path.join(mobCatalogTmp, `DefineSprite_${id}/1.png`)
   if (fs.existsSync(src)) {
-    fs.copyFileSync(src, path.join(mobsOut, `${f}.png`))
+    fs.copyFileSync(src, path.join(mobsOut, `${frame}.png`))
+  } else {
+    console.warn('Missing idle sprite', id, 'for catalog frame', frame)
   }
 }
 const shopTmp = path.join(tmpDir, 'shop-sprite')

@@ -7,43 +7,40 @@ import {
   SRGBColorSpace,
   type Group,
   type Material,
-  type MeshStandardMaterialParameters,
 } from 'three'
 
+/** Opaque PBR copy; textured sprite faces use an alpha cutout so sorting never hides them. */
 function fixMaterial(mat: Material): MeshStandardMaterial {
   const old = mat as MeshStandardMaterial
-  const map = old.map ?? null
-  const cutout =
-    map !== null &&
-    (old.transparent === true || (old.alphaTest ?? 0) > 0 || (old.opacity ?? 1) < 0.999)
-  const params: MeshStandardMaterialParameters = {
-    map,
-    color: map ? '#ffffff' : (old.color?.clone() ?? '#ffffff'),
-    transparent: cutout,
-    alphaTest: cutout ? 0.12 : 0,
-    side: DoubleSide,
-    roughness: old.roughness ?? 0.82,
-    metalness: old.metalness ?? 0.05,
-  }
-  const next = new MeshStandardMaterial(params)
+  const map = old.map
   if (map) {
     map.colorSpace = SRGBColorSpace
     map.needsUpdate = true
   }
-  return next
+  return new MeshStandardMaterial({
+    map,
+    color: map ? '#ffffff' : old.color.clone(),
+    transparent: false,
+    alphaTest: map ? 0.5 : 0,
+    side: DoubleSide,
+    roughness: old.roughness,
+    metalness: old.metalness,
+  })
 }
 
-export function useClonedGltf(url: string): Group {
+function useClonedGltf(url: string): Group {
   const { scene } = useGLTF(url)
   return useMemo(() => {
-    const clone = scene.clone(true) as Group
+    const clone = scene.clone(true)
     clone.traverse((obj) => {
       if (obj instanceof Mesh) {
-        const mats = Array.isArray(obj.material) ? obj.material : [obj.material]
-        obj.material = mats.map((m) => fixMaterial(m))
-        obj.castShadow = true
-        obj.receiveShadow = true
-        obj.renderOrder = 2
+        const mesh = obj as Mesh
+        // A material array without geometry groups renders nothing, so keep single materials single.
+        mesh.material = Array.isArray(mesh.material)
+          ? mesh.material.map((m) => fixMaterial(m))
+          : fixMaterial(mesh.material)
+        mesh.castShadow = true
+        mesh.receiveShadow = true
       }
     })
     return clone
@@ -63,7 +60,14 @@ function GlbModelInner({
 }) {
   const root = useClonedGltf(url)
   const s = typeof scale === 'number' ? [scale, scale, scale] : scale
-  return <primitive object={root} position={position} rotation={rotation} scale={s} />
+  return (
+    <primitive
+      object={root}
+      position={position}
+      rotation={rotation}
+      scale={s}
+    />
+  )
 }
 
 export function GlbModel(props: {

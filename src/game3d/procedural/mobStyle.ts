@@ -14,15 +14,45 @@ export function mobPalette(enemy: EnemySpawn): MobPalette {
 
   switch (enemy.kind) {
     case 'boss':
-      return { body: '#b71c1c', head: '#d32f2f', accent: '#ff8f00', belly: '#5d1a1a', scale: 1.35 }
+      return {
+        body: '#b71c1c',
+        head: '#d32f2f',
+        accent: '#ff8f00',
+        belly: '#5d1a1a',
+        scale: 1.35,
+      }
     case 'shop':
-      return { body: '#1565c0', head: '#42a5f5', accent: '#ffeb3b', belly: '#0d47a1', scale: 1.05 }
+      return {
+        body: '#1565c0',
+        head: '#42a5f5',
+        accent: '#ffeb3b',
+        belly: '#0d47a1',
+        scale: 1.05,
+      }
     case 'treasure':
-      return { body: '#f9a825', head: '#fdd835', accent: '#ff6f00', belly: '#f57f17', scale: 0.95 }
+      return {
+        body: '#f9a825',
+        head: '#fdd835',
+        accent: '#ff6f00',
+        belly: '#f57f17',
+        scale: 0.95,
+      }
     case 'twoHit':
-      return { body: '#6a1b9a', head: '#8e24aa', accent: '#ea80fc', belly: '#4a148c', scale: 1.1 }
+      return {
+        body: '#6a1b9a',
+        head: '#8e24aa',
+        accent: '#ea80fc',
+        belly: '#4a148c',
+        scale: 1.1,
+      }
     case 'item':
-      return { body: '#f9a825', head: '#ffca28', accent: '#fff59d', belly: '#ff8f00', scale: 0.9 }
+      return {
+        body: '#f9a825',
+        head: '#ffca28',
+        accent: '#fff59d',
+        belly: '#ff8f00',
+        scale: 0.9,
+      }
     default:
       return {
         body: `hsl(${hue}, 42%, 38%)`,

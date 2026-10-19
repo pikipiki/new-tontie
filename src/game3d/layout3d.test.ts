@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { BOARD_SURFACE_Y, holeWorldPosition, moleLiftWorld } from './layout3d'
+import {
+  BOARD_SURFACE_Y,
+  hammerStrikeDrop,
+  holeWorldPosition,
+  MOLE_HIDE_DEPTH,
+  MOLE_TOP_SINK,
+  moleLiftWorld,
+} from './layout3d'
 
 describe('layout3d', () => {
   it('exports board surface height for hole slots', () => {
@@ -18,8 +25,20 @@ describe('layout3d', () => {
   })
 
   it('mole lift follows phase', () => {
-    expect(moleLiftWorld('off', 10, 0)).toBeLessThan(0)
-    expect(moleLiftWorld('top', 10, 0)).toBe(0)
-    expect(moleLiftWorld('rising', 10, 5)).toBeGreaterThan(moleLiftWorld('rising', 10, 0))
+    expect(moleLiftWorld('off', 10, 0)).toBe(-MOLE_HIDE_DEPTH)
+    expect(moleLiftWorld('top', 10, 0)).toBe(-MOLE_TOP_SINK)
+    expect(moleLiftWorld('rising', 10, 5)).toBeGreaterThan(
+      moleLiftWorld('rising', 10, 0),
+    )
+    expect(moleLiftWorld('rising', 10, 10)).toBeCloseTo(
+      moleLiftWorld('top', 10, 0),
+    )
+    expect(moleLiftWorld('rising', 10, 0, 1.2)).toBe(-1.2)
+  })
+
+  it('hammer drop goes down then back up', () => {
+    expect(hammerStrikeDrop(0, 8)).toBe(0)
+    expect(hammerStrikeDrop(3, 8)).toBe(1)
+    expect(hammerStrikeDrop(7, 8)).toBeCloseTo(0)
   })
 })
