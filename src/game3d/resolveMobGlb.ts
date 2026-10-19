@@ -4,13 +4,13 @@ import modelsManifest from '../../reference/models.manifest.json'
 
 type ModelsManifest = {
   mobs: Record<string, { glb: string }>
+  worldHeight?: number
 }
 
 const manifest = modelsManifest as ModelsManifest
 
-const SPRITE_ONLY_KINDS = new Set<EnemySpawn['kind']>(['shop'])
+export const MOB_WORLD_HEIGHT = manifest.worldHeight ?? 0.74
 
-/** Manifest key for the retopo GLB (matches `public/game/models/mobs/<key>.glb`). */
 export function mobModelKey(enemy: EnemySpawn): string {
   if (enemy.kind === 'shop') {
     return 'shop'
@@ -37,20 +37,14 @@ export function mobGlbAvailable(key: string): boolean {
   return key in manifest.mobs
 }
 
-/** Use Blender GLB only when we have a 1:1 catalog frame model; else show the 2D sprite volume. */
-export function mobUseGlbModel(enemy: EnemySpawn): boolean {
-  if (SPRITE_ONLY_KINDS.has(enemy.kind)) {
-    return false
+/** Prefer Blender GLB when exported; map unknown frames to nearest catalog GLB. */
+export function mobGlbKey(enemy: EnemySpawn): string | null {
+  const key = mobModelKey(enemy)
+  if (mobGlbAvailable(key)) {
+    return key
   }
-  if (enemy.kind === 'treasure') {
-    return mobGlbAvailable('treasure')
+  if (mobGlbAvailable('default')) {
+    return 'default'
   }
-  const frame = enemy.catalogFrame
-  if (frame === undefined) {
-    return mobGlbAvailable('default')
-  }
-  if (frame < 5 || frame > 24) {
-    return false
-  }
-  return mobGlbAvailable(String(frame))
+  return null
 }

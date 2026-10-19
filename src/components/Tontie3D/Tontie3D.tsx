@@ -2,17 +2,21 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { Suspense } from 'react'
 import { SHOP_OFFERS } from '@/game/shop'
 import { GAME_HEIGHT, GAME_WIDTH } from '@/game/spec'
 import { TontieScene3D } from '@/game3d/TontieScene3D'
 import { useTontieGame } from '@/hooks/useTontieGame'
+import type { GameState } from '@/game/types'
 
 for (let i = 5; i <= 24; i++) {
   useGLTF.preload(`/game/models/mobs/${i}.glb`)
 }
 useGLTF.preload('/game/models/mobs/default.glb')
 useGLTF.preload('/game/models/mobs/treasure.glb')
+useGLTF.preload('/game/models/mobs/shop.glb')
+useGLTF.preload('/game/models/board.glb')
+useGLTF.preload('/game/models/hole.glb')
+useGLTF.preload('/game/models/hammer.glb')
 
 function HudOverlay({ state, shopIndex }: { state: ReturnType<typeof useTontieGame>['state']; shopIndex: number }) {
   if (state.phase === 'paused') {
@@ -80,13 +84,84 @@ function HudOverlay({ state, shopIndex }: { state: ReturnType<typeof useTontieGa
   return null
 }
 
+function HudStatsOverlay({ state }: { state: GameState }) {
+  if (state.phase === 'shop' || state.phase === 'gameOver' || state.phase === 'win' || state.phase === 'paused') {
+    return null
+  }
+  const heartSlots = 8
+  const filled = Math.max(0, Math.min(heartSlots, Math.ceil((state.hp / Math.max(1, state.hpMax)) * heartSlots)))
+  const roundSec = Math.ceil(state.roundFramesLeft / 17)
+
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        inset: 0,
+        pointerEvents: 'none',
+        color: '#fff',
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: 12,
+        fontWeight: 800,
+        textShadow: '1px 1px 0 rgba(0,0,0,0.5)',
+      }}
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 52,
+          background: 'linear-gradient(180deg, #4a9fd8 0%, #5a8fd4 70%)',
+        }}
+      />
+      <Box sx={{ position: 'absolute', top: 6, left: 8, fontSize: 14, letterSpacing: 1 }}>
+        {'♥'.repeat(filled)}
+        <Box component="span" sx={{ opacity: 0.35 }}>{'♥'.repeat(heartSlots - filled)}</Box>
+      </Box>
+      <Box sx={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', fontSize: 22 }}>
+        {roundSec}
+      </Box>
+      <Box sx={{ position: 'absolute', top: 8, right: 8, fontSize: 11 }}>
+        $ {String(state.money).padStart(3, '0')}
+      </Box>
+      {state.gun > 0 && (
+        <Box sx={{ position: 'absolute', top: 30, right: 8, fontSize: 10, color: '#e0f7fa' }}>
+          RAY GUN {state.gunAmmo}
+        </Box>
+      )}
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 28,
+          bgcolor: 'rgba(255,255,255,0.92)',
+          color: '#2d2d2d',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          px: 1,
+          fontSize: 10,
+          fontWeight: 700,
+          textShadow: 'none',
+        }}
+      >
+        <span>LEVEL {state.level}</span>
+        <span>SCORE {state.score}</span>
+      </Box>
+    </Box>
+  )
+}
+
 export function Tontie3D() {
   const { state, shopIndex } = useTontieGame()
 
   return (
     <Box>
       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mb: 1 }}>
-        Port 3D (Three.js) — même logique ffdec, branche feature/3d-remake
+        Port 3D — modèles Blender (sprites → volume), logique ffdec
       </Typography>
       <Box
         tabIndex={0}
@@ -101,7 +176,7 @@ export function Tontie3D() {
           border: '2px solid rgba(0,0,0,0.15)',
           boxShadow: '4px 4px 0 rgba(0,0,0,0.12)',
           outline: 'none',
-          bgcolor: '#6eb5e8',
+          bgcolor: '#5a8fd4',
           '&:focus': {
             outline: '3px solid #6c5ce7',
             outlineOffset: 4,
@@ -112,12 +187,11 @@ export function Tontie3D() {
           shadows
           dpr={[1, 2]}
           gl={{ alpha: false, antialias: true }}
-          style={{ width: GAME_WIDTH, height: GAME_HEIGHT }}
+          style={{ width: GAME_WIDTH, height: GAME_HEIGHT, display: 'block' }}
         >
-          <Suspense fallback={null}>
-            <TontieScene3D state={state} />
-          </Suspense>
+          <TontieScene3D state={state} />
         </Canvas>
+        <HudStatsOverlay state={state} />
         <HudOverlay state={state} shopIndex={shopIndex} />
       </Box>
     </Box>

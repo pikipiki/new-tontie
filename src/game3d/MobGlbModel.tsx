@@ -9,5 +9,5 @@ export function MobGlbModel({
   height: number
   position: [number, number, number]
 }) {
-  return <GlbModel url={url} position={position} scale={height} />
+  return <GlbModel url={url} position={position} scale={[height, height, height]} />
 }

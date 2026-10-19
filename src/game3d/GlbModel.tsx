@@ -1,5 +1,5 @@
 import { useGLTF } from '@react-three/drei'
-import { useMemo } from 'react'
+import { Suspense, useMemo } from 'react'
 import {
   DoubleSide,
   Mesh,
@@ -13,12 +13,14 @@ import {
 function fixMaterial(mat: Material): MeshStandardMaterial {
   const old = mat as MeshStandardMaterial
   const map = old.map ?? null
-  const hasAlpha = map !== null
+  const cutout =
+    map !== null &&
+    (old.transparent === true || (old.alphaTest ?? 0) > 0 || (old.opacity ?? 1) < 0.999)
   const params: MeshStandardMaterialParameters = {
     map,
-    color: old.color?.clone(),
-    transparent: hasAlpha,
-    alphaTest: hasAlpha ? 0.42 : 0,
+    color: map ? '#ffffff' : (old.color?.clone() ?? '#ffffff'),
+    transparent: cutout,
+    alphaTest: cutout ? 0.12 : 0,
     side: DoubleSide,
     roughness: old.roughness ?? 0.82,
     metalness: old.metalness ?? 0.05,
@@ -48,7 +50,7 @@ export function useClonedGltf(url: string): Group {
   }, [scene])
 }
 
-export function GlbModel({
+function GlbModelInner({
   url,
   position = [0, 0, 0],
   rotation = [0, 0, 0],
@@ -62,4 +64,17 @@ export function GlbModel({
   const root = useClonedGltf(url)
   const s = typeof scale === 'number' ? [scale, scale, scale] : scale
   return <primitive object={root} position={position} rotation={rotation} scale={s} />
+}
+
+export function GlbModel(props: {
+  url: string
+  position?: [number, number, number]
+  rotation?: [number, number, number]
+  scale?: [number, number, number] | number
+}) {
+  return (
+    <Suspense fallback={null}>
+      <GlbModelInner {...props} />
+    </Suspense>
+  )
 }

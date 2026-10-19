@@ -31,4 +31,11 @@ describe('reconstruction coverage', () => {
     expect(ids).toContain('spawn.DefineSprite_459')
     expect(ids).toContain('combat.DefineSprite_669')
   })
+
+  it('every manifest surface has an owner export path', () => {
+    for (const surface of manifest.surfaces) {
+      expect(surface.owner).toMatch(/^src\//)
+      expect(surface.export.length).toBeGreaterThan(0)
+    }
+  })
 })

@@ -1,4 +1,3 @@
-import { Text } from '@react-three/drei'
 import type { GameState } from '@/game/types'
 import { HUD } from './hudLayout3d'
 
@@ -39,14 +38,11 @@ function HeartsRow({ hp, hpMax }: { hp: number; hpMax: number }) {
           )}
         </group>
       ))}
-      <Text position={[slots * 0.09 + 0.06, -0.01, 0]} fontSize={0.07} color="#fff" anchorX="left">
-        {hp}
-      </Text>
     </group>
   )
 }
 
-function LaserGunHud({ gun, gunAmmo }: { gun: number; gunAmmo: number }) {
+function LaserGunHud({ gun }: { gun: number; gunAmmo: number }) {
   const [x, y, z] = HUD.laser
   const active = gun > 0
   return (
@@ -71,9 +67,6 @@ function LaserGunHud({ gun, gunAmmo }: { gun: number; gunAmmo: number }) {
           <meshStandardMaterial color="#e0f7fa" emissive="#00e5ff" emissiveIntensity={1.2} transparent opacity={0.85} />
         </mesh>
       )}
-      <Text position={[0, -0.05, 0]} fontSize={0.055} color={active ? '#e0f7fa' : '#90a4ae'} anchorX="center">
-        {active ? `LASER ${gunAmmo}` : 'LASER'}
-      </Text>
     </group>
   )
 }
@@ -98,7 +91,7 @@ function HammerTierHud({ hammerLv }: { hammerLv: number }) {
   )
 }
 
-function LevelBadge({ level }: { level: number }) {
+function LevelBadge(_props: { level: number }) {
   const [x, y, z] = HUD.level
   return (
     <group position={[x, y, z]}>
@@ -110,14 +103,11 @@ function LevelBadge({ level }: { level: number }) {
         <boxGeometry args={[0.52, 0.04, 0.1]} />
         <meshStandardMaterial color="#8d6e63" roughness={0.7} />
       </mesh>
-      <Text position={[0, 0.01, 0.07]} fontSize={0.09} color="#fff" anchorX="center" anchorY="middle">
-        {`LV ${level}`}
-      </Text>
     </group>
   )
 }
 
-function ScorePlate({ score, money }: { score: number; money: number }) {
+function ScorePlate(_props: { score: number; money: number }) {
   const [x, y, z] = HUD.score
   return (
     <group position={[x, y, z]}>
@@ -125,12 +115,6 @@ function ScorePlate({ score, money }: { score: number; money: number }) {
         <boxGeometry args={[1.1, 0.08, 0.14]} />
         <meshStandardMaterial color="#3e2723" roughness={0.85} />
       </mesh>
-      <Text position={[-0.35, 0.01, 0.08]} fontSize={0.055} color="#fff" anchorX="left">
-        {`SCORE ${score}`}
-      </Text>
-      <Text position={[0.35, 0.01, 0.08]} fontSize={0.055} color="#fffef0" anchorX="right">
-        {`$${money}`}
-      </Text>
     </group>
   )
 }
