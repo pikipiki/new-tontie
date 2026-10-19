@@ -3,13 +3,17 @@ import { mobSheetIndex } from '@/game/assets'
 import modelsManifest from '../../reference/models.manifest.json'
 
 type ModelsManifest = {
-  mobs: Record<string, { glb: string }>
-  worldHeight?: number
+  mobs: Record<string, { glb: string; size?: number[] }>
 }
 
 const manifest = modelsManifest as ModelsManifest
 
-export const MOB_WORLD_HEIGHT = manifest.worldHeight ?? 0.74
+const FALLBACK_MOB_HEIGHT = 0.75
+
+/** World height of an exported mob GLB (Blender keeps the SWF pixel scale). */
+export function mobGlbHeight(key: string): number {
+  return manifest.mobs[key]?.size?.[1] ?? FALLBACK_MOB_HEIGHT
+}
 
 export function mobModelKey(enemy: EnemySpawn): string {
   if (enemy.kind === 'shop') {

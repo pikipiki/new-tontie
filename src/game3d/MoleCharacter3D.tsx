@@ -1,7 +1,7 @@
 import type { EnemySpawn, MolePhase } from '@/game/types'
-import { moleLiftWorld } from './layout3d'
+import { MOB_TILT_X, moleLiftWorld } from './layout3d'
 import { MobGlbModel } from './MobGlbModel'
-import { MOB_WORLD_HEIGHT, mobGlbKey, mobGlbUrl } from './resolveMobGlb'
+import { mobGlbHeight, mobGlbKey, mobGlbUrl } from './resolveMobGlb'
 import { MobProcedural3D } from './procedural/MobProcedural3D'
 
 export function MoleCharacter3D({
@@ -19,14 +19,27 @@ export function MoleCharacter3D({
     return null
   }
 
-  const lift = moleLiftWorld(phase, koma, phaseTicks)
-  const y = lift + MOB_WORLD_HEIGHT * 0.48
-  const pos: [number, number, number] = [0, y, 0]
-
   const glbKey = mobGlbKey(enemy)
   if (glbKey) {
-    return <MobGlbModel url={mobGlbUrl(glbKey)} height={MOB_WORLD_HEIGHT} position={pos} />
+    const y = moleLiftWorld(
+      phase,
+      koma,
+      phaseTicks,
+      mobGlbHeight(glbKey) + 0.05,
+    )
+    return (
+      <MobGlbModel
+        url={mobGlbUrl(glbKey)}
+        position={[0, y, 0]}
+        tilt={MOB_TILT_X}
+      />
+    )
   }
 
-  return <MobProcedural3D enemy={enemy} position={pos} />
+  return (
+    <MobProcedural3D
+      enemy={enemy}
+      position={[0, moleLiftWorld(phase, koma, phaseTicks), 0]}
+    />
+  )
 }

@@ -61,11 +61,19 @@ function TreasureChest() {
     <group position={[0, 0.08, 0]}>
       <mesh castShadow>
         <boxGeometry args={[0.32, 0.22, 0.24]} />
-        <meshStandardMaterial color="#f9a825" metalness={0.35} roughness={0.45} />
+        <meshStandardMaterial
+          color="#f9a825"
+          metalness={0.35}
+          roughness={0.45}
+        />
       </mesh>
       <mesh position={[0, 0.14, 0]} castShadow>
         <boxGeometry args={[0.34, 0.1, 0.26]} />
-        <meshStandardMaterial color="#ff8f00" metalness={0.5} roughness={0.35} />
+        <meshStandardMaterial
+          color="#ff8f00"
+          metalness={0.5}
+          roughness={0.35}
+        />
       </mesh>
     </group>
   )
@@ -115,7 +123,11 @@ export function MobProcedural3D({
       {enemy.kind === 'item' && (
         <mesh position={[0, 0.35, 0.12]} castShadow>
           <cylinderGeometry args={[0.08, 0.08, 0.04, 16]} />
-          <meshStandardMaterial color="#ffd54f" metalness={0.6} roughness={0.3} />
+          <meshStandardMaterial
+            color="#ffd54f"
+            metalness={0.6}
+            roughness={0.3}
+          />
         </mesh>
       )}
     </group>
