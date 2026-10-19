@@ -86,6 +86,44 @@ if (fs.existsSync(gameplayFrame)) {
   }
 }
 
+const mobCatalogTmp = path.join(tmpDir, 'mob-catalog')
+if (fs.existsSync(mobCatalogTmp)) {
+  fs.rmSync(mobCatalogTmp, { recursive: true })
+}
+console.log('Exporting enemy catalog sprites (DefineSprite_458)…')
+runJava(['-export', 'sprite', mobCatalogTmp, swf, '-exportIds', '458'])
+const mobsOut = path.join(outDir, 'mobs')
+fs.mkdirSync(mobsOut, { recursive: true })
+for (let f = 5; f <= 24; f++) {
+  const src = path.join(mobCatalogTmp, `DefineSprite_458/${f}.png`)
+  if (fs.existsSync(src)) {
+    fs.copyFileSync(src, path.join(mobsOut, `${f}.png`))
+  }
+}
+const shopTmp = path.join(tmpDir, 'shop-sprite')
+if (fs.existsSync(shopTmp)) {
+  fs.rmSync(shopTmp, { recursive: true })
+}
+runJava(['-export', 'sprite', shopTmp, swf, '-exportIds', '607'])
+const shopOut = path.join(mobsOut, 'shop.png')
+let shopExported = false
+for (let f = 1; f <= 12; f++) {
+  const shopSrc = path.join(shopTmp, `DefineSprite_607/${f}.png`)
+  if (fs.existsSync(shopSrc) && fs.statSync(shopSrc).size > 400) {
+    fs.copyFileSync(shopSrc, shopOut)
+    shopExported = true
+    console.log('Shop sprite from frame', f)
+    break
+  }
+}
+if (!shopExported) {
+  console.warn('No usable shop sprite in DefineSprite_607')
+}
+const treasureSrc = path.join(mobsOut, '7.png')
+if (fs.existsSync(treasureSrc)) {
+  fs.copyFileSync(treasureSrc, path.join(mobsOut, 'treasure.png'))
+}
+
 const hammerTmp = path.join(tmpDir, 'hammer-strike')
 if (fs.existsSync(hammerTmp)) {
   fs.rmSync(hammerTmp, { recursive: true })
