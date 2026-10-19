@@ -13,6 +13,8 @@
     "sync:swf": "cp reference/tontie.swf public/game/tontie.swf",
     "build:catalog": "node scripts/build-enemy-catalog.mjs",
     "export:assets": "node scripts/export-game-assets.mjs",
+    "mesh:mobs": "scripts/mesh-pipeline/.venv/bin/python scripts/mesh-pipeline/sprite_to_glb.py",
+    "mesh:blender": "blender --background --python scripts/blender/batch_export.py",
     "build:manifest": "node scripts/build-reconstruction-manifest.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -21,11 +23,14 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^9.5.0",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
     "@ruffle-rs/ruffle": "^0.2.0",
     "i18next": "^26.5.2",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-i18next": "^17.1.0"
+    "react-i18next": "^17.1.0",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
@@ -34,6 +39,7 @@
     "@types/node": "^24.19.2",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
+    "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^6.1.1",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",

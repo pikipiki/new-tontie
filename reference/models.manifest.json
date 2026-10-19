@@ -1,0 +1,161 @@
+{
+  "generator": "scripts/blender/batch_export.py",
+  "blender": "5.2.2 LTS",
+  "mobDepth": 0.32,
+  "worldHeight": 0.74,
+  "boardWidth": 4.2,
+  "mobs": {
+    "5": {
+      "glb": "public/game/models/mobs/5.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/5.png"
+    },
+    "6": {
+      "glb": "public/game/models/mobs/6.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/6.png"
+    },
+    "7": {
+      "glb": "public/game/models/mobs/7.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/7.png"
+    },
+    "8": {
+      "glb": "public/game/models/mobs/8.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/8.png"
+    },
+    "9": {
+      "glb": "public/game/models/mobs/9.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/9.png"
+    },
+    "10": {
+      "glb": "public/game/models/mobs/10.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/10.png"
+    },
+    "11": {
+      "glb": "public/game/models/mobs/11.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/11.png"
+    },
+    "12": {
+      "glb": "public/game/models/mobs/12.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/12.png"
+    },
+    "13": {
+      "glb": "public/game/models/mobs/13.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/13.png"
+    },
+    "14": {
+      "glb": "public/game/models/mobs/14.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/14.png"
+    },
+    "15": {
+      "glb": "public/game/models/mobs/15.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/15.png"
+    },
+    "16": {
+      "glb": "public/game/models/mobs/16.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/16.png"
+    },
+    "17": {
+      "glb": "public/game/models/mobs/17.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/17.png"
+    },
+    "18": {
+      "glb": "public/game/models/mobs/18.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/18.png"
+    },
+    "19": {
+      "glb": "public/game/models/mobs/19.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/19.png"
+    },
+    "20": {
+      "glb": "public/game/models/mobs/20.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/20.png"
+    },
+    "21": {
+      "glb": "public/game/models/mobs/21.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/21.png"
+    },
+    "22": {
+      "glb": "public/game/models/mobs/22.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/22.png"
+    },
+    "23": {
+      "glb": "public/game/models/mobs/23.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/23.png"
+    },
+    "24": {
+      "glb": "public/game/models/mobs/24.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/24.png"
+    },
+    "treasure": {
+      "glb": "public/game/models/mobs/treasure.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mobs/treasure.png"
+    },
+    "default": {
+      "glb": "public/game/models/mobs/default.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mob.png"
+    }
+  },
+  "props": {
+    "board": {
+      "glb": "public/game/models/board.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/board-gameplay-clean.png"
+    },
+    "hole": {
+      "glb": "public/game/models/hole.glb",
+      "vertices": 344,
+      "faces": 320,
+      "source": "procedural/blender"
+    },
+    "hammer": {
+      "glb": "public/game/models/hammer.glb",
+      "vertices": 48,
+      "faces": 30,
+      "source": "procedural/blender"
+    }
+  }
+}
