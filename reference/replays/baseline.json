@@ -1,0 +1,9 @@
+{
+  "seed": 2054198962,
+  "maxFrames": 1360,
+  "inputs": [
+    { "frame": 200, "hole": 5 },
+    { "frame": 350, "hole": 8 }
+  ],
+  "expectedFingerprint": "playing|2|0|0|52|1|3|0|0|rm1on0on0on0tm1on0on0tm1on0"
+}

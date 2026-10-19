@@ -1,0 +1,73 @@
+{
+  "artifact": "reference/tontie.swf",
+  "gameSpec": "reference/game-spec.json",
+  "boundary": "native-typescript-canvas",
+  "surfaces": [
+    {
+      "surface_id": "init.frame_25",
+      "family": "as2",
+      "location": "reference/decompiled/ffdec/scripts/frame_25/DoAction.as",
+      "owner": "src/game/engine.ts",
+      "export": "createInitialState"
+    },
+    {
+      "surface_id": "spawn.DefineSprite_459",
+      "family": "as2",
+      "location": "reference/decompiled/ffdec/scripts/DefineSprite_459/frame_1/PlaceObject2_458_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "owner": "src/game/spawn.ts",
+      "export": "rollSpawnDecision"
+    },
+    {
+      "surface_id": "enemies.DefineSprite_458",
+      "family": "as2",
+      "location": "reference/decompiled/ffdec/scripts/DefineSprite_458",
+      "owner": "src/game/catalog.ts",
+      "export": "enemyFromCatalogFrame"
+    },
+    {
+      "surface_id": "combat.DefineSprite_669",
+      "family": "as2",
+      "location": "reference/decompiled/ffdec/scripts/DefineSprite_669/frame_1/DoAction.as",
+      "owner": "src/game/combat.ts",
+      "export": "applyItem"
+    },
+    {
+      "surface_id": "difficulty.lv_set",
+      "family": "as2",
+      "location": "reference/decompiled/ffdec/scripts/frame_141/DoAction.as",
+      "owner": "src/game/difficulty.ts",
+      "export": "applyLvSet"
+    },
+    {
+      "surface_id": "shop.DefineSprite_607",
+      "family": "as2",
+      "location": "reference/decompiled/ffdec/scripts/DefineSprite_607/frame_4/DoAction.as",
+      "owner": "src/game/shop.ts",
+      "export": "SHOP_OFFERS"
+    },
+    {
+      "surface_id": "loop.spawn_timer",
+      "family": "as2",
+      "location": "reference/decompiled/ffdec/scripts/frame_41/PlaceObject2_560_182/CLIPACTIONRECORD onClipEvent(enterFrame).as",
+      "owner": "src/game/engine.ts",
+      "export": "trySpawn"
+    },
+    {
+      "surface_id": "render.board",
+      "family": "visual",
+      "location": "DefineSprite_559 frame 141",
+      "owner": "src/game/render.ts",
+      "export": "drawGame"
+    }
+  ],
+  "nonGoals": [
+    {
+      "id": "timeline.cinematics",
+      "reason": "749 AS timeline scripts — animations served by board sprite + simplified mole motion"
+    },
+    {
+      "id": "cheats.pass1-4",
+      "reason": "Easter egg start codes; optional future title screen"
+    }
+  ]
+}

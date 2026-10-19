@@ -1,0 +1,5 @@
+node_modules
+dist
+.cache/ffdec-export
+public/game/frames
+public/ruffle

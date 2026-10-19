@@ -1,0 +1,4 @@
+with(doka)
+{
+   gotoAndPlay("on");
+}
