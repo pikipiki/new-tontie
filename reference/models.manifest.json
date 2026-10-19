@@ -1,7 +1,7 @@
 {
   "generator": "scripts/blender/batch_export.py",
   "blender": "5.2.2 LTS",
-  "mobDepth": 0.32,
+  "mobDepth": 0.38,
   "worldHeight": 0.74,
   "boardWidth": 4.2,
   "mobs": {
@@ -9,133 +9,162 @@
       "glb": "public/game/models/mobs/5.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/5.png"
+      "source": "public/game/sprites/mobs/5.png",
+      "depth": 0.38
     },
     "6": {
       "glb": "public/game/models/mobs/6.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/6.png"
+      "source": "public/game/sprites/mobs/6.png",
+      "depth": 0.38
     },
     "7": {
       "glb": "public/game/models/mobs/7.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/7.png"
+      "source": "public/game/sprites/mobs/7.png",
+      "depth": 0.38
     },
     "8": {
       "glb": "public/game/models/mobs/8.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/8.png"
+      "source": "public/game/sprites/mobs/8.png",
+      "depth": 0.38
     },
     "9": {
       "glb": "public/game/models/mobs/9.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/9.png"
+      "source": "public/game/sprites/mobs/9.png",
+      "depth": 0.38
     },
     "10": {
       "glb": "public/game/models/mobs/10.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/10.png"
+      "source": "public/game/sprites/mobs/10.png",
+      "depth": 0.38
     },
     "11": {
       "glb": "public/game/models/mobs/11.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/11.png"
+      "source": "public/game/sprites/mobs/11.png",
+      "depth": 0.38
     },
     "12": {
       "glb": "public/game/models/mobs/12.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/12.png"
+      "source": "public/game/sprites/mobs/12.png",
+      "depth": 0.38
     },
     "13": {
       "glb": "public/game/models/mobs/13.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/13.png"
+      "source": "public/game/sprites/mobs/13.png",
+      "depth": 0.38
     },
     "14": {
       "glb": "public/game/models/mobs/14.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/14.png"
+      "source": "public/game/sprites/mobs/14.png",
+      "depth": 0.38
     },
     "15": {
       "glb": "public/game/models/mobs/15.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/15.png"
+      "source": "public/game/sprites/mobs/15.png",
+      "depth": 0.38
     },
     "16": {
       "glb": "public/game/models/mobs/16.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/16.png"
+      "source": "public/game/sprites/mobs/16.png",
+      "depth": 0.38
     },
     "17": {
       "glb": "public/game/models/mobs/17.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/17.png"
+      "source": "public/game/sprites/mobs/17.png",
+      "depth": 0.38
     },
     "18": {
       "glb": "public/game/models/mobs/18.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/18.png"
+      "source": "public/game/sprites/mobs/18.png",
+      "depth": 0.38
     },
     "19": {
       "glb": "public/game/models/mobs/19.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/19.png"
+      "source": "public/game/sprites/mobs/19.png",
+      "depth": 0.38
     },
     "20": {
       "glb": "public/game/models/mobs/20.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/20.png"
+      "source": "public/game/sprites/mobs/20.png",
+      "depth": 0.38
     },
     "21": {
       "glb": "public/game/models/mobs/21.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/21.png"
+      "source": "public/game/sprites/mobs/21.png",
+      "depth": 0.38
     },
     "22": {
       "glb": "public/game/models/mobs/22.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/22.png"
+      "source": "public/game/sprites/mobs/22.png",
+      "depth": 0.38
     },
     "23": {
       "glb": "public/game/models/mobs/23.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/23.png"
+      "source": "public/game/sprites/mobs/23.png",
+      "depth": 0.38
     },
     "24": {
       "glb": "public/game/models/mobs/24.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/24.png"
+      "source": "public/game/sprites/mobs/24.png",
+      "depth": 0.38
     },
     "treasure": {
       "glb": "public/game/models/mobs/treasure.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mobs/treasure.png"
+      "source": "public/game/sprites/mobs/treasure.png",
+      "depth": 0.38
     },
     "default": {
       "glb": "public/game/models/mobs/default.glb",
       "vertices": 56,
       "faces": 54,
-      "source": "public/game/sprites/mob.png"
+      "source": "public/game/sprites/mob.png",
+      "depth": 0.38
+    },
+    "shop": {
+      "glb": "public/game/models/mobs/shop.glb",
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/mob.png",
+      "depth": 0.38
     }
   },
   "props": {
@@ -147,15 +176,16 @@
     },
     "hole": {
       "glb": "public/game/models/hole.glb",
-      "vertices": 344,
-      "faces": 320,
+      "vertices": 336,
+      "faces": 314,
       "source": "procedural/blender"
     },
     "hammer": {
       "glb": "public/game/models/hammer.glb",
-      "vertices": 48,
-      "faces": 30,
-      "source": "procedural/blender"
+      "vertices": 56,
+      "faces": 54,
+      "source": "public/game/sprites/hammer/01.png",
+      "depth": 0.22
     }
   }
 }

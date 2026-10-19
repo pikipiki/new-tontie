@@ -1,6 +1,6 @@
 # Mesh pipeline
 
-**Preferred:** Blender batch export (board, holes, hammer, all mobs):
+**Required for 3D view:** Blender batch export (volumetric GLB from sprites):
 
 ```bash
 brew install --cask blender   # once

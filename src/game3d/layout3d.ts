@@ -40,5 +40,5 @@ export function hammerStrikeAngle(frame: number, frameCount: number): number {
 
 export const BOARD_WIDTH = 4.2
 export const BOARD_DEPTH = 4.2
-/** Top of textured playfield (PLANK_H + decal offset in Board3D). */
-export const BOARD_SURFACE_Y = 0.392
+/** Top of play cells (BoardProcedural3D). */
+export const BOARD_SURFACE_Y = 0.36
