@@ -63,7 +63,12 @@ export function mapCatalogItem(raw?: string): ItemId | undefined {
   if (raw.startsWith('coin')) {
     return 'coin'
   }
-  if (raw === 'hammer1' || raw === 'hammer2' || raw === 'hammer3' || raw === 'hammer4') {
+  if (
+    raw === 'hammer1' ||
+    raw === 'hammer2' ||
+    raw === 'hammer3' ||
+    raw === 'hammer4'
+  ) {
     return raw
   }
   if (
@@ -77,7 +82,7 @@ export function mapCatalogItem(raw?: string): ItemId | undefined {
     raw === 'sekiban2' ||
     raw === 'sekiban3'
   ) {
-    return raw as ItemId
+    return raw
   }
   return undefined
 }

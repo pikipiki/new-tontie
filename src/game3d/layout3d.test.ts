@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   BOARD_SURFACE_Y,
-  hammerStrikeDrop,
+  HAMMER_IMPACT_T,
+  hammerSwing,
   holeWorldPosition,
   MOLE_HIDE_DEPTH,
   MOLE_TOP_SINK,
@@ -36,9 +37,23 @@ describe('layout3d', () => {
     expect(moleLiftWorld('rising', 10, 0, 1.2)).toBe(-1.2)
   })
 
-  it('hammer drop goes down then back up', () => {
-    expect(hammerStrikeDrop(0, 8)).toBe(0)
-    expect(hammerStrikeDrop(3, 8)).toBe(1)
-    expect(hammerStrikeDrop(7, 8)).toBeCloseTo(0)
+  it('hammer winds up, lands at impact, then lifts away', () => {
+    const start = hammerSwing(0)
+    const windup = hammerSwing(0.2)
+    expect(windup.angle).toBeLessThan(start.angle)
+    expect(hammerSwing(HAMMER_IMPACT_T).angle).toBeCloseTo(0)
+    expect(hammerSwing(1).scale).toBeLessThan(0.2)
+    expect(hammerSwing(1).angle).toBeLessThan(-0.5)
+  })
+
+  it('mole rise eases out (fast start) and fall eases in', () => {
+    const half = moleLiftWorld('rising', 10, 5)
+    const linearHalf =
+      (moleLiftWorld('rising', 10, 0) + moleLiftWorld('top', 10, 0)) / 2
+    expect(half).toBeGreaterThan(linearHalf)
+    const fallHalf = moleLiftWorld('falling', 10, 5)
+    const linearFall =
+      (moleLiftWorld('top', 10, 0) + moleLiftWorld('off', 10, 0)) / 2
+    expect(fallHalf).toBeGreaterThan(linearFall)
   })
 })

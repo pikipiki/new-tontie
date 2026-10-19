@@ -1,5 +1,4 @@
 import type { EnemySpawn } from '@/game/types'
-import { mobSheetIndex } from '@/game/assets'
 import modelsManifest from '../../reference/models.manifest.json'
 
 type ModelsManifest = {
@@ -15,6 +14,13 @@ export function mobGlbHeight(key: string): number {
   return manifest.mobs[key]?.size?.[1] ?? FALLBACK_MOB_HEIGHT
 }
 
+/** [width, height, depth] of an exported mob GLB. */
+export function mobGlbSize(key: string): [number, number, number] {
+  const [w = 0.5, h = FALLBACK_MOB_HEIGHT, d = 0.4] =
+    manifest.mobs[key]?.size ?? []
+  return [w, h, d]
+}
+
 export function mobModelKey(enemy: EnemySpawn): string {
   if (enemy.kind === 'shop') {
     return 'shop'
@@ -22,13 +28,9 @@ export function mobModelKey(enemy: EnemySpawn): string {
   if (enemy.kind === 'treasure') {
     return 'treasure'
   }
-  if (enemy.catalogFrame !== undefined) {
-    const frame = enemy.catalogFrame
-    if (frame >= 5 && frame <= 24) {
-      return String(frame)
-    }
-    const idx = 5 + (mobSheetIndex(frame) % 20)
-    return String(idx)
+  const frame = enemy.catalogFrame
+  if (frame !== undefined && frame >= 5 && frame <= 24) {
+    return String(frame)
   }
   return 'default'
 }
@@ -41,14 +43,22 @@ export function mobGlbAvailable(key: string): boolean {
   return key in manifest.mobs
 }
 
-/** Prefer Blender GLB when exported; map unknown frames to nearest catalog GLB. */
-export function mobGlbKey(enemy: EnemySpawn): string | null {
+/** Blender GLB for an enemy; unknown frames fall back to the default Tontie. */
+export function mobGlbKey(enemy: EnemySpawn): string {
   const key = mobModelKey(enemy)
-  if (mobGlbAvailable(key)) {
-    return key
-  }
-  if (mobGlbAvailable('default')) {
+  return mobGlbAvailable(key) ? key : 'default'
+}
+
+export function catalogFrameGlbKey(frame: number | null): string {
+  if (frame === null) {
     return 'default'
   }
-  return null
+  return mobGlbKey({
+    kind: 'mob',
+    hp: 1,
+    maxHp: 1,
+    attack: 0,
+    score: 0,
+    catalogFrame: frame,
+  })
 }

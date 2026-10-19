@@ -29,31 +29,33 @@ export function TontiePlayer() {
 
   useEffect(() => {
     let cancelled = false
+    const isCancelled = () => cancelled
 
     void (async () => {
       const ok = await verifyCanonicalSwf()
-      if (cancelled) {
+      if (isCancelled()) {
         return
       }
       setFidelityOk(ok)
       if (!ok) {
-        setLoadError('SWF hash/size mismatch — run: cp reference/tontie.swf public/game/tontie.swf')
+        setLoadError(
+          'SWF hash/size mismatch — run: cp reference/tontie.swf public/game/tontie.swf',
+        )
         return
       }
 
-      if (!window.RufflePlayer) {
-        window.RufflePlayer = {}
-      }
-      window.RufflePlayer.config = { ...window.RufflePlayer.config, publicPath: '/ruffle/' }
+      const ruffleGlobal = window.RufflePlayer ?? {}
+      window.RufflePlayer = ruffleGlobal
+      ruffleGlobal.config = { ...ruffleGlobal.config, publicPath: '/ruffle/' }
 
       await import('@ruffle-rs/ruffle')
 
       const host = hostRef.current
-      if (!host || cancelled) {
+      if (!host || isCancelled()) {
         return
       }
 
-      const newest = window.RufflePlayer?.newest
+      const newest = ruffleGlobal.newest
       if (!newest) {
         setLoadError('Ruffle failed to initialize')
         return
@@ -61,20 +63,21 @@ export function TontiePlayer() {
       const factory = newest()
 
       const player = factory.createPlayer()
-      player.style.width = `${GAME_WIDTH}px`
-      player.style.height = `${GAME_HEIGHT}px`
+      player.style.width = `${String(GAME_WIDTH)}px`
+      player.style.height = `${String(GAME_HEIGHT)}px`
       player.tabIndex = 0
       host.replaceChildren(player)
       player.ruffle().load(SWF_URL)
     })().catch(() => {
-      if (!cancelled) {
+      if (!isCancelled()) {
         setLoadError('Failed to load Ruffle runtime')
       }
     })
 
+    const hostAtMount = hostRef.current
     return () => {
       cancelled = true
-      hostRef.current?.replaceChildren()
+      hostAtMount?.replaceChildren()
     }
   }, [])
 

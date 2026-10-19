@@ -6,9 +6,25 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules'] },
+  {
+    ignores: [
+      'dist',
+      'node_modules',
+      'public',
+      'reference',
+      '.cache',
+      'scripts/mesh-pipeline/.venv',
+    ],
+  },
   js.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
+  {
+    files: ['**/*.{js,mjs}'],
+    languageOptions: { globals: globals.node },
+  },
+  ...tseslint.configs.strictTypeChecked.map((config) => ({
+    ...config,
+    files: ['**/*.{ts,tsx}'],
+  })),
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {

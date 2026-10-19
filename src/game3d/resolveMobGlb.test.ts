@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { mobGlbKey, mobGlbUrl, mobModelKey } from './resolveMobGlb'
+import {
+  catalogFrameGlbKey,
+  mobGlbAvailable,
+  mobGlbKey,
+  mobGlbUrl,
+  mobModelKey,
+} from './resolveMobGlb'
 
 describe('resolveMobGlb', () => {
   it('maps catalog frames to glb keys', () => {
@@ -34,7 +40,17 @@ describe('resolveMobGlb', () => {
       score: 1,
       catalogFrame: 7,
     })
-    expect(key).toBeTruthy()
-    expect(mobGlbUrl(key!)).toMatch(/\.glb$/)
+    expect(key).toBe('7')
+    expect(mobGlbUrl(key)).toMatch(/\.glb$/)
+  })
+
+  it('every catalog frame, shop and treasure has an exported model', () => {
+    for (let frame = 5; frame <= 24; frame++) {
+      expect(mobGlbAvailable(String(frame))).toBe(true)
+    }
+    expect(mobGlbAvailable('shop')).toBe(true)
+    expect(mobGlbAvailable('treasure')).toBe(true)
+    expect(catalogFrameGlbKey(null)).toBe('default')
+    expect(catalogFrameGlbKey(99)).toBe('default')
   })
 })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createInitialState, queueHit, tick } from './engine'
+import { createInitialState, queueHit, startLevel, tick } from './engine'
 import { createSeededRandom } from './rng'
 import { stateFingerprint } from './replay'
 import { FPS } from './spec'
@@ -8,6 +8,7 @@ describe('seeded replay', () => {
   it('deterministic simulation fingerprint after fixed ticks', () => {
     const random = createSeededRandom(0x7a3b_91c2)
     const state = createInitialState()
+    startLevel(state)
     const frames = FPS * 8
     for (let i = 0; i < frames; i++) {
       tick(state, random)
@@ -21,6 +22,7 @@ describe('seeded replay', () => {
     const run = (withHit: boolean) => {
       const random = createSeededRandom(42)
       const state = createInitialState()
+      startLevel(state)
       for (let i = 0; i < 120; i++) {
         if (withHit && i === 40) {
           const hole = [1, 2, 3, 4, 5, 6, 7, 8, 9].find(

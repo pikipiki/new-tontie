@@ -60,15 +60,22 @@ const surfaces = [
     surface_id: 'render.board',
     family: 'visual',
     location: 'DefineSprite_559 frame 141',
-    owner: 'src/game/render.ts',
-    export: 'drawGame',
+    owner: 'src/game3d/TontieScene3D.tsx',
+    export: 'TontieScene3D',
+  },
+  {
+    surface_id: 'audio.sound_banks',
+    family: 'as2',
+    location: 'DefineSprite_65 (sound) + DefineSprite_71 (sound2)',
+    owner: 'src/game/audio.ts',
+    export: 'SOUND_BANK',
   },
 ]
 
 const manifest = {
   artifact: 'reference/tontie.swf',
   gameSpec: 'reference/game-spec.json',
-  boundary: 'native-typescript-canvas',
+  boundary: 'native-typescript-webgl',
   surfaces,
   nonGoals: [
     { id: 'timeline.cinematics', reason: '749 AS timeline scripts — animations served by board sprite + simplified mole motion' },

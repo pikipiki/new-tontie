@@ -1,5 +1,4 @@
 import { catalogForFrame, mapCatalogItem, rollTreasureItem } from './catalog'
-import { applyLvSet } from './difficulty'
 import { addCoin } from './money'
 import { hammerDamage } from './spec'
 import type { EnemySpawn, GameState, HoleIndex, ItemId } from './types'
@@ -10,17 +9,21 @@ export function syncPlayerAttack(state: GameState): void {
   state.playerAttack = hammerDamage(state.hammerLv)
 }
 
-/** frame_20 damage() — stone blocks positive damage once per hit animation (simplified). */
-export function applyDamage(state: GameState, amount: number): void {
+/**
+ * frame_20 damage() — stone blocks positive damage once per hit animation (simplified).
+ * Returns false when the stone absorbed the hit.
+ */
+export function applyDamage(state: GameState, amount: number): boolean {
   if (amount <= 0) {
     state.hp = Math.min(state.hpMax, state.hp - amount)
-    return
+    return true
   }
-  if (state.stone && amount > 0) {
+  if (state.stone) {
     state.stone = false
-    return
+    return false
   }
   state.hp -= amount
+  return true
 }
 
 export function applyCoinDamage(state: GameState, amount: number): void {
@@ -109,7 +112,11 @@ export function shopEnemy(): EnemySpawn {
 }
 
 /** DefineSprite_669 takara() + item() */
-export function applyItem(state: GameState, item: ItemId, healAmount = 8): void {
+export function applyItem(
+  state: GameState,
+  item: ItemId,
+  healAmount = 8,
+): void {
   switch (item) {
     case 'life':
     case 'utsuwa':
@@ -131,7 +138,11 @@ export function applyItem(state: GameState, item: ItemId, healAmount = 8): void 
     case 'allcoin':
       for (const h of HOLES) {
         const slot = state.holes[h]
-        if (slot.phase !== 'off' && slot.enemy.kind !== 'none' && slot.enemy.kind !== 'boss') {
+        if (
+          slot.phase !== 'off' &&
+          slot.enemy.kind !== 'none' &&
+          slot.enemy.kind !== 'boss'
+        ) {
           addCoin(state, Math.min(30, Math.floor(slot.enemy.score / 5)))
           slot.enemy.attack = 0
         }
@@ -140,7 +151,11 @@ export function applyItem(state: GameState, item: ItemId, healAmount = 8): void 
     case 'alllife':
       for (const h of HOLES) {
         const slot = state.holes[h]
-        if (slot.phase !== 'off' && slot.enemy.kind !== 'none' && slot.enemy.kind !== 'boss') {
+        if (
+          slot.phase !== 'off' &&
+          slot.enemy.kind !== 'none' &&
+          slot.enemy.kind !== 'boss'
+        ) {
           slot.enemy.attack = 0
         }
       }
@@ -179,7 +194,10 @@ export function applyItem(state: GameState, item: ItemId, healAmount = 8): void 
   syncPlayerAttack(state)
 }
 
-/** DefineSprite_669 todome() */
+/**
+ * DefineSprite_669 todome(). The kill-count speed ramp (DefineSprite_670 lv_set) only exists in
+ * Silver mode (frame 141), so normal mode just counts kills.
+ */
 export function onEnemyKilled(state: GameState, enemy: EnemySpawn): void {
   state.score += enemy.score
   const coin = Math.min(30, Math.floor(enemy.score / 5))
@@ -188,14 +206,4 @@ export function onEnemyKilled(state: GameState, enemy: EnemySpawn): void {
   }
   state.monsterL += 1
   state.monsterLs += 1
-  if (state.monsterLs >= state.monsterLsNext) {
-    state.monsterLsNext = Math.floor(state.monsterLsNext * 1.2 * 1.2 * 1.2)
-    applyLvSet(state)
-    state.lvSilver += 1
-    if (state.lvSilver >= 6 && state.chousei > 1) {
-      state.chousei -= 1
-      state.lvSilver = 0
-    }
-    state.monsterLs = 0
-  }
 }

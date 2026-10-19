@@ -1,15 +1,195 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
 
 :root {
   font-family: var(--font-family);
   color: var(--color-text);
-  background: var(--color-bg);
+  background: #5a8fd4;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
   margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+@keyframes tontie-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tontie-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes tontie-banner {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  25% {
+    transform: scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+}
+
+@keyframes tontie-panel-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-48px) scale(0.86) rotate(-2deg);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* up_boad "go": the panel squashes under the hammer, then puffs away. */
+@keyframes tontie-panel-out {
+  0% {
+    transform: none;
+    opacity: 1;
+  }
+  25% {
+    transform: scale(1.05, 0.92);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.15) rotate(8deg);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+@keyframes tontie-letter-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-60px) scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes tontie-pop {
+  0% {
+    transform: scale(0.55);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes tontie-shake {
+  0%,
+  100% {
+    translate: 0;
+  }
+  20% {
+    translate: -7px;
+  }
+  40% {
+    translate: 6px;
+  }
+  60% {
+    translate: -4px;
+  }
+  80% {
+    translate: 3px;
+  }
+}
+
+@keyframes tontie-float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.7);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-34px) scale(1);
+  }
+}
+
+@keyframes tontie-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes tontie-pulse {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.035;
+  }
+}
+
+@keyframes tontie-bar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes tontie-sway {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

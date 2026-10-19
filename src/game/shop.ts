@@ -59,6 +59,7 @@ export const SHOP_OFFERS: ShopOffer[] = [
     label: 'Wing',
     price: PRICES[4] ?? 120,
     apply: (s) => {
+      if (s.wing) return false
       s.wing = true
       return true
     },
@@ -91,6 +92,19 @@ export const SHOP_OFFERS: ShopOffer[] = [
     },
   },
 ]
+
+/** Hammer tier an offer sells (hammer2 → 2), or null for consumables. */
+export function offerHammerLv(offer: ShopOffer): number | null {
+  const m = /^hammer(\d)$/.exec(offer.id)
+  return m ? Number(m[1]) : null
+}
+
+/** Hammers at or below the current tier and an already-earned wing can't be bought again. */
+export function offerOwned(state: GameState, offer: ShopOffer): boolean {
+  const lv = offerHammerLv(offer)
+  if (lv !== null) return state.hammerLv >= lv
+  return offer.id === 'wing' && state.wing
+}
 
 export function buyShopOffer(state: GameState, index: number): boolean {
   const offer = SHOP_OFFERS[index]

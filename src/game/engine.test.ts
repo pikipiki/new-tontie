@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest'
 import gameSpec from '../../reference/game-spec.json'
 import catalog from '../../reference/enemy-catalog.json'
 import { bossForLevel, isBossLevel } from './enemies'
-import { createInitialState, numpadToHole, queueHit, tick } from './engine'
+import {
+  createInitialState,
+  numpadToHole,
+  queueHit,
+  startLevel,
+  tick,
+} from './engine'
 import { FPS, INIT, ROUND_SECONDS, hammerDamage } from './spec'
 
 describe('game engine', () => {
@@ -10,7 +16,11 @@ describe('game engine', () => {
     const s = createInitialState()
     expect(s.level).toBe(1)
     expect(s.roundFramesLeft).toBe(ROUND_SECONDS * FPS)
-    expect(s.kakurituOrg).toBe(gameSpec.timingFrames.kakuritu_org === 'fps * 2' ? FPS * 2 : INIT.kakurituOrg)
+    expect(s.kakurituOrg).toBe(
+      gameSpec.timingFrames.kakuritu_org === 'fps * 2'
+        ? FPS * 2
+        : INIT.kakurituOrg,
+    )
     expect(s.hp).toBe(INIT.heartMax)
     expect(s.lvUpSikakuK).toBe(FPS * ROUND_SECONDS)
   })
@@ -36,6 +46,7 @@ describe('game engine', () => {
 
   it('accepts hammer input on active mole', () => {
     const s = createInitialState()
+    startLevel(s)
     s.holes[5] = {
       phase: 'top',
       phaseTicks: 0,
