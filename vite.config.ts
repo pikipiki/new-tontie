@@ -36,6 +36,10 @@ function ruffleAssetsPlugin(): Plugin {
 
 export default defineConfig({
   plugins: [ruffleAssetsPlugin(), react()],
+  server: {
+    // Cloudflare Quick Tunnels (npm run dev:tunnel / tunnel)
+    allowedHosts: ['.trycloudflare.com'],
+  },
   resolve: {
     alias: {
       '@': srcRoot,

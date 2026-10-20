@@ -16,6 +16,8 @@ npm run dev:tunnel
 
 Envoie **ce lien** à ton amie (Telegram, etc.). Garde le terminal ouvert tant qu’elle joue.
 
+Si Vite affiche *Blocked request* / `allowedHosts` : redémarre `npm run dev` après un `git pull` (le projet autorise `*.trycloudflare.com`).
+
 ## Déjà en `npm run dev` ?
 
 Deuxième terminal :
