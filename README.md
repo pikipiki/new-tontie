@@ -13,6 +13,7 @@ Faithful local port of [Tontie v1](https://www.eyezmaze.com/game/tontie.html) (E
 - [CONTRIBUTING.md](CONTRIBUTING.md) — PR process, tests, feature registration
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — layers and extension points
 - [docs/OWNERSHIP.md](docs/OWNERSHIP.md) — squad boundaries and review rules
+- [docs/DEPLOY-RU.md](docs/DEPLOY-RU.md) — miroir **Yandex Object Storage + CDN** (joueurs en Russie)
 
 ## Commands
 

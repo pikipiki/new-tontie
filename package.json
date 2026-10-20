@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "deploy:yandex": "bash scripts/deploy-yandex-storage.sh",
     "preview": "vite preview",
     "format": "prettier --write src tests package.json",
     "format:check": "prettier --check src tests package.json",
