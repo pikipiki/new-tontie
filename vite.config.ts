@@ -34,7 +34,12 @@ function ruffleAssetsPlugin(): Plugin {
   }
 }
 
+/** GitHub project Pages serves from `/repo-name/` (set GITHUB_PAGES=true in CI). */
+const pagesBase =
+  process.env.GITHUB_PAGES === 'true' ? '/new-tontie/' : undefined
+
 export default defineConfig({
+  base: process.env.VITE_BASE_PATH ?? pagesBase ?? '/',
   plugins: [ruffleAssetsPlugin(), react()],
   server: {
     // Dev only: each `npm run tunnel` gets a new *.trycloudflare.com hostname.
