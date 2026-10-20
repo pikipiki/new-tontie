@@ -1,6 +1,7 @@
 import { applyLevelUpRamp } from '../difficulty'
 import { syncPlayerAttack } from '../combat'
-import { FPS, ROUND_SECONDS, SHOP_LEVELS } from '../spec'
+import { levelOpensShop } from '../features'
+import { FPS, ROUND_SECONDS } from '../spec'
 import type { GameState } from '../types'
 import { introCatalogFrame, LEVEL_CLEAR_FRAMES, statPercent } from './constants'
 import { retireHole } from './holes'
@@ -37,7 +38,7 @@ export function clearLevel(state: GameState): void {
 }
 
 export function afterLevelClear(state: GameState): void {
-  if ((SHOP_LEVELS as readonly number[]).includes(state.level)) {
+  if (levelOpensShop(state.level)) {
     state.phase = 'shop'
     state.shopResume = false
     emit(state, { kind: 'shop', sfx: 'shop_in' })

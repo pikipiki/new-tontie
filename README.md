@@ -8,6 +8,12 @@ Faithful local port of [Tontie v1](https://www.eyezmaze.com/game/tontie.html) (E
 - **REA:** SWF not openable in REA; analysis via **ffdec** → `reference/decompiled/` and `reference/game-spec.json`
 - **Stack:** Vite, React 19, TypeScript, MUI (shell only), i18next — same family as `automate-videos`
 
+## Contributing
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) — PR process, tests, feature registration
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — layers and extension points
+- [docs/OWNERSHIP.md](docs/OWNERSHIP.md) — squad boundaries and review rules
+
 ## Commands
 
 ```bash

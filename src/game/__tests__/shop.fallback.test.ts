@@ -6,13 +6,13 @@ vi.mock('@reference/game-spec.json', async (importOriginal) => {
   return {
     default: {
       ...actual,
-      shopPrices: [],
+      shop: { levels: actual.shop.levels, offers: [] },
     },
   }
 })
 
-describe('shop price fallbacks (empty game-spec.shopPrices)', () => {
-  it('uses default prices for every offer slot', async () => {
+describe('shop offer fallbacks (empty game-spec.shop.offers)', () => {
+  it('uses built-in default rows and prices', async () => {
     const { SHOP_OFFERS } = await import('@game/shop')
     expect(SHOP_OFFERS.map((row) => row.price)).toEqual([
       10, 50, 80, 90, 120, 150, 200, 300,

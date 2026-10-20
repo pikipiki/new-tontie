@@ -6,6 +6,7 @@ vi.mock('@reference/enemy-catalog.json', () => ({
 
 describe('catalog fallbacks (empty enemy catalog)', () => {
   it('synthesizes a default row when the catalog is empty', async () => {
+    vi.resetModules()
     const { catalogForFrame } = await import('@game/catalog')
     expect(catalogForFrame(42)).toEqual({
       frame: 42,

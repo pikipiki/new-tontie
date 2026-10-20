@@ -45,13 +45,30 @@ export { runReplay, type ReplayInput, type ReplayScript } from './replay-run'
 export { stateFingerprint } from './replay'
 
 export {
+  bossForLevel,
+  ensureGameFeaturesLoaded,
   getItemEffects,
   getShopOffers,
+  isBossLevel,
+  levelOpensShop,
+  listBossLevels,
+  listShopLevels,
+  registerBossLevel,
+  registerEnemyBuilder,
   registerItemEffect,
+  registerRoundRule,
+  registerShopLevel,
   registerShopOffer,
   resetFeatureRegistry,
+  resolveEnemyFromCatalogFrame,
+  runRoundRules,
+  type BossLevelFeature,
+  type EnemyBuilderFeature,
   type ItemEffect,
   type ItemEffectFeature,
+  type RoundRuleFeature,
+  type RoundTickPhase,
+  type ShopLevelFeature,
   type ShopOfferFeature,
 } from './features'
 

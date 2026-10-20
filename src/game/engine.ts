@@ -1,4 +1,6 @@
 import { syncPlayerAttack } from './combat'
+import { ensureGameFeaturesLoaded } from './features'
+import { runRoundRules } from './features'
 import { isBossLevel } from './enemies'
 import { buyShopOffer } from './shop'
 import { FPS, INIT, ROUND_SECONDS, hammerDamage } from './spec'
@@ -12,9 +14,8 @@ export {
   statPercent,
 } from './engine/constants'
 export { beginRound } from './engine/progression'
-import { HURRY_FRAMES } from './engine/constants'
 import { trySpawn, tickHole } from './engine/holes'
-import { afterLevelClear, endRound, nextLevel } from './engine/progression'
+import { afterLevelClear, nextLevel } from './engine/progression'
 import {
   flushHits,
   tickHammerStrikes,
@@ -161,6 +162,7 @@ export function buyShopIndex(state: GameState, index: number): boolean {
 }
 
 export function tick(state: GameState, random: () => number): GameState {
+  ensureGameFeaturesLoaded()
   if (state.phase === 'levelClear') {
     state.clearFramesLeft -= 1
     if (state.clearFramesLeft <= 0) {
@@ -183,28 +185,14 @@ export function tick(state: GameState, random: () => number): GameState {
 
   state.roundFramesLeft -= 1
   state.roundFrameCounter += 1
-  if (state.roundFramesLeft === HURRY_FRAMES && isBossLevel(state.level)) {
-    emit(state, { kind: 'hurry', sfx: 'hurry' })
-  }
+  runRoundRules('after-clock', state, random)
 
   trySpawn(state, random)
   for (const hole of HOLES) {
     tickHole(state, hole)
   }
 
-  if (state.hp <= 0) {
-    state.continues -= 1
-    if (state.continues <= 0) {
-      state.phase = 'gameOver'
-      emit(state, { kind: 'gameOver', music: 'gameover' })
-    } else {
-      state.hp = state.hpMax
-    }
-  }
-
-  if (state.roundFramesLeft <= 0) {
-    endRound(state)
-  }
+  runRoundRules('after-spawn', state, random)
 
   return state
 }

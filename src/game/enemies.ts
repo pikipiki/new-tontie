@@ -1,7 +1,10 @@
-import { enemyFromCatalogFrame, shopEnemy, treasureEnemy } from './combat'
+import { isBossLevel } from './features'
 import { rollSpawnDecision } from './spawn'
-import { BOSS_HOLE, BOSS_LEVELS } from './spec'
+import { BOSS_HOLE } from './spec'
+import { enemyFromCatalogFrame, shopEnemy, treasureEnemy } from './combat'
 import type { EnemySpawn, GameState, HoleIndex } from './types'
+
+export { bossForLevel, isBossLevel } from './features'
 
 export function rollEnemyForHole(
   state: GameState,
@@ -15,20 +18,6 @@ export function rollEnemyForHole(
     return treasureEnemy(random)
   }
   return enemyFromCatalogFrame(decision.catalogFrame)
-}
-
-export function bossForLevel(level: number): EnemySpawn {
-  if (level === BOSS_LEVELS[0]) {
-    return enemyFromCatalogFrame(14)
-  }
-  if (level === BOSS_LEVELS[1]) {
-    return enemyFromCatalogFrame(24)
-  }
-  return enemyFromCatalogFrame(14)
-}
-
-export function isBossLevel(level: number): boolean {
-  return (BOSS_LEVELS as readonly number[]).includes(level)
 }
 
 export function holeBlockedForRandomSpawn(

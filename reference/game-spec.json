@@ -43,10 +43,21 @@
   },
   "economy": {
     "moneyCap": 999,
-    "shopPause": true,
-    "shopLevels": [10, 20]
+    "shopPause": true
   },
-  "shopPrices": [10, 50, 80, 90, 120, 150, 200, 300],
+  "shop": {
+    "levels": [10, 20],
+    "offers": [
+      { "id": "hammer2", "price": 10, "effect": { "kind": "hammer", "level": 2 } },
+      { "id": "hammer3", "price": 50, "effect": { "kind": "hammer", "level": 3 } },
+      { "id": "hammer4", "price": 80, "effect": { "kind": "hammer", "level": 4 } },
+      { "id": "heart1", "price": 90, "effect": { "kind": "heal", "amount": 8 } },
+      { "id": "wing", "price": 120, "effect": { "kind": "wing" } },
+      { "id": "heart2", "price": 150, "effect": { "kind": "heal", "amount": 16 } },
+      { "id": "continue", "price": 200, "effect": { "kind": "continue", "amount": 1 } },
+      { "id": "heart3", "price": 300, "effect": { "kind": "fullHeal" } }
+    ]
+  },
   "enemyTypes": {
     "0": "empty / cleared",
     "1": "standard monster (todome)",

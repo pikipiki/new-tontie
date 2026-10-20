@@ -9,7 +9,7 @@ export const MAX_LEVEL = gameSpec.round.maxLevels
 export const BOSS_LEVELS = gameSpec.round.bossLevels
 export const BOSS_HOLE = gameSpec.round.bossHoleIndex as HoleIndex
 export const MONEY_CAP = gameSpec.economy.moneyCap
-export const SHOP_LEVELS = gameSpec.economy.shopLevels
+export const SHOP_LEVELS = gameSpec.shop.levels
 
 export const INIT = {
   kakurituOrg: FPS * 2,

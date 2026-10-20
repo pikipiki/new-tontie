@@ -1,5 +1,14 @@
+import { loadBuiltinBossLevels, resetBossLevels } from './bossLevels'
+import { resetEnemyBuilders } from './enemyBuilders'
 import { createBuiltinItemEffects } from './itemEffects'
+import { loadBuiltinRoundRules, resetRoundRules } from './roundRules'
 import { createBuiltinShopOffers } from './shopOffers'
+import { loadBuiltinShopLevels, resetShopLevels } from './shopLevels'
+import {
+  ensureGameFeaturesLoaded,
+  resetFeatureBoot,
+  setFeatureLoader,
+} from './featureBoot'
 import type { ItemEffectFeature, ShopOfferFeature } from './types'
 
 const shopOffers: ShopOfferFeature[] = []
@@ -8,48 +17,53 @@ const itemEffects = new Map<
   ItemEffectFeature['apply']
 >()
 
-let builtinsLoaded = false
-
 function loadBuiltins(): void {
-  if (builtinsLoaded) {
-    return
-  }
-  builtinsLoaded = true
+  loadBuiltinShopLevels()
+  loadBuiltinBossLevels()
+  loadBuiltinRoundRules()
   for (const offer of createBuiltinShopOffers()) {
-    registerShopOffer(offer)
+    shopOffers.push(offer)
   }
   for (const effect of createBuiltinItemEffects()) {
-    registerItemEffect(effect)
+    commitItemEffect(effect)
   }
 }
 
+setFeatureLoader(loadBuiltins)
+
+export { ensureGameFeaturesLoaded } from './featureBoot'
+
 /** Stable list reference — grows when offers are registered. */
 export function getShopOffers(): ShopOfferFeature[] {
-  loadBuiltins()
+  ensureGameFeaturesLoaded()
   return shopOffers
 }
 
 export function registerShopOffer(offer: ShopOfferFeature): void {
-  loadBuiltins()
+  ensureGameFeaturesLoaded()
   if (shopOffers.some((row) => row.id === offer.id)) {
     throw new Error(`shop offer already registered: ${offer.id}`)
   }
   shopOffers.push(offer)
 }
 
+function commitItemEffect(effect: ItemEffectFeature): void {
+  itemEffects.set(effect.id, effect.apply)
+}
+
 export function registerItemEffect(effect: ItemEffectFeature): void {
-  loadBuiltins()
+  ensureGameFeaturesLoaded()
   if (itemEffects.has(effect.id)) {
     throw new Error(`item effect already registered: ${effect.id}`)
   }
-  itemEffects.set(effect.id, effect.apply)
+  commitItemEffect(effect)
 }
 
 export function getItemEffects(): ReadonlyMap<
   ItemEffectFeature['id'],
   ItemEffectFeature['apply']
 > {
-  loadBuiltins()
+  ensureGameFeaturesLoaded()
   return itemEffects
 }
 
@@ -57,6 +71,10 @@ export function getItemEffects(): ReadonlyMap<
 export function resetFeatureRegistry(): void {
   shopOffers.length = 0
   itemEffects.clear()
-  builtinsLoaded = false
-  loadBuiltins()
+  resetShopLevels()
+  resetBossLevels()
+  resetRoundRules()
+  resetEnemyBuilders()
+  resetFeatureBoot()
+  ensureGameFeaturesLoaded()
 }

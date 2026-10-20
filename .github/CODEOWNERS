@@ -1,0 +1,32 @@
+# Auto-request reviewers by path. Customize teams per docs/OWNERSHIP.md.
+# Syntax: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Replace @pikipiki with @your-org/tontie-engine (etc.) when GitHub teams exist.
+
+# Default fallback
+* @pikipiki
+
+# Engine & fidelity tests
+/src/game/ @pikipiki
+/tests/e2e/ @pikipiki
+
+# 3D presentation
+/src/game3d/ @pikipiki
+
+# UI shell & app wiring
+/src/components/ @pikipiki
+/src/hooks/ @pikipiki
+/src/pages/ @pikipiki
+/src/constants/ @pikipiki
+/src/i18n/ @pikipiki
+
+# Reference artifacts (spec, replays)
+/reference/ @pikipiki
+
+# Platform & tooling
+/scripts/ @pikipiki
+/.github/ @pikipiki
+/vite.config.ts @pikipiki
+/eslint.config.js @pikipiki
+/sonar-project.properties @pikipiki
+/tsconfig*.json @pikipiki
