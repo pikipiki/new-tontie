@@ -195,7 +195,7 @@ export function PlushPlayer3D({
         )}
         <group ref={root}>
           <group rotation={[photo ? 0 : -0.45, photo ? 1.65 : 0.2, 0]}>
-            <PlushGoonk3D pink seed={2} />
+            <PlushGoonk3D pink seed={2} snacking />
           </group>
           <group
             position={[0.36, 0.38, 0.16]}

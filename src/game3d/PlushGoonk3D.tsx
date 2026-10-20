@@ -14,6 +14,7 @@ import {
   type Group,
 } from 'three'
 import { PINK_FLIGHT_MS } from './plushAnimation'
+import { PinkSnack3D } from './PinkSnack3D'
 
 const PROFILE = new CatmullRomCurve3([
   new Vector3(0, 0.065, 0),
@@ -685,6 +686,7 @@ export function PlushGoonk3D({
   bowl = false,
   damaged = false,
   flying = false,
+  snacking = false,
   shatter = true,
   seed = 0,
 }: {
@@ -692,6 +694,7 @@ export function PlushGoonk3D({
   bowl?: boolean
   damaged?: boolean
   flying?: boolean
+  snacking?: boolean
   shatter?: boolean
   seed?: number
 }) {
@@ -754,22 +757,28 @@ export function PlushGoonk3D({
       </mesh>
       <FlatEye side={-1} seed={seed} scared={frightened} />
       <FlatEye side={1} seed={seed} scared={frightened} />
-      {[-1, 1].map((side) => (
-        <group
-          key={side}
-          position={[side * 0.27, 0.43, 0.015]}
-          rotation={[0, 0, 0]}
-        >
-          <group position={[-side * 0.27, -0.43, -0.015]}>
-            <Arm
-              side={side}
-              material={fabric.material}
-              holding={pink && flying && side === 1}
-              scared={frightened}
-            />
+      {[-1, 1].map((side) =>
+        pink && snacking && !flying && side === -1 ? (
+          <PinkSnack3D key={side}>
+            <Arm side={side} material={fabric.material} />
+          </PinkSnack3D>
+        ) : (
+          <group
+            key={side}
+            position={[side * 0.27, 0.43, 0.015]}
+            rotation={[0, 0, 0]}
+          >
+            <group position={[-side * 0.27, -0.43, -0.015]}>
+              <Arm
+                side={side}
+                material={fabric.material}
+                holding={pink && flying && side === 1}
+                scared={frightened}
+              />
+            </group>
           </group>
-        </group>
-      ))}
+        ),
+      )}
       {[-1, 1].map((side) => (
         <group key={side} position={[side * 0.145, 0.055, 0.15]}>
           <mesh

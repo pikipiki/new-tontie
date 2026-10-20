@@ -66,3 +66,23 @@ export function pinkFlightPose(
   const swing = hammerSwing(Math.min(1, Math.max(0, (t - 0.12) / 0.72)))
   return { body, pivot, yaw, angle: swing.angle + pose.tilt, amount }
 }
+
+export const PINK_SNACK_SECONDS = 3.6
+
+/** Lift the snack, take a bite, chew, then lower it before the next bite. */
+export function pinkSnackPose(seconds: number) {
+  const t = Math.max(0, seconds) % PINK_SNACK_SECONDS
+  const smooth = (v: number) => {
+    const x = Math.min(1, Math.max(0, v))
+    return x * x * (3 - 2 * x)
+  }
+  const lift = smooth((t - 0.2) / 0.7) * (1 - smooth((t - 1.9) / 0.7))
+  const chewing = t >= 1.05 && t < 2.45
+  const chew = chewing ? (1 + Math.sin((t - 1.05) * 24)) / 2 : 0
+  return {
+    lift,
+    chew,
+    bitten: t >= 1.1 && t < 3.1,
+    crumb: t >= 1.1 && t < 1.8 ? (t - 1.1) / 0.7 : null,
+  }
+}
