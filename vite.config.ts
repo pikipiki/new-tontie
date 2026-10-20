@@ -40,11 +40,6 @@ const pagesBase = process.env.GITHUB_PAGES === 'true' ? './' : undefined
 export default defineConfig({
   base: process.env.VITE_BASE_PATH ?? pagesBase ?? '/',
   plugins: [ruffleAssetsPlugin(), react()],
-  server: {
-    // Dev only: each `npm run tunnel` gets a new *.trycloudflare.com hostname.
-    // `true` = allow any Host header (tunnels, ngrok, etc.) — no per-URL edits.
-    allowedHosts: true,
-  },
   resolve: {
     alias: {
       '@': srcRoot,
