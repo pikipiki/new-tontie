@@ -1,8 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import { FPS } from '../../spec'
-import { queueHit } from '../../engine'
+import { drainEvents, queueHit } from '../../engine'
 import { resolveAdventureHits } from '../combat'
-import { stealWeapon, recoverWeapon, moveWeaponWithSwap } from '../weapons'
+import {
+  stealWeapon,
+  recoverWeapon,
+  moveWeaponWithSwap,
+  stealBusy,
+} from '../weapons'
+import { STEAL_END } from '../stealTiming'
 import { tickActors, escapeActor } from '../interactions'
 import { prepareAdventure } from '../state'
 import { MISSIONS } from '../content'
@@ -86,6 +92,36 @@ describe('swappers steal the equipped weapon', () => {
     expect(adventure.stolenWeapon).toBeNull()
     expect(state.gun).toBe(1)
     expect(state.gunAmmo).toBe(28)
+  })
+})
+describe('steal sprint and slap recovery', () => {
+  it('asks Pink to slap a living thief, but not a dropped weapon', () => {
+    const { state } = adventureGame()
+    addActor(state, 4, 'prankster')
+    stealWeapon(state, 4)
+    drainEvents(state)
+    recoverWeapon(state, 4)
+    expect(drainEvents(state).some((event) => event.slap)).toBe(true)
+    addActor(state, 6, 'prankster')
+    stealWeapon(state, 6)
+    escapeActor(state, 6)
+    drainEvents(state)
+    recoverWeapon(state, 6)
+    expect(drainEvents(state).some((event) => event.slap)).toBe(false)
+  })
+  it('keeps the thief on the board until the steal sprint has finished', () => {
+    const { state, adventure } = adventureGame()
+    addActor(state, 4, 'prankster')
+    addActor(state, 5, 'singer')
+    completeSwap(state)
+    expect(adventure.stolenWeapon?.holder).toBe(5)
+    expect(adventure.stolenWeapon && stealBusy(adventure.stolenWeapon)).toBe(
+      true,
+    )
+    for (let frame = 0; frame < STEAL_END * FPS - 2; frame += 1)
+      tickActors(state)
+    expect(adventure.stolenWeapon?.holder).toBe(5)
+    expect(adventure.actors[5]).toBeDefined()
   })
 })
 describe('longer rounds', () => {

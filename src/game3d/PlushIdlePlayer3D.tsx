@@ -2,6 +2,8 @@ import { RoundedBox } from '@react-three/drei'
 import type { RefObject } from 'react'
 import type { Group } from 'three'
 import type { GameState } from '@game/types'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { pinkLostWeapon } from './adventureMotion'
 import { themeColors } from './theme'
 import {
   BOARD_SURFACE_Y,
@@ -32,8 +34,12 @@ export function PlushIdlePlayer3D({
   muzzleRef: RefObject<Group | null>
   flashRef: RefObject<Group | null>
 }) {
+  const reduced = useReducedMotion()
+  const stolen = state.adventure?.stolenWeapon
+  const disarmed = pinkLostWeapon(stolen, reduced)
+  const showLaser = !disarmed && (stolen ? stolen.gun > 0 : laser)
   const idleYaw = photo ? 1.65 : 0.2
-  const bodyYaw = laser ? 2.5 : idleYaw
+  const bodyYaw = showLaser ? 2.5 : idleYaw
   return (
     <group
       position={
@@ -56,9 +62,9 @@ export function PlushIdlePlayer3D({
         </RoundedBox>
       )}
       <group ref={rootRef}>
-        <group rotation={[photo || laser ? 0 : -0.45, bodyYaw, 0]}>
-          <PlushGoonk3D pink seed={2} snacking holdingWeapon={laser} />
-          {laser && (
+        <group rotation={[photo || showLaser ? 0 : -0.45, bodyYaw, 0]}>
+          <PlushGoonk3D pink seed={2} snacking holdingWeapon={showLaser} />
+          {showLaser && (
             <group ref={weaponRef} position={LASER_GRIP}>
               <LaserModel3D muzzleRef={muzzleRef} flashRef={flashRef} />
             </group>
@@ -68,7 +74,7 @@ export function PlushIdlePlayer3D({
           position={[0.36, 0.38, 0.16]}
           ref={malletRef}
           rotation={[0, 0, -2.08]}
-          visible={!laser && !state.adventure?.stolenWeapon}
+          visible={!showLaser && !disarmed}
         >
           <group scale={0.95}>
             <HammerModel hammerLv={state.hammerLv} wing={state.wing} />

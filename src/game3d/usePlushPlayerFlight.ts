@@ -2,6 +2,7 @@ import { useFrame } from '@react-three/fiber'
 import { useRef, type RefObject } from 'react'
 import type { Group } from 'three'
 import type { GameState, HoleIndex } from '@game/types'
+import { slapContact } from '@game3d/adventureMotion'
 import { fxProgress, useGameFx } from '@game3d/fx'
 import { PINK_FLIGHT_MS } from '@game3d/plushAnimation'
 import { PINK_LEDGE_POSITION } from '@game3d/layout3d'
@@ -48,27 +49,35 @@ export function usePlushPlayerFlight(
 
     const now = performance.now()
     const { latest, hole } = latestStrikeHole(gameFx)
+    const slapFlight = gameFx.slap
+      ? fxProgress(gameFx.slap.at, now, PINK_FLIGHT_MS)
+      : null
+    const slapHole = gameFx.slap?.hole ?? hole
     const laserStrike =
       state.gun > 0 || (gameFx.laser !== null && latest <= gameFx.laser.at)
-    const flight =
+    const strikeFlight =
       laserStrike || state.adventure?.stolenWeapon
         ? null
         : fxProgress(latest, now, PINK_FLIGHT_MS)
+    const flight = slapFlight ?? strikeFlight
+    const activeHole = slapFlight !== null ? slapHole : hole
+    const activeAt =
+      slapFlight !== null && gameFx.slap ? gameFx.slap.at : latest
     root.visible = flight === null
     applyPlushIdleMotion(root, mallet, clock.elapsedTime)
     flyer.visible = flight !== null
     if (flight === null) return
 
-    if (capture.current.at !== latest) {
-      const hitY = strikeHitY(state, gameFx, hole, now, attract)
+    if (capture.current.at !== activeAt) {
+      const hitY = strikeHitY(state, gameFx, activeHole, now, attract)
       const continuing = now - capture.current.at < PINK_FLIGHT_MS
       const from = plushFlightStartFrom(continuing, photo, flyerBody.position)
       capture.current = {
-        at: latest,
+        at: activeAt,
         y: Math.max(0.04, hitY),
-        hole,
+        hole: activeHole,
         from,
-        anchor: strikeAnchor(state, hole),
+        anchor: strikeAnchor(state, activeHole),
       }
     }
     applyPlushFlightMotion(
@@ -78,5 +87,9 @@ export function usePlushPlayerFlight(
       flyerBody,
       flyerHammer,
     )
+    flyerHammer.visible =
+      !state.adventure?.stolenWeapon &&
+      state.gun === 0 &&
+      (slapFlight === null || slapContact(slapFlight))
   })
 }

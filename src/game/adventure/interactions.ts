@@ -1,4 +1,5 @@
 import { stealWeapon, moveWeaponWithSwap } from './weapons'
+import { STEAL_END } from './stealTiming'
 import type { GameState, HoleIndex } from '../types'
 import { FPS } from '../spec'
 import { emit, HOLES, hurt } from '../engine/shared'
@@ -103,6 +104,11 @@ export function tickActors(state: GameState): void {
     }
     if (actor.swapWith && actor.age >= FPS * 2 + SWAP_WARNING_FRAMES)
       finishSwap(state, hole)
-    if (actor.age > FPS * 5) escapeActor(state, hole)
+    if (shouldEscape(state, hole, actor.age)) escapeActor(state, hole)
   }
+}
+function shouldEscape(state: GameState, hole: HoleIndex, age: number) {
+  const extra =
+    state.adventure?.stolenWeapon?.holder === hole ? STEAL_END * FPS : 0
+  return age > FPS * 5 + extra
 }

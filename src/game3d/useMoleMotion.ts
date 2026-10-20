@@ -3,9 +3,10 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useFrame } from '@react-three/fiber'
 import { useRef, type RefObject } from 'react'
 import type { Group } from 'three'
-import type { AdventureActor } from '@game/adventure/types'
+import type { AdventureActor, StolenWeapon } from '@game/adventure/types'
 import type { HoleIndex, MolePhase } from '@game/types'
-import { useGameFx } from './fx'
+import { PINK_FLIGHT_MS } from './plushAnimation'
+import { fxProgress, useGameFx } from './fx'
 import { updateMoleMotion } from './moleMotionHelpers'
 
 interface MotionProps {
@@ -17,6 +18,7 @@ interface MotionProps {
   body: RefObject<Group | null>
   actor?: AdventureActor
   swapCue?: SwapCue
+  stolen?: StolenWeapon
 }
 export function useMoleMotion({
   hole,
@@ -27,6 +29,7 @@ export function useMoleMotion({
   body,
   actor,
   swapCue,
+  stolen,
 }: MotionProps) {
   const reduced = useReducedMotion()
   const gameFx = useGameFx()
@@ -35,10 +38,24 @@ export function useMoleMotion({
     const liftGroup = lift.current,
       bodyGroup = body.current
     if (!liftGroup || !bodyGroup) return
+    const slap =
+      gameFx.slap?.hole === hole
+        ? fxProgress(gameFx.slap.at, performance.now(), PINK_FLIGHT_MS)
+        : null
     updateMoleMotion(
       liftGroup,
       bodyGroup,
-      { hole, phase, target, damaged, actor, reduced, swapCue },
+      {
+        hole,
+        phase,
+        target,
+        damaged,
+        actor,
+        reduced,
+        swapCue,
+        stolen,
+        slapProgress: slap,
+      },
       gameFx.holes[hole].hitAt,
       clock.elapsedTime,
       delta,

@@ -1,4 +1,5 @@
 import { pendingSwapCue } from '@game/adventure/swaps'
+import { thiefHoldsWeapon } from '@game3d/adventureMotion'
 import { useState } from 'react'
 import type { ThreeEvent } from '@react-three/fiber'
 import { themeColors } from '@game3d/theme'
@@ -114,7 +115,8 @@ function HoleMole3D({ hole, state }: { hole: HoleIndex; state: GameState }) {
         state.adventure ? pendingSwapCue(state.adventure, hole) : undefined
       }
       heldWeapon={
-        state.adventure?.stolenWeapon?.holder === hole
+        state.adventure?.stolenWeapon?.holder === hole &&
+        thiefHoldsWeapon(state.adventure.stolenWeapon)
           ? state.adventure.stolenWeapon
           : undefined
       }

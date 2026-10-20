@@ -23,12 +23,8 @@ function GoonkBowl({
   frightened: boolean
   shatter: boolean
 }) {
-  if (!bowl) {
-    return null
-  }
-  if (frightened) {
-    return shatter ? <ShatteredHelmet /> : null
-  }
+  if (!bowl) return null
+  if (frightened) return shatter ? <ShatteredHelmet /> : null
   return <PorcelainBowl />
 }
 
@@ -40,6 +36,7 @@ export function PlushGoonk3D({
   flying = false,
   snacking = false,
   holdingWeapon = false,
+  slapping = false,
   hideArms = false,
   shatter = true,
   seed = 0,
@@ -50,18 +47,17 @@ export function PlushGoonk3D({
   flying?: boolean
   snacking?: boolean
   holdingWeapon?: boolean
+  slapping?: boolean
   hideArms?: boolean
   shatter?: boolean
   seed?: number
 }) {
   const [reacting, setReacting] = useState(damaged)
   useEffect(() => {
-    const timer = window.setTimeout(
-      () => {
-        setReacting(damaged)
-      },
-      damaged ? PINK_FLIGHT_MS * 0.42 : 0,
-    )
+    const delay = damaged ? PINK_FLIGHT_MS * 0.42 : 0
+    const timer = window.setTimeout(() => {
+      setReacting(damaged)
+    }, delay)
     return () => {
       window.clearTimeout(timer)
     }
@@ -101,6 +97,7 @@ export function PlushGoonk3D({
           flying={flying}
           holdingWeapon={holdingWeapon}
           frightened={frightened}
+          slapping={slapping}
           material={material}
         />
       )}

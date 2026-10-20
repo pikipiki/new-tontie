@@ -40,6 +40,7 @@ export interface GameFx {
   startAt: number
   clearAt: number
   shop: { offer: number; ok: boolean; at: number } | null
+  slap: { at: number; hole: HoleIndex } | null
 }
 
 const NEVER = -1e9
@@ -68,6 +69,7 @@ export function createFx(): GameFx {
     startAt: NEVER,
     clearAt: NEVER,
     shop: null,
+    slap: null,
   }
 }
 
@@ -113,6 +115,8 @@ export function recordEvent(
       break
     case 'pickup':
       if (slot) slot.pickupAt = now
+      if (event.slap && event.hole !== undefined)
+        gameFx.slap = { at: now, hole: event.hole }
       break
     case 'damage':
       gameFx.damageAt = now

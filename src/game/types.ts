@@ -124,6 +124,8 @@ export interface GameEvent {
   offer?: number
   /** Score awarded by a kill. */
   points?: number
+  /** Pink slaps the thief while taking the weapon back. */
+  slap?: boolean
 }
 
 export type GamePhase =

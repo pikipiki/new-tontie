@@ -61,6 +61,15 @@ describe('recordEvent', () => {
 
     recordEvent(gameFx, { kind: 'buy', offer: 1 }, state, now + 4)
     expect(gameFx.shop).toEqual({ offer: 1, ok: true, at: now + 4 })
+
+    recordEvent(
+      gameFx,
+      { kind: 'pickup', hole: 4, sfx: 'sp_get', slap: true },
+      state,
+      now + 5,
+    )
+    expect(gameFx.slap).toEqual({ at: now + 5, hole: 4 })
+    expect(gameFx.holes[4].pickupAt).toBe(now + 5)
   })
 })
 

@@ -2,7 +2,7 @@ import { themeColors as colors } from './theme'
 /** A curved, ridged yellow banana with brown stem and blossom tips. */
 export function BananaModel3D() {
   return (
-    <group rotation={[0, 0, -0.45]}>
+    <group rotation={[0, 0, -0.45]} scale={2.15}>
       <mesh castShadow>
         <torusGeometry args={[0.15, 0.039, 6, 28, Math.PI * 0.78]} />
         <meshStandardMaterial color={colors.yellowBright} roughness={0.7} />

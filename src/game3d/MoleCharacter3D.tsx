@@ -49,7 +49,17 @@ export function MoleCharacter3D({
     mobGlbHeight(key) + 0.05,
   )
 
-  useMoleMotion({ hole, phase, target, damaged, lift, body, actor, swapCue })
+  useMoleMotion({
+    hole,
+    phase,
+    target,
+    damaged,
+    lift,
+    body,
+    actor,
+    swapCue,
+    stolen: heldWeapon,
+  })
 
   if (phase === 'off' || enemy.kind === 'none') {
     return null

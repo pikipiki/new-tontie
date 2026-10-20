@@ -153,8 +153,9 @@ function AdventureHowTo() {
       Rest to eat: each bite charges sugar. Finish a donut for a mini frenzy,
       then tap <strong>Sugar Rush</strong> to freeze Goonks and double points.
       <br />
-      Bananas warn of a swap and weapon theft. Tap the carrier to take your
-      weapon back. Complete missions and outsmart two bosses.
+      Bananas warn of a swap. A jester then runs to Pink, steals the weapon with
+      a STOLEN tag, and sprints home. Tap the carrier — Pink slaps the thief and
+      takes it back. Complete missions and outsmart two bosses.
     </Box>
   )
 }

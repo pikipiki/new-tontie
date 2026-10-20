@@ -1,6 +1,13 @@
 import type { GameState, HoleIndex } from '../types'
+import type { StolenWeapon } from './types'
+import { FPS } from '../spec'
 import { emit } from '../engine/shared'
 import { announce } from './state'
+import { STEAL_END } from './stealTiming'
+
+export function stealBusy(stolen: Pick<StolenWeapon, 'age' | 'holder'>) {
+  return stolen.holder !== null && stolen.age < STEAL_END * FPS
+}
 
 export function stealWeapon(state: GameState, holder: HoleIndex): void {
   const adventure = state.adventure
@@ -35,9 +42,15 @@ export function restoreWeapon(state: GameState): boolean {
 export function recoverWeapon(state: GameState, hole: HoleIndex): boolean {
   const stolen = state.adventure?.stolenWeapon
   if (!stolen || (stolen.holder ?? stolen.dropHole) !== hole) return false
+  const slap = stolen.holder !== null
   restoreWeapon(state)
-  announce(state, 'Weapon recovered! You can strike again')
-  emit(state, { kind: 'pickup', hole, sfx: 'sp_get' })
+  announce(
+    state,
+    slap
+      ? 'Weapon recovered! Pink slapped the thief'
+      : 'Weapon recovered! You can strike again',
+  )
+  emit(state, { kind: 'pickup', hole, sfx: 'sp_get', slap })
   return true
 }
 export function dropWeapon(state: GameState, hole: HoleIndex): void {
@@ -45,7 +58,7 @@ export function dropWeapon(state: GameState, hole: HoleIndex): void {
   if (!stolen || stolen.holder !== hole) return
   stolen.holder = null
   stolen.dropHole = hole
-  stolen.age = 17
+  stolen.age = Math.ceil(STEAL_END * FPS)
   announce(state, 'Your weapon was dropped! Tap it to pick it up')
 }
 export function moveWeaponWithSwap(

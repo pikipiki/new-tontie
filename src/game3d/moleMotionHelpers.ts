@@ -1,11 +1,23 @@
 import type { SwapCue } from '@game/adventure/swaps'
+import type { StolenWeapon } from '@game/adventure/types'
 import { bananaFacing } from './bananaMotion'
 import type { Group } from 'three'
 import type { AdventureActor } from '@game/adventure/types'
 import type { HoleIndex, MolePhase } from '@game/types'
 import { fxProgress, HIT_MS } from './fx'
-import { MOB_TILT_X, holeWorldPosition } from './layout3d'
-import { plushPopScale, swapArc } from './adventureMotion'
+import {
+  BOARD_SURFACE_Y,
+  MOB_TILT_X,
+  PINK_LEDGE_POSITION,
+  holeWorldPosition,
+} from './layout3d'
+import {
+  plushPopScale,
+  slapContact,
+  stealRun,
+  stealSeconds,
+  swapArc,
+} from './adventureMotion'
 interface Pose {
   hole: HoleIndex
   phase: MolePhase
@@ -14,6 +26,8 @@ interface Pose {
   actor?: AdventureActor
   swapCue?: SwapCue
   reduced: boolean
+  stolen?: StolenWeapon
+  slapProgress?: number | null
 }
 export function updateMoleMotion(
   liftGroup: Group,
@@ -63,6 +77,29 @@ export function updateMoleMotion(
     bodyGroup.rotation.z += Math.sin(time * 20) * 0.12
   }
   if (actor && !reduced) applySwap(bodyGroup, actor, hole, seconds)
+  if (pose.stolen?.holder === hole)
+    applySteal(bodyGroup, hole, pose.stolen, reduced)
+  if (pose.slapProgress != null && slapContact(pose.slapProgress)) {
+    const whip = Math.sin((pose.slapProgress - 0.4) * 22) * 0.16
+    bodyGroup.position.x += whip
+    bodyGroup.rotation.z += whip * 1.8
+    bodyGroup.rotation.y += 0.45
+    height *= 0.82
+    width *= 1.18
+    bodyGroup.scale.set(width, height, width)
+  }
+}
+function applyWorldOffset(
+  body: Group,
+  worldX: number,
+  worldY: number,
+  worldZ: number,
+) {
+  body.position.x += worldX
+  body.position.z +=
+    worldZ * Math.cos(MOB_TILT_X) + worldY * Math.sin(MOB_TILT_X)
+  body.position.y +=
+    -worldZ * Math.sin(MOB_TILT_X) + worldY * Math.cos(MOB_TILT_X)
 }
 function applySwap(
   body: Group,
@@ -74,11 +111,36 @@ function applySwap(
   if (!arc || actor.swappedFrom === undefined) return
   const origin = holeWorldPosition(actor.swappedFrom),
     destination = holeWorldPosition(hole)
-  body.position.x += (origin[0] - destination[0]) * arc.blend
-  const travelZ = (origin[2] - destination[2]) * arc.blend
-  body.position.z =
-    travelZ * Math.cos(MOB_TILT_X) + arc.lift * Math.sin(MOB_TILT_X)
-  body.position.y +=
-    -travelZ * Math.sin(MOB_TILT_X) + arc.lift * Math.cos(MOB_TILT_X)
+  applyWorldOffset(
+    body,
+    (origin[0] - destination[0]) * arc.blend,
+    arc.lift,
+    (origin[2] - destination[2]) * arc.blend,
+  )
   body.rotation.y += arc.spin
+}
+function applySteal(
+  body: Group,
+  hole: HoleIndex,
+  stolen: StolenWeapon,
+  reduced: boolean,
+) {
+  const run = stealRun(stealSeconds(stolen), reduced)
+  if (run.travel <= 0 && run.bob === 0 && run.spin === 0) return
+  const origin = holeWorldPosition(hole)
+  applyWorldOffset(
+    body,
+    (PINK_LEDGE_POSITION[0] - origin[0]) * run.travel,
+    (PINK_LEDGE_POSITION[1] - BOARD_SURFACE_Y) * run.travel +
+      run.lift +
+      run.bob,
+    (PINK_LEDGE_POSITION[2] - origin[2]) * run.travel,
+  )
+  const towardPink = Math.atan2(
+    PINK_LEDGE_POSITION[0] - origin[0],
+    PINK_LEDGE_POSITION[2] - origin[2],
+  )
+  body.rotation.y = towardPink * run.travel
+  body.rotation.y += run.spin
+  body.rotation.z += run.travel * 0.18
 }

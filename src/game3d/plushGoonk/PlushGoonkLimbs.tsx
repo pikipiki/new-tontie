@@ -8,6 +8,7 @@ export function PlushGoonkArms({
   flying,
   holdingWeapon,
   frightened,
+  slapping,
   material,
 }: {
   pink: boolean
@@ -15,6 +16,7 @@ export function PlushGoonkArms({
   flying: boolean
   holdingWeapon: boolean
   frightened: boolean
+  slapping: boolean
   material: MeshPhysicalMaterial
 }) {
   return (
@@ -27,8 +29,8 @@ export function PlushGoonkArms({
             key={side}
             side={side}
             material={material}
-            holding={pink && flying && side === 1}
-            aiming={holdingWeapon && side === 1}
+            holding={pink && flying && side === 1 && !slapping}
+            aiming={holdingWeapon && side === 1 && !slapping}
             scared={frightened}
           />
         ),

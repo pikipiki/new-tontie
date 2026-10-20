@@ -11,7 +11,7 @@ export const MISSIONS: {
   {
     kind: 'cake',
     title: 'Save the birthday cake',
-    hint: 'Stop 16 Goonks. Each escape takes a slice! Thieves steal sugar; blue-hat tinkerers share helmets; banana-throwing jesters swap places and steal your weapon. Hit either partner to stop them.',
+    hint: 'Stop 16 Goonks. Each escape takes a slice! Thieves steal sugar; blue-hat tinkerers share helmets; banana-throwing jesters swap places, then dash to steal your weapon. Tap the thief — Pink slaps them and takes it back.',
     goal: 16,
     seconds: 45,
     icon: '🎂',
