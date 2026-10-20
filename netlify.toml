@@ -1,3 +1,5 @@
+# SPA fallback for Netlify only. Do not add public/_redirects — Cloudflare Pages rejects
+# `/* /index.html 200` as an infinite loop; this app has no path routes anyway.
 [build]
   command = "npm run build"
   publish = "dist"
