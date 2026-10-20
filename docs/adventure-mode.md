@@ -14,7 +14,7 @@ The default mode is a six-mission adventure. Classic is available from the welco
 
 Tap any hole or use the numpad. Tap Sugar Rush when all four cells are charged. Pause and sound controls remain in the footer. The objective and charge panel reserve their own screen space; the pink companion stays below the board between strikes.
 
-New arcade effects include spring arrivals, curved swap jumps, a sparkling flight trail, crystal impact bursts, expanding shock rings, brief contact flashes, comic impact lettering and an orbiting sugar storm. Reduced-motion preferences disable the new flashes and intense motion. Particle trails and sugar storms use instancing.
+New arcade effects include spring arrivals, curved swap jumps, a sparkling flight trail, crystal impact bursts, expanding shock rings and an orbiting sugar storm. Impacts have no comic lettering or full-screen flashes. Reduced-motion preferences disable intense motion. Particle trails and sugar storms use instancing.
 
 ## Verification
 

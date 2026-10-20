@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import { useTranslation } from 'react-i18next'
-import { BANNER_MS, DAMAGE_MS, type GameFx } from '@game3d/fx'
+import { BANNER_MS, type GameFx } from '@game3d/fx'
 import { FPS } from '@game/spec'
 import type { TontieGame } from '@/hooks/useTontieGame'
 import { INK, RED, themeColors, WHITE, YELLOW, srOnly } from './theme'
@@ -128,22 +128,5 @@ export function Banner({ gameFx, now }: { gameFx: GameFx; now: number }) {
     >
       {text}
     </Box>
-  )
-}
-
-export function DamageFlash({ gameFx, now }: { gameFx: GameFx; now: number }) {
-  if (now - gameFx.damageAt > DAMAGE_MS) return null
-  return (
-    <Box
-      key={gameFx.damageAt}
-      aria-hidden
-      sx={{
-        position: 'absolute',
-        inset: 0,
-        pointerEvents: 'none',
-        boxShadow: `inset 0 0 70px 22px ${themeColors.damageFlash}`,
-        animation: `tontie-fade-out ${String(DAMAGE_MS)}ms ease-out forwards`,
-      }}
-    />
   )
 }

@@ -4,7 +4,6 @@ import { useFrame } from '@react-three/fiber'
 import type { Group, Mesh, MeshBasicMaterial } from 'three'
 import type { HoleIndex } from '@game/types'
 import { useGameFx, fxProgress } from './fx'
-import { ComicWord3D } from './ComicWord3D'
 import { Burst3D } from './Burst3D'
 import { themeColors as colors } from './theme'
 
@@ -39,7 +38,6 @@ export function ArcadeImpact3D({
     <group>
       <Burst3D startAt={impact} style={CRYSTAL_BURST} position={[0, hitY, 0]} />
       <ComicShock startAt={impact} hitY={hitY} />
-      <ComicWord3D startAt={impact} hole={hole} />
     </group>
   )
 }

@@ -1,4 +1,3 @@
-import { ArcadeScreenFx } from './ArcadeScreenFx'
 import Box from '@mui/material/Box'
 import { PerformanceMonitor } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
@@ -6,7 +5,7 @@ import { GameFxContext } from '@game3d/fx'
 import { BASE_FOV, CAMERA_POSITION } from '@game3d/layout3d'
 import { TontieScene3D } from '@game3d/TontieScene3D'
 import type { TontieGame } from '@/hooks/useTontieGame'
-import { Banner, DamageFlash } from './TontieHud'
+import { Banner } from './TontieHud'
 
 type Tontie3DViewportProps = {
   game: TontieGame
@@ -56,8 +55,6 @@ export function Tontie3DViewport({
           />
         </GameFxContext.Provider>
       </Canvas>
-      <ArcadeScreenFx game={game} />
-      <DamageFlash gameFx={game.gameFx} now={now} />
       <Banner gameFx={game.gameFx} now={now} />
     </Box>
   )
