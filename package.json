@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "tunnel": "node scripts/tunnel-local.mjs --no-dev",
+    "dev:tunnel": "node scripts/tunnel-local.mjs",
     "build": "tsc -b && vite build",
     "deploy:yandex": "node scripts/deploy-yandex-storage.mjs",
     "preview": "vite preview",
@@ -47,6 +49,7 @@
     "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/coverage-v8": "^5.0.5",
+    "cloudflared": "^0.7.3",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^7.1.1",

@@ -14,6 +14,7 @@ Faithful local port of [Tontie v1](https://www.eyezmaze.com/game/tontie.html) (E
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — layers and extension points
 - [docs/OWNERSHIP.md](docs/OWNERSHIP.md) — squad boundaries and review rules
 - [docs/DEPLOY-RU.md](docs/DEPLOY-RU.md) — miroir **Yandex Object Storage + CDN** (joueurs en Russie)
+- [docs/TUNNEL.md](docs/TUNNEL.md) — tunnel HTTPS privé vers ton `localhost` (test rapide)
 
 ## Commands
 
