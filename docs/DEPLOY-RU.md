@@ -60,7 +60,7 @@ Test depuis l’Europe : [check-host.net](https://check-host.net/) → nœuds **
 
 ## 5. Déploiement depuis ta machine
 
-Prérequis : [AWS CLI v2](https://aws.amazon.com/cli/) (compatible endpoint Yandex).
+Pas besoin d’installer **AWS CLI** : le script utilise le SDK Node déjà dans le projet (`npm install`).
 
 ```bash
 cp .env.example .env
@@ -68,6 +68,8 @@ cp .env.example .env
 
 npm run deploy:yandex
 ```
+
+C’est tout : pas de `aws configure`, pas de profil AWS — seulement les 3 variables Yandex dans `.env`.
 
 Variables (`.env`) :
 

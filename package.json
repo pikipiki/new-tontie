@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "deploy:yandex": "bash scripts/deploy-yandex-storage.sh",
+    "deploy:yandex": "node scripts/deploy-yandex-storage.mjs",
     "preview": "vite preview",
     "format": "prettier --write src tests package.json",
     "format:check": "prettier --check src tests package.json",
@@ -37,6 +37,7 @@
     "three": "^0.186.1"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1153.0",
     "@eslint/js": "^9.39.5",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
