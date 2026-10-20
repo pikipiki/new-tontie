@@ -1,0 +1,34 @@
+# Publishes codex/playful-adventures to a separate GitHub Pages repo (own *.github.io URL).
+# One-time: docs/DEPLOY-FREE.md — deploy key + Pages on pikipiki/new-tontie-playful-adventures
+name: Deploy playful-adventures (external Pages)
+
+on:
+  push:
+    branches: [codex/playful-adventures]
+  workflow_dispatch:
+
+concurrency:
+  group: playful-adventures-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          GITHUB_PAGES: "true"
+      - name: Push dist to Pages repo
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          deploy_key: ${{ secrets.PLAYFUL_ADVENTURES_PAGES_DEPLOY_KEY }}
+          external_repository: pikipiki/new-tontie-playful-adventures
+          publish_branch: gh-pages
+          publish_dir: dist
+          commit_message: "deploy: ${{ github.sha }}"
