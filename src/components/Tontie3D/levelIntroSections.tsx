@@ -16,7 +16,6 @@ import {
   RED,
   themeColors,
   WHITE,
-  YELLOW,
 } from './theme'
 import { StatCell } from './levelPanelShared'
 
@@ -160,7 +159,7 @@ export function IntroStartRow({
             boxShadow: `0 1px 0 ${GREEN_DEEP}, 0 1px 0 3px ${INK}`,
           },
           '&.Mui-focusVisible': {
-            outline: `4px solid ${YELLOW}`,
+            outline: `3px solid ${themeColors.focusHighContrast}`,
             outlineOffset: 3,
           },
         }}

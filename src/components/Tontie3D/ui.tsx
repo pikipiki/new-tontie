@@ -57,8 +57,8 @@ export function GameButton({
           boxShadow: variant === 'primary' ? `0 1px 0 ${INK}` : 'none',
         },
         '&.Mui-focusVisible': {
-          outline: `3px solid ${WHITE}`,
-          outlineOffset: 2,
+          outline: `3px solid ${themeColors.focusHighContrast}`,
+          outlineOffset: 3,
         },
         '&.Mui-disabled': { opacity: 0.45 },
       }}

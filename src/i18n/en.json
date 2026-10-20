@@ -89,6 +89,11 @@
     "continue": "One extra life when knocked out.",
     "heart3": "Fills your whole life bar."
   },
+  "a11y": {
+    "skipToGame": "Skip to game",
+    "loadingGame": "Loading game…",
+    "pageDescription": "Play Paingpaing's game: whack monsters in a faithful Tontie remake with keyboard, screen reader, and reduced-motion support."
+  },
   "errors": {
     "rootMissing": "Missing #root element."
   }

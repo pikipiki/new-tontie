@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles'
+import { themeColors } from '@game3d/theme'
 import { designTokens } from './designTokens'
 
 export const muiTheme = createTheme({
@@ -17,8 +18,38 @@ export const muiTheme = createTheme({
   },
   typography: {
     fontFamily: designTokens.fontFamily,
+    body1: { lineHeight: 1.5 },
+    body2: { lineHeight: 1.5 },
   },
   shape: {
     borderRadius: 16,
+  },
+  components: {
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: false,
+      },
+      styleOverrides: {
+        root: {
+          minWidth: 44,
+          minHeight: 44,
+          '&.Mui-focusVisible': {
+            outline: `3px solid ${themeColors.focusHighContrast}`,
+            outlineOffset: 3,
+          },
+        },
+      },
+    },
+    MuiCssBaseline: {
+      styleOverrides: {
+        ':focus:not(:focus-visible)': {
+          outline: 'none',
+        },
+        'a:focus-visible, button:focus-visible': {
+          outline: `3px solid ${themeColors.focusHighContrast}`,
+          outlineOffset: 3,
+        },
+      },
+    },
   },
 })

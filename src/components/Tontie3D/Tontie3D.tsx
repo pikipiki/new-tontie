@@ -1,18 +1,15 @@
 import './tontiePreload'
 import Box from '@mui/material/Box'
-import { PerformanceMonitor } from '@react-three/drei'
-import { Canvas } from '@react-three/fiber'
 import { useState, type MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { isMuted, setMuted } from '@game/audio'
-import { GameFxContext } from '@game3d/fx'
-import { BASE_FOV, CAMERA_POSITION } from '@game3d/layout3d'
-import { TontieScene3D } from '@game3d/TontieScene3D'
 import { useTontieGame } from '@/hooks/useTontieGame'
-import { SKY } from './theme'
-import { BottomBar, Banner, DamageFlash, TopBar } from './TontieHud'
+import { GameStatusAnnouncer } from './GameStatusAnnouncer'
+import { BottomBar, TopBar } from './TontieHud'
+import { Tontie3DViewport } from './Tontie3DViewport'
 import { useHighScore } from './tontieHudScore'
 import { HoleButtons, Overlays } from './TontieOverlays'
+import { SKY } from './theme'
 
 function blockContextMenu(event: MouseEvent) {
   event.preventDefault()
@@ -36,7 +33,9 @@ export function Tontie3D() {
 
   return (
     <Box
+      id="tontie-game-main"
       component="main"
+      tabIndex={-1}
       aria-label={t('game.label')}
       onContextMenu={blockContextMenu}
       sx={{
@@ -54,45 +53,23 @@ export function Tontie3D() {
         WebkitTapHighlightColor: 'transparent',
       }}
     >
+      <GameStatusAnnouncer
+        state={game.state}
+        high={high}
+        gameFx={game.gameFx}
+        now={now}
+      />
       <TopBar game={game} high={high} />
-      <Box sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
-        <Canvas
-          shadows="percentage"
-          dpr={dpr}
-          gl={{
-            alpha: false,
-            // On dense screens the extra pixels already hide jaggies; MSAA would only cost fill rate.
-            antialias: window.devicePixelRatio < 2,
-            powerPreference: 'high-performance',
-            stencil: false,
-          }}
-          camera={{
-            position: CAMERA_POSITION,
-            fov: BASE_FOV,
-            near: 0.08,
-            far: 40,
-          }}
-          style={{ position: 'absolute', inset: 0, touchAction: 'none' }}
-        >
-          <PerformanceMonitor
-            onDecline={() => {
-              setDpr(1)
-            }}
-          />
-          <GameFxContext.Provider value={game.gameFx}>
-            <TontieScene3D
-              state={game.state}
-              now={now}
-              onHit={game.hit}
-              high={high}
-              photo={photo}
-              attract={photo || !game.started}
-            />
-          </GameFxContext.Provider>
-        </Canvas>
-        <DamageFlash gameFx={game.gameFx} now={now} />
-        <Banner gameFx={game.gameFx} now={now} />
-      </Box>
+      <Tontie3DViewport
+        game={game}
+        high={high}
+        now={now}
+        photo={photo}
+        dpr={dpr}
+        onDeclineDpr={() => {
+          setDpr(1)
+        }}
+      />
       {!photo && (
         <BottomBar game={game} muted={muted} onToggleMute={toggleMute} />
       )}

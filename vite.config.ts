@@ -53,7 +53,11 @@ export default defineConfig({
     pool: 'forks',
     isolate: false,
     setupFiles: ['./src/test/setup.ts'],
-    include: ['src/**/__tests__/**/*.test.ts', 'tests/e2e/**/*.test.ts'],
+    include: [
+      'src/**/__tests__/**/*.test.ts',
+      'src/**/__tests__/**/*.test.tsx',
+      'tests/e2e/**/*.test.ts',
+    ],
     css: true,
     coverage: {
       provider: 'v8',

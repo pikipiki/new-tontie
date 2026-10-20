@@ -63,6 +63,7 @@ export function OfferCell({
           ? `${name} — ${t('game.owned')}`
           : t('game.buy', { label: name, price: offer.price })
       }
+      disabled={owned || !affordable}
       aria-disabled={owned || !affordable}
       sx={offerCellShellSx(selected, animation)}
     >
@@ -122,6 +123,8 @@ export function ExitCell({ game }: { game: TontieGame }) {
         },
         '&.Mui-focusVisible': {
           boxShadow: `0 0 0 4px ${YELLOW}, 0 6px 0 ${INK}`,
+          outline: `3px solid ${themeColors.focusHighContrast}`,
+          outlineOffset: 2,
         },
       }}
     >

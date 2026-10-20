@@ -4,9 +4,8 @@ import type { GameState } from '@game/types'
 import { BANNER_MS, DAMAGE_MS, type GameFx } from '@game3d/fx'
 import { FPS } from '@game/spec'
 import type { TontieGame } from '@/hooks/useTontieGame'
-import { CoinIcon } from './ShopIcon'
 import { INK, RED, themeColors, WHITE, YELLOW, srOnly } from './theme'
-import { GameButton } from './ui'
+import { BottomBarControls, BottomBarWallet } from './BottomBarControls'
 
 const HEART_SLOTS = 8
 
@@ -99,41 +98,29 @@ export function BottomBar({
     >
       <Box sx={{ display: 'grid', gap: 0.25, minWidth: 0 }}>
         <Hearts state={state} />
-        <Box
-          aria-label={t('game.money', { n: state.money })}
-          role="img"
-          sx={{ display: 'flex', alignItems: 'center', gap: 0.5, fontSize: 15 }}
-        >
-          <CoinIcon size={16} />
-          {state.money}
-          {state.gun > 0 && (
-            <Box
-              component="span"
-              aria-label={t('game.gun', { n: state.gunAmmo })}
-              sx={{ ml: 1, color: themeColors.hudAccentCyan }}
-            >
-              ⚡{state.gunAmmo}
-            </Box>
-          )}
-        </Box>
+        <BottomBarWallet state={state} />
       </Box>
       <Box
-        sx={{ flex: 1, textAlign: 'center', fontSize: 15, letterSpacing: 1 }}
+        component="p"
+        aria-label={t('game.level', { n: state.level })}
+        sx={{
+          flex: 1,
+          textAlign: 'center',
+          fontSize: 15,
+          letterSpacing: 1,
+          m: 0,
+        }}
       >
         {t('game.level', { n: state.level })}
       </Box>
-      <GameButton
-        variant="icon"
-        label={muted ? t('game.soundOn') : t('game.soundOff')}
-        onClick={onToggleMute}
-      >
-        {muted ? '🔇' : '🔊'}
-      </GameButton>
-      {game.started && state.phase === 'playing' && (
-        <GameButton variant="icon" label={t('game.pause')} onClick={game.pause}>
-          ⏸
-        </GameButton>
-      )}
+      <BottomBarControls
+        game={game}
+        muted={muted}
+        onToggleMute={onToggleMute}
+        pauseLabel={t('game.pause')}
+        soundOnLabel={t('game.soundOn')}
+        soundOffLabel={t('game.soundOff')}
+      />
     </Box>
   )
 }

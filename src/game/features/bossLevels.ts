@@ -34,8 +34,8 @@ export function listBossLevels(): readonly number[] {
 
 export function loadBuiltinBossLevels(): void {
   const [first, second] = gameSpec.round.bossLevels
-  registerBossLevel(first, 14)
-  registerBossLevel(second, 24)
+  if (first !== undefined) registerBossLevel(first, 14)
+  if (second !== undefined) registerBossLevel(second, 24)
 }
 
 export function resetBossLevels(): void {

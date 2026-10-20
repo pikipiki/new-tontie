@@ -44,14 +44,21 @@ export function TontiePlayer() {
   }, [])
 
   return (
-    <Box>
+    <Box component="main" aria-label="Original Flash game (Ruffle)">
       {fidelityOk === false && (
-        <Typography color="error" variant="body2" sx={{ mb: 1 }}>
-          {loadError}
+        <Typography
+          role="alert"
+          color="error"
+          variant="body2"
+          sx={{ mb: 1, fontWeight: 700 }}
+        >
+          {loadError ?? 'Error'}
         </Typography>
       )}
       <Box
         ref={hostRef}
+        role="application"
+        aria-label="Tontie Flash player"
         onPointerDown={() => {
           const player = hostRef.current?.querySelector('ruffle-player')
           if (player instanceof HTMLElement) {

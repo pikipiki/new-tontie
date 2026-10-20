@@ -41,9 +41,41 @@ export const srOnly = {
   position: 'absolute',
   width: 1,
   height: 1,
+  padding: 0,
+  margin: -1,
   overflow: 'hidden',
   clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
   whiteSpace: 'nowrap',
+  border: 0,
+} as const
+
+/** Screen-reader grid controls that become visible when focused (WCAG 2.4.7). */
+export const srOnlyFocusable = {
+  ...srOnly,
+  '&:focus-visible': {
+    position: 'fixed',
+    left: 16,
+    bottom: 96,
+    width: 'auto',
+    height: 'auto',
+    margin: 0,
+    padding: '10px 14px',
+    overflow: 'visible',
+    clip: 'auto',
+    clipPath: 'none',
+    whiteSpace: 'nowrap',
+    zIndex: 150,
+    borderRadius: '12px',
+    border: `3px solid ${themeColors.ink}`,
+    bgcolor: themeColors.paper,
+    color: themeColors.ink,
+    fontWeight: 800,
+    fontSize: 14,
+    boxShadow: `0 4px 0 ${themeColors.ink}`,
+    outline: `3px solid ${themeColors.focusHighContrast}`,
+    outlineOffset: 2,
+  },
 } as const
 
 /** Chunky cartoon lettering: fill + thick ink stroke painted under the fill. */

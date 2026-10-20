@@ -45,7 +45,11 @@ function RateRow({
         </Box>
       </Box>
       <Box
-        aria-hidden
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(shown)}
+        aria-label={label}
         sx={{
           height: 12,
           borderRadius: 999,
@@ -55,6 +59,7 @@ function RateRow({
         }}
       >
         <Box
+          aria-hidden
           sx={{
             height: '100%',
             width: `${String(value)}%`,

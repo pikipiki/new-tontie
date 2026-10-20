@@ -8,6 +8,10 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
     <meta name="theme-color" content="#5a8fd4" />
+    <meta
+      name="description"
+      content="Play Paingpaing's game: whack monsters in a faithful Tontie remake with keyboard, screen reader, and reduced-motion support."
+    />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
@@ -17,8 +21,21 @@
     <meta name="format-detection" content="telephone=no" />
     <title>Paingpaing's game</title>
   </head>
-  <body>
+  <body style="margin: 0; background: #24123a">
     <div id="root"></div>
+    <noscript>
+      <p
+        style="
+          margin: 0;
+          padding: 24px;
+          color: #fffdf7;
+          font-family: system-ui, sans-serif;
+          text-align: center;
+        "
+      >
+        JavaScript is required. / Нужен JavaScript.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -10,7 +10,8 @@ export const designTokens = {
     board: themeColors.cabinetPinkDeep,
     hole: themeColors.purpleDeep,
     text: themeColors.ink,
-    textMuted: themeColors.purpleMuted,
+    /** ≥7:1 on paper for WCAG 1.4.6 (AAA). */
+    textMuted: themeColors.purpleInk,
     border: themeColors.playerBorder,
     success: themeColors.greenDeep,
     error: themeColors.redDeep,

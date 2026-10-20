@@ -6,7 +6,7 @@ import type { GameState, HoleIndex } from '@game/types'
 import type { TontieGame } from '@/hooks/useTontieGame'
 import { CartoonTitle, LevelClearPanel, LevelIntroPanel } from './LevelPanels'
 import { ShopPanel } from './ShopPanel'
-import { PURPLE, panelCard, srOnly, themeColors, WHITE } from './theme'
+import { PURPLE, panelCard, srOnlyFocusable, themeColors, WHITE } from './theme'
 import { GameButton, Overlay } from './ui'
 
 export function WelcomePanel({ game }: { game: TontieGame }) {
@@ -35,7 +35,14 @@ export function WelcomePanel({ game }: { game: TontieGame }) {
     >
       <Box sx={{ flex: 1, textAlign: 'left' }}>
         <Box sx={{ fontWeight: 900, fontSize: 19 }}>{t('game.welcome')}</Box>
-        <Box sx={{ fontSize: 12, mt: 0.4, opacity: 0.7 }}>
+        <Box
+          sx={{
+            fontSize: 13,
+            mt: 0.4,
+            color: themeColors.cream,
+            fontWeight: 700,
+          }}
+        >
           {t('game.welcomeHint')}
         </Box>
       </Box>
@@ -69,7 +76,7 @@ export function HoleButtons({ game }: { game: TontieGame }) {
   const { t } = useTranslation()
   if (!game.started || game.state.phase !== 'playing') return null
   return (
-    <Box role="group" aria-label={t('game.holes')} sx={srOnly}>
+    <Box role="group" aria-label={t('game.holes')} sx={srOnlyFocusable}>
       {HOLE_ORDER.map((hole) => (
         <button
           key={hole}
@@ -112,7 +119,7 @@ export function EndPanel({
         <Box sx={{ fontSize: 22, fontWeight: 900, color: PURPLE }}>
           {t('game.finalScore', { n: game.state.score })}
         </Box>
-        <GameButton autoFocus onClick={game.restart}>
+        <GameButton autoFocus onClick={game.restart} label={t('game.restart')}>
           ↻ {t('game.restart')}
         </GameButton>
       </Box>

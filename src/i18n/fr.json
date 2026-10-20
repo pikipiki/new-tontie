@@ -89,6 +89,11 @@
     "continue": "Une vie de plus en cas de K.O.",
     "heart3": "Remplit toute ta vie."
   },
+  "a11y": {
+    "skipToGame": "Aller au jeu",
+    "loadingGame": "Chargement du jeu…",
+    "pageDescription": "Joue à Paingpaing's game : tape les monstres dans une reprise fidèle de Tontie, avec clavier, lecteur d'écran et réduction des animations."
+  },
   "errors": {
     "rootMissing": "Élément #root introuvable."
   }

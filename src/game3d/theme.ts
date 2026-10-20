@@ -41,6 +41,8 @@ export const themeColors = {
   statGridBg: '#eef3ff',
   black: '#000000',
   focusPurple: '#6c5ce7',
+  /** Keyboard focus ring (≥3:1 against UI chrome, WCAG 2.4.13). */
+  focusHighContrast: '#f5f0ff',
 
   cabinetPink: '#f29ad0',
   cabinetPinkDeep: '#d86aae',

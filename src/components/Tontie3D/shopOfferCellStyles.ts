@@ -1,6 +1,6 @@
 import type { SxProps, Theme } from '@mui/material/styles'
 import { SHOP_FLASH_MS } from '@game3d/fx'
-import { INK, WHITE, YELLOW } from './theme'
+import { INK, themeColors, WHITE, YELLOW } from './theme'
 import { CELL_HEIGHT, WOOD } from './shopTheme'
 
 export function shopOfferFlashAnimation(
@@ -48,6 +48,8 @@ export function offerCellShellSx(
     },
     '&.Mui-focusVisible': {
       boxShadow: `0 0 0 4px ${YELLOW}, 0 6px 0 ${INK}`,
+      outline: `3px solid ${themeColors.focusHighContrast}`,
+      outlineOffset: 2,
     },
   }
 }
