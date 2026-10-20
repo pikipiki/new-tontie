@@ -1,6 +1,6 @@
 {
   "game": {
-    "label": "Tontie — tape les monstres qui sortent des trous",
+    "label": "Paingpaing's game — tape les monstres qui sortent des trous",
     "play": "Jouer",
     "tapHint": "Tape les monstres avant qu’ils ne repartent !",
     "pause": "Pause",
@@ -65,7 +65,9 @@
     "exitShop": "SORTIE",
     "exitShopLabel": "Quitter la boutique",
     "shopHint": "Tape un article pour l’acheter",
-    "bought": "Acheté !"
+    "bought": "Acheté !",
+    "welcome": "À vos maillets !",
+    "welcomeHint": "Touchez une peluche · Pavé numérique 1–9"
   },
   "shopOffers": {
     "hammer2": "Marteau bronze",

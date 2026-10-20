@@ -23,7 +23,7 @@ export const HOLE_TAP_DEPTH = 80 * SCALE * 0.97
 /** Default distance below the tile top when fully hidden; callers pass the model height. */
 export const MOLE_HIDE_DEPTH = 0.8
 /** Feet stay inside the pit when fully up, so mobs read as standing in the hole. */
-export const MOLE_TOP_SINK = 0.12
+export const MOLE_TOP_SINK = 0.18
 
 export function moleLiftWorld(
   phase: MolePhase,
@@ -132,10 +132,10 @@ export const BOARD_DEPTH = 4.2
 /** World Y of the tile tops (board.glb tile top is at local y = 0). */
 export const BOARD_SURFACE_Y = 0.36
 
-export const CAMERA_POSITION: [number, number, number] = [0, 4.1, 4.0]
-export const CAMERA_TARGET: [number, number, number] = [0, 0.25, 0.3]
+export const CAMERA_POSITION: [number, number, number] = [3.4, 4.6, 6.5]
+export const CAMERA_TARGET: [number, number, number] = [-0.1, 0.85, 0.1]
 /** Vertical FOV that frames the board on a square viewport (the SWF stage is 400×400). */
-export const BASE_FOV = 43
+export const BASE_FOV = 39
 const MAX_PORTRAIT_FOV = 56
 
 /**
@@ -160,3 +160,28 @@ export function cameraFit(aspect: number): {
 
 /** Mobs lean back so their front faces the camera instead of the horizon. */
 export const MOB_TILT_X = -0.22
+
+/** The companion lives below and in front of the complete 3×3 touch grid. */
+export const PINK_LEDGE_POSITION: [number, number, number] = [-1.35, -0.26, 2.5]
+export const PINK_LEDGE_SCALE = 1.3
+
+export function sceneCameraView(
+  aspect: number,
+  photo = false,
+): {
+  position: [number, number, number]
+  target: [number, number, number]
+  distanceScale: number
+} {
+  if (photo)
+    return {
+      position: CAMERA_POSITION,
+      target: CAMERA_TARGET,
+      distanceScale: 1,
+    }
+  return {
+    position: aspect < 0.8 ? [0, 6.9, 4.9] : [0, 5.9, 6.1],
+    target: [0, 0.6, 0.2],
+    distanceScale: aspect >= 0.8 ? 1.16 : 1,
+  }
+}

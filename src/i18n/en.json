@@ -1,6 +1,6 @@
 {
   "game": {
-    "label": "Tontie — whack the monsters popping out of the holes",
+    "label": "Paingpaing's game — whack the monsters popping out of the holes",
     "play": "Play",
     "tapHint": "Tap the monsters before they hide again!",
     "pause": "Pause",
@@ -65,7 +65,9 @@
     "exitShop": "EXIT",
     "exitShopLabel": "Leave the shop",
     "shopHint": "Tap an item to buy it",
-    "bought": "Bought!"
+    "bought": "Bought!",
+    "welcome": "Ready, set, whack!",
+    "welcomeHint": "Tap a plush · Numpad 1–9"
   },
   "shopOffers": {
     "hammer2": "Bronze hammer",

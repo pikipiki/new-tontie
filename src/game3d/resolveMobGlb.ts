@@ -11,11 +11,15 @@ const FALLBACK_MOB_HEIGHT = 0.75
 
 /** World height of an exported mob GLB (Blender keeps the SWF pixel scale). */
 export function mobGlbHeight(key: string): number {
+  if (key === '5' || key === 'default') return 0.78
+  if (key === '6') return 0.9
   return manifest.mobs[key]?.size?.[1] ?? FALLBACK_MOB_HEIGHT
 }
 
 /** [width, height, depth] of an exported mob GLB. */
 export function mobGlbSize(key: string): [number, number, number] {
+  if (key === '5' || key === 'default') return [0.88, 0.78, 0.74]
+  if (key === '6') return [0.88, 0.9, 0.74]
   const [w = 0.5, h = FALLBACK_MOB_HEIGHT, d = 0.4] =
     manifest.mobs[key]?.size ?? []
   return [w, h, d]
