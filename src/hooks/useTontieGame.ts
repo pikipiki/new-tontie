@@ -1,5 +1,7 @@
+import { chooseUpgrade } from '@game/adventure/state'
+import { activateSugarRush } from '@game/adventure/donut'
 import { useCallback, useEffect, useState } from 'react'
-import { installAudioLifecycle } from '@game/audio'
+import { installAudioLifecycle, stopMusic, setMusicPaused } from '@game/audio'
 import { SHOP_CELLS, SHOP_EXIT_INDEX } from './useTontieGameConstants'
 import { useTontieGameActions } from './useTontieGameActions'
 import { useTontieGameKeyboard } from './useTontieGameKeyboard'
@@ -12,7 +14,7 @@ export type { TontieGame } from './useTontieGameTypes'
 
 export function useTontieGame(): TontieGame {
   useEffect(installAudioLifecycle, [])
-  const [session] = useState(() => new GameSession())
+  const [session] = useState(() => new GameSession({ adventure: true }))
   const [started, setStarted] = useState(false)
   const [shopIndex, setShopIndex] = useState(0)
   const [clock, setClock] = useState(0)
@@ -67,5 +69,20 @@ export function useTontieGame(): TontieGame {
     leaveShop,
     continueGame,
     restart,
+    setMode: (adventure) => {
+      stopMusic()
+      setMusicPaused(false)
+      session.setMode(adventure)
+      setStarted(false)
+      flush()
+    },
+    chooseUpgrade: (upgrade) => {
+      chooseUpgrade(session.state, upgrade)
+      flush()
+    },
+    sugarRush: () => {
+      activateSugarRush(session.state)
+      flush()
+    },
   }
 }

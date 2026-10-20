@@ -1,3 +1,4 @@
+import type { UpgradeId } from '@game/adventure/types'
 import type { GameState, HoleIndex } from '@game/types'
 import type { GameFx } from '@game3d/fx'
 
@@ -17,4 +18,7 @@ export interface TontieGame {
   leaveShop: () => void
   continueGame: () => void
   restart: () => void
+  setMode: (adventure: boolean) => void
+  chooseUpgrade: (upgrade: UpgradeId) => void
+  sugarRush: () => void
 }

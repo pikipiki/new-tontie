@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+import { AdventureSnackContext } from './AdventureSnackContext'
 import { useFrame } from '@react-three/fiber'
 import { useRef } from 'react'
 import type { Group, MeshPhysicalMaterial } from 'three'
@@ -58,6 +60,7 @@ function Donut({ quarters }: { quarters: number }) {
 
 /** The left hand brings its donut to the central mouth, beneath the long nose. */
 export function PinkSnack3D({ material }: { material: MeshPhysicalMaterial }) {
+  const adventure = useContext(AdventureSnackContext)
   const root = useRef<Group>(null)
   const donut = useRef<Group>(null)
   const portions = useRef<(Group | null)[]>([])
@@ -68,7 +71,9 @@ export function PinkSnack3D({ material }: { material: MeshPhysicalMaterial }) {
   })
   useFrame(({ clock }) => {
     if (!root.current || !donut.current) return
-    const age = snackAge(root.current, started, clock.elapsedTime)
+    const age =
+      adventure?.snackSeconds ??
+      snackAge(root.current, started, clock.elapsedTime)
     if (age === null) return
     const pose = pinkSnackPose(age)
     donut.current.position

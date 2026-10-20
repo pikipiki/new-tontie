@@ -1,3 +1,5 @@
+import type { AdventureState } from './adventure/types'
+
 export type HoleIndex = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
 export type MolePhase = 'off' | 'rising' | 'top' | 'falling'
@@ -152,6 +154,8 @@ export interface LevelClearSummary {
 }
 
 export interface GameState {
+  adventure?: AdventureState
+
   phase: GamePhase
   level: number
   score: number

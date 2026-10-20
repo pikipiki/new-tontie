@@ -1,3 +1,4 @@
+import { ArcadeScreenFx } from './ArcadeScreenFx'
 import Box from '@mui/material/Box'
 import { PerformanceMonitor } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
@@ -55,6 +56,7 @@ export function Tontie3DViewport({
           />
         </GameFxContext.Provider>
       </Canvas>
+      <ArcadeScreenFx game={game} />
       <DamageFlash gameFx={game.gameFx} now={now} />
       <Banner gameFx={game.gameFx} now={now} />
     </Box>

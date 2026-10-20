@@ -1,4 +1,5 @@
 import './tontiePreload'
+import { AdventureHud } from './AdventureHud'
 import Box from '@mui/material/Box'
 import { useState, type MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -60,6 +61,7 @@ export function Tontie3D() {
         now={now}
       />
       <TopBar game={game} high={high} />
+      {!photo && <AdventureHud game={game} />}
       <Tontie3DViewport
         game={game}
         high={high}

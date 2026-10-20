@@ -1,3 +1,4 @@
+import { ArcadeImpact3D } from './ArcadeImpact3D'
 import type { HoleIndex } from '@game/types'
 import { Burst3D } from '@game3d/Burst3D'
 import { BURSTS } from '@game3d/burstStyles'
@@ -25,6 +26,7 @@ export function HoleSlotFx3D({
   const holeFx = useGameFx().holes[hole]
   return (
     <>
+      <ArcadeImpact3D hole={hole} now={now} hitY={hitY} />
       {now - holeFx.killAt < KILL_MS && (
         <>
           <KillPop3D

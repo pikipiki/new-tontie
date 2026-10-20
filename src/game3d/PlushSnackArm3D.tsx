@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+import { AdventureSnackContext } from './AdventureSnackContext'
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import {
@@ -27,6 +29,7 @@ export function PlushSnackArm3D({
 }: {
   material: MeshPhysicalMaterial
 }) {
+  const adventure = useContext(AdventureSnackContext)
   const root = useRef<Group>(null),
     palm = useRef<Group>(null)
   const started = useRef<{ age: number; last: number | null }>({
@@ -51,7 +54,9 @@ export function PlushSnackArm3D({
   )
   useFrame(({ clock }) => {
     if (!root.current || !palm.current) return
-    const age = snackAge(root.current, started, clock.elapsedTime)
+    const age =
+      adventure?.snackSeconds ??
+      snackAge(root.current, started, clock.elapsedTime)
     if (age === null) return
     const { lift } = pinkSnackPose(age)
     updateSnackArm(geometry, curve, lift)

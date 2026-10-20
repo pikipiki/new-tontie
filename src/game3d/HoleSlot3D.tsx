@@ -35,7 +35,7 @@ export function HoleSlot3D({
   const [posX, , posZ] = holeWorldPosition(hole)
   const slot = state.holes[hole]
   const occupied = slot.phase !== 'off' && slot.enemy.kind !== 'none'
-  const modelHeight = occupied ? mobGlbHeight(mobGlbKey(slot.enemy)) : 0
+  const modelHeight = targetHeight(state, hole, occupied)
   const mobTop = occupied
     ? moleLiftWorld(
         slot.phase,
@@ -48,6 +48,9 @@ export function HoleSlot3D({
   const hitY = Math.max(0.04, mobTop)
   const tapHeight = Math.max(EMPTY_TAP_HEIGHT, modelHeight - MOLE_TOP_SINK)
 
+  const clearHover = () => {
+    setHovered(false)
+  }
   const onPointerDown = (event: ThreeEvent<PointerEvent>) => {
     event.stopPropagation()
     onHit(hole)
@@ -61,12 +64,8 @@ export function HoleSlot3D({
         onPointerOver={() => {
           setHovered(true)
         }}
-        onPointerOut={() => {
-          setHovered(false)
-        }}
-        onPointerUp={() => {
-          setHovered(false)
-        }}
+        onPointerOut={clearHover}
+        onPointerUp={clearHover}
       >
         <boxGeometry args={[HOLE_TAP_WIDTH, tapHeight + 0.1, HOLE_TAP_DEPTH]} />
         <meshBasicMaterial
@@ -90,17 +89,35 @@ export function HoleSlot3D({
         </mesh>
       )}
 
-      <MoleCharacter3D
-        hole={hole}
-        enemy={slot.enemy}
-        phase={slot.phase}
-        koma={state.koma}
-        phaseTicks={slot.phaseTicks}
-        extraHitRemaining={slot.nikaiRemaining}
-      />
+      <HoleMole3D hole={hole} state={state} />
 
       <HammerStrike3D hole={hole} hitY={hitY} hammerLv={state.hammerLv} />
       <HoleSlotFx3D hole={hole} now={now} hitY={hitY} />
     </group>
   )
+}
+
+function HoleMole3D({ hole, state }: { hole: HoleIndex; state: GameState }) {
+  const slot = state.holes[hole]
+  if (state.adventure?.actors[hole]?.role === 'boss') return null
+  return (
+    <MoleCharacter3D
+      hole={hole}
+      enemy={slot.enemy}
+      phase={slot.phase}
+      koma={state.koma}
+      phaseTicks={slot.phaseTicks}
+      extraHitRemaining={slot.nikaiRemaining}
+      actor={state.adventure?.actors[hole]}
+      role={
+        slot.nikaiRemaining > 0 ? 'helmet' : state.adventure?.actors[hole]?.role
+      }
+    />
+  )
+}
+
+function targetHeight(state: GameState, hole: HoleIndex, occupied: boolean) {
+  if (state.adventure?.actors[hole]?.role === 'boss' && occupied)
+    return hole === 8 ? 2.5 : 1.4
+  return occupied ? mobGlbHeight(mobGlbKey(state.holes[hole].enemy)) : 0
 }

@@ -1,3 +1,5 @@
+import { FlightRibbon3D } from './FlightRibbon3D'
+import { AdventureSnackContext } from './AdventureSnackContext'
 import { useRef } from 'react'
 import type { Group } from 'three'
 import type { GameState } from '@game/types'
@@ -42,7 +44,7 @@ export function PlushPlayer3D({
     flyerHammer,
   )
   return (
-    <>
+    <AdventureSnackContext.Provider value={state.adventure ?? null}>
       <PlushIdlePlayer3D
         state={state}
         photo={photo}
@@ -61,6 +63,7 @@ export function PlushPlayer3D({
           <HammerModel hammerLv={state.hammerLv} wing={state.wing} />
         </group>
       </group>
+      <FlightRibbon3D target={flyerBody} />
       {laser && (
         <LaserEffects3D
           state={state}
@@ -69,6 +72,6 @@ export function PlushPlayer3D({
           flashRef={flash}
         />
       )}
-    </>
+    </AdventureSnackContext.Provider>
   )
 }

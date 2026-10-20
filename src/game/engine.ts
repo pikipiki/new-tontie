@@ -1,3 +1,6 @@
+import { missionFor } from './adventure/content'
+import { tickAdventure } from './adventure/simulation'
+import { prepareAdventure } from './adventure/state'
 import { syncPlayerAttack } from './combat'
 import { ensureGameFeaturesLoaded } from './features'
 import { runRoundRules } from './features'
@@ -95,9 +98,12 @@ export function startLevel(state: GameState): void {
   }
   state.phase = 'playing'
   state.pikoOk = true
+  const bossMusic = state.adventure
+    ? missionFor(state.adventure.stage).kind === 'boss'
+    : isBossLevel(state.level)
   emit(state, {
     kind: 'roundStart',
-    music: isBossLevel(state.level) ? 'boss' : 'game',
+    music: bossMusic ? 'boss' : 'game',
   })
 }
 
@@ -113,6 +119,7 @@ export function continueGame(state: GameState): boolean {
   state.stone = false
   for (const hole of HOLES) retireHole(state, hole, false)
   beginRound(state)
+  if (state.adventure) prepareAdventure(state)
   return true
 }
 
@@ -178,6 +185,10 @@ export function buyShopIndex(state: GameState, index: number): boolean {
 
 export function tick(state: GameState, random: () => number): GameState {
   ensureGameFeaturesLoaded()
+  if (state.adventure) {
+    tickAdventure(state, random)
+    return state
+  }
   if (state.phase === 'levelClear') {
     state.clearFramesLeft -= 1
     if (state.clearFramesLeft <= 0) {

@@ -1,3 +1,4 @@
+import { createAdventure, prepareAdventure } from '@game/adventure/state'
 import { beginRound, createInitialState, drainEvents } from '@game/engine'
 import type { Clock, RandomSource } from '@game/clock'
 import type { GameEvent, GameState } from '@game/types'
@@ -8,6 +9,7 @@ import {
 } from '@game3d/presentation'
 
 export interface GameSessionOptions {
+  adventure?: boolean
   random?: RandomSource
   clock?: Clock
   presenter?: GameEventPresenter
@@ -32,15 +34,26 @@ export class GameSession {
   private readonly presenter: GameEventPresenter
 
   constructor(options: GameSessionOptions = {}) {
+    if (options.adventure) this.setMode(true)
     this.random = options.random ?? Math.random
     this.clock = options.clock ?? (() => performance.now())
     this.presenter = options.presenter ?? createDefaultGameEventPresenter(this)
   }
 
+  setMode(adventure: boolean): void {
+    this.state = createInitialState()
+    if (adventure) {
+      this.state.adventure = createAdventure()
+      prepareAdventure(this.state)
+    }
+    this.gameFx = createFx()
+  }
+
   /** A new run reopens the level 1 panel with its slide-in sound. */
   reset(): void {
-    this.state = createInitialState()
-    beginRound(this.state)
+    const adventure = Boolean(this.state.adventure)
+    this.setMode(adventure)
+    if (!adventure) beginRound(this.state)
     this.gameFx = createFx()
   }
 

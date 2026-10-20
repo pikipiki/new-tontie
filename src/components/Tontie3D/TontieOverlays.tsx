@@ -1,3 +1,5 @@
+import { ROLE_NAMES } from '@game/adventure/content'
+import { AdventureBriefing, AdventureRewards } from './AdventurePanels'
 import Box from '@mui/material/Box'
 import type { TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
@@ -25,6 +27,7 @@ export function WelcomePanel({ game }: { game: TontieGame }) {
         zIndex: 3,
         width: { xs: 'min(calc(100% - 32px), 490px)', sm: 'min(44vw, 490px)' },
         display: 'flex',
+        flexWrap: 'wrap',
         alignItems: 'center',
         gap: 2,
         p: '14px 18px',
@@ -55,6 +58,14 @@ export function WelcomePanel({ game }: { game: TontieGame }) {
       >
         ▶ {t('game.play')}
       </GameButton>
+      <GameButton
+        variant="ghost"
+        onClick={() => {
+          game.setMode(true)
+        }}
+      >
+        Adventure
+      </GameButton>
     </Box>
   )
 }
@@ -67,6 +78,8 @@ function holeLabel(
   const slot = state.holes[hole]
   if (slot.phase === 'off' || slot.enemy.kind === 'none')
     return translate('game.holeEmpty', { n: hole })
+  const actor = state.adventure?.actors[hole]
+  if (actor) return `${ROLE_NAMES[actor.role]}, hole ${String(hole)}`
   if (slot.enemy.kind === 'shop') return translate('game.holeShop', { n: hole })
   if (slot.enemy.kind === 'treasure')
     return translate('game.holeTreasure', { n: hole })
@@ -122,6 +135,13 @@ export function EndPanel({
         <Box sx={{ fontSize: 22, fontWeight: 900, color: PURPLE }}>
           {t('game.finalScore', { n: game.state.score })}
         </Box>
+        {game.state.adventure && (
+          <Box sx={{ fontSize: 14, lineHeight: 1.5, color: PURPLE }}>
+            {game.state.phase === 'win'
+              ? 'All six missions complete! Your upgrade combination saved the arcade.'
+              : game.state.adventure.failure}
+          </Box>
+        )}
         {game.state.phase === 'gameOver' && game.state.continues > 0 && (
           <GameButton onClick={game.continueGame}>
             {t('game.continue', { n: game.state.continues })}
@@ -129,6 +149,14 @@ export function EndPanel({
         )}
         <GameButton autoFocus onClick={game.restart} label={t('game.restart')}>
           ↻ {t('game.restart')}
+        </GameButton>
+        <GameButton
+          variant="ghost"
+          onClick={() => {
+            game.setMode(!game.state.adventure)
+          }}
+        >
+          {game.state.adventure ? 'Classic mode' : 'Adventure mode'}
         </GameButton>
       </Box>
     </Overlay>
@@ -138,6 +166,11 @@ export function EndPanel({
 export function Overlays({ game, now }: { game: TontieGame; now: number }) {
   const { t } = useTranslation()
   const { state, gameFx } = game
+  if (state.adventure) {
+    if (!game.started || state.phase === 'levelIntro')
+      return <AdventureBriefing game={game} welcome={!game.started} />
+    if (state.phase === 'levelClear') return <AdventureRewards game={game} />
+  }
   if (!game.started) return <WelcomePanel game={game} />
   switch (state.phase) {
     case 'levelIntro':

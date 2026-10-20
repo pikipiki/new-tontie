@@ -1,0 +1,134 @@
+import type { MissionKind, UpgradeId } from './types'
+
+export const MISSIONS: {
+  kind: MissionKind
+  title: string
+  hint: string
+  goal: number
+  seconds: number
+  icon: string
+}[] = [
+  {
+    kind: 'cake',
+    title: 'Save the birthday cake',
+    hint: 'Stop 8 Goonks. Each escape takes a slice! Thieves steal sugar; blue-hat tinkerers share helmets; jesters swap places.',
+    goal: 8,
+    seconds: 45,
+    icon: '🎂',
+  },
+  {
+    kind: 'choir',
+    title: 'Quiet, please!',
+    hint: 'Stop 8 singers with golden bells. Escaped singers raise the noise. Stop the helpers before they cause trouble.',
+    goal: 8,
+    seconds: 45,
+    icon: '♪',
+  },
+  {
+    kind: 'boss',
+    title: 'The giant conductor',
+    hint: 'A giant conductor takes over the table! Red lanes warn of an attack. Hit the golden crystal above his head or fists before the countdown ends.',
+    goal: 6,
+    seconds: 50,
+    icon: '♛',
+  },
+  {
+    kind: 'impostor',
+    title: 'The donut detectives',
+    hint: 'Find 6 impostors with black moustaches. Leave the green bow ties alone. A wrong accusation costs a heart!',
+    goal: 6,
+    seconds: 45,
+    icon: '⌕',
+  },
+  {
+    kind: 'helmets',
+    title: 'Crack the costume party',
+    hint: 'Break 8 porcelain helmets. One hit breaks a helmet; its frightened owner stays. Tinkerers can hand out fresh helmets.',
+    goal: 8,
+    seconds: 45,
+    icon: '✦',
+  },
+  {
+    kind: 'boss',
+    title: 'The neon riot',
+    hint: 'The punk giant crashes the stage! Dodge his rhythm: hit golden crystals on his head and fists, and stop the small helpers between attacks.',
+    goal: 12,
+    seconds: 60,
+    icon: '♛',
+  },
+]
+export function missionFor(stage: number) {
+  return (
+    MISSIONS[Math.min(5, Math.max(0, stage - 1))] ?? {
+      kind: 'cake' as const,
+      title: 'Save the cake',
+      hint: '',
+      goal: 8,
+      seconds: 45,
+      icon: '🎂',
+    }
+  )
+}
+export const UPGRADES: Record<
+  UpgradeId,
+  { title: string; description: string; icon: string }
+> = {
+  quickBites: {
+    title: 'Speedy snacker',
+    description: 'Eat and charge sugar 50% faster while resting.',
+    icon: '🍩',
+  },
+  ricochet: {
+    title: 'Bouncy mallet',
+    description:
+      'A hammer kill bounces to one other Goonk. Leaves innocent guests alone.',
+    icon: '↗',
+  },
+  laser: {
+    title: 'Crystal ray',
+    description:
+      'Hold a 3D ray gun with 50 shots each round. Each shot pierces one target’s helmet.',
+    icon: '✧',
+  },
+  comfort: {
+    title: 'Comfort stitches',
+    description: 'Recover 16 health now and block the first damage each round.',
+    icon: '♥',
+  },
+  longRush: {
+    title: 'Sugar afterglow',
+    description: 'Donut frenzy and Sugar Rush last 3 seconds longer.',
+    icon: '⚡',
+  },
+  hammer: {
+    title: 'Golden mallet',
+    description: 'Equip a gold hammer. Boss weak spots take double damage.',
+    icon: '🔨',
+  },
+  extraTime: {
+    title: 'One more bite',
+    description: 'Add 10 seconds to every following mission.',
+    icon: '◷',
+  },
+  cakeShield: {
+    title: 'Birthday insurance',
+    description: 'Gain 2 extra cake slices and halve escape damage.',
+    icon: '🎂',
+  },
+  bounty: {
+    title: 'Confetti jackpot',
+    description:
+      'Every Goonk earns double points and coins. Heal 2 health per kill.',
+    icon: '★',
+  },
+}
+export const ROLE_NAMES = {
+  thief: 'Sugar thief',
+  tinkerer: 'Helmet maker',
+  prankster: 'Swap jester',
+  singer: 'Noisy singer',
+  impostor: 'Moustached impostor',
+  innocent: 'Innocent guest',
+  helmet: 'Porcelain helmet',
+  boss: 'Conductor',
+}

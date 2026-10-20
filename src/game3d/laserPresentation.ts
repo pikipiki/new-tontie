@@ -1,8 +1,8 @@
 import { Vector3, type Group } from 'three'
 import type { GameState, HoleIndex } from '@game/types'
-import { BOARD_SURFACE_Y, holeWorldPosition } from './layout3d'
+import { BOARD_SURFACE_Y } from './layout3d'
 import { fxProgress, type GameFx } from './fxState'
-import { strikeHitY } from './plushPlayerFlightHelpers'
+import { strikeHitY, strikeAnchor } from './plushPlayerFlightHelpers'
 
 import { LASER_SHOT_MS, LASER_MUZZLE } from './laserLayout'
 export { LASER_SHOT_MS } from './laserLayout'
@@ -27,11 +27,13 @@ function laserTarget(
   now: number,
   target: Vector3,
 ) {
-  const anchor = holeWorldPosition(hole)
+  const heightScale =
+    state.adventure?.boss && [7, 8, 9].includes(hole) ? 1 : 0.65
+  const anchor = strikeAnchor(state, hole)
   target.set(
     anchor[0],
     BOARD_SURFACE_Y +
-      Math.max(0.1, strikeHitY(state, gameFx, hole, now, false) * 0.65),
+      Math.max(0.1, strikeHitY(state, gameFx, hole, now, false) * heightScale),
     anchor[2],
   )
 }

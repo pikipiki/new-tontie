@@ -11,6 +11,7 @@ import {
   latestStrikeHole,
   plushFlightStartFrom,
   strikeHitY,
+  strikeAnchor,
 } from '@game3d/plushPlayerFlightHelpers'
 
 export function usePlushPlayerFlight(
@@ -29,6 +30,7 @@ export function usePlushPlayerFlight(
     y: number
     hole: HoleIndex
     from: [number, number, number]
+    anchor?: [number, number, number]
   }>({
     at: -1e9,
     y: 0.5,
@@ -63,6 +65,7 @@ export function usePlushPlayerFlight(
         y: Math.max(0.04, hitY),
         hole,
         from,
+        anchor: strikeAnchor(state, hole),
       }
     }
     applyPlushFlightMotion(

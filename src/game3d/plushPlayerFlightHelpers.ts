@@ -44,6 +44,16 @@ export function latestStrikeHole(gameFx: GameFx): {
   return { latest, hole }
 }
 
+export function strikeAnchor(
+  state: GameState,
+  hole: HoleIndex,
+): [number, number, number] {
+  const anchor = holeWorldPosition(hole)
+  if (state.adventure?.boss && [7, 8, 9].includes(hole))
+    anchor[2] += hole === 8 ? 0.95 : 0.15
+  return anchor
+}
+
 export function strikeHitY(
   state: GameState,
   gameFx: GameFx,
@@ -51,6 +61,8 @@ export function strikeHitY(
   now: number,
   attract: boolean,
 ): number {
+  if (state.adventure?.boss && [7, 8, 9].includes(hole))
+    return hole === 8 ? 2.24 : 1.12
   const slot = state.holes[hole]
   const height = mobGlbHeight(mobGlbKey(slot.enemy))
   const occupied = slot.phase !== 'off' && slot.enemy.kind !== 'none'
@@ -87,6 +99,7 @@ export function applyPlushFlightMotion(
     y: number
     hole: HoleIndex
     from: [number, number, number]
+    anchor?: [number, number, number]
   },
   flyerBody: Group,
   flyerHammer: Group,
@@ -94,7 +107,7 @@ export function applyPlushFlightMotion(
   const pose = pinkFlightPose(
     flight,
     photo ? [-1.82, BOARD_SURFACE_Y + 0.02, 1.75] : PINK_LEDGE_POSITION,
-    holeWorldPosition(capture.hole),
+    capture.anchor ?? holeWorldPosition(capture.hole),
     capture.y,
     capture.from,
   )

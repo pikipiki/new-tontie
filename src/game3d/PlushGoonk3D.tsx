@@ -40,6 +40,7 @@ export function PlushGoonk3D({
   flying = false,
   snacking = false,
   holdingWeapon = false,
+  hideArms = false,
   shatter = true,
   seed = 0,
 }: {
@@ -49,6 +50,7 @@ export function PlushGoonk3D({
   flying?: boolean
   snacking?: boolean
   holdingWeapon?: boolean
+  hideArms?: boolean
   shatter?: boolean
   seed?: number
 }) {
@@ -92,14 +94,16 @@ export function PlushGoonk3D({
       </mesh>
       <FlatEye side={-1} seed={seed} scared={frightened} />
       <FlatEye side={1} seed={seed} scared={frightened} />
-      <PlushGoonkArms
-        pink={pink}
-        snacking={snacking}
-        flying={flying}
-        holdingWeapon={holdingWeapon}
-        frightened={frightened}
-        material={material}
-      />
+      {!hideArms && (
+        <PlushGoonkArms
+          pink={pink}
+          snacking={snacking}
+          flying={flying}
+          holdingWeapon={holdingWeapon}
+          frightened={frightened}
+          material={material}
+        />
+      )}
       <PlushGoonkFeet material={material} />
       {pink && <YellowTuft />}
       {pink && <PinkMouth3D snacking={snacking && !flying} />}
