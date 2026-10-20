@@ -37,8 +37,9 @@ function ruffleAssetsPlugin(): Plugin {
 export default defineConfig({
   plugins: [ruffleAssetsPlugin(), react()],
   server: {
-    // Cloudflare Quick Tunnels (npm run dev:tunnel / tunnel)
-    allowedHosts: ['.trycloudflare.com'],
+    // Dev only: each `npm run tunnel` gets a new *.trycloudflare.com hostname.
+    // `true` = allow any Host header (tunnels, ngrok, etc.) — no per-URL edits.
+    allowedHosts: true,
   },
   resolve: {
     alias: {

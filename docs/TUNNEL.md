@@ -16,7 +16,7 @@ npm run dev:tunnel
 
 Envoie **ce lien** à ton amie (Telegram, etc.). Garde le terminal ouvert tant qu’elle joue.
 
-Si Vite affiche *Blocked request* / `allowedHosts` : redémarre `npm run dev` après un `git pull` (le projet autorise `*.trycloudflare.com`).
+Chaque tunnel a une URL différente (`xxxx.trycloudflare.com`) : **tu n’as rien à ajouter dans la config** — `vite.config.ts` utilise `allowedHosts: true` en dev pour tous ces hôtes.
 
 ## Déjà en `npm run dev` ?
 
