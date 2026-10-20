@@ -21,7 +21,7 @@ describe('GameSession', () => {
   })
 
   it('stores an injectable random source', () => {
-    const session = new GameSession(() => 0.25)
+    const session = new GameSession({ random: () => 0.25 })
     expect(session.random()).toBe(0.25)
   })
 

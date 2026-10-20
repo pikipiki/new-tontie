@@ -1,33 +1,40 @@
 import { beginRound, createInitialState, drainEvents } from '@game/engine'
+import type { Clock, RandomSource } from '@game/clock'
 import type { GameEvent, GameState } from '@game/types'
-import { playMusic, playSfx, setMusicPaused, stopMusic } from '@game/audio'
-import { createFx, recordEvent, syncStrikes, type GameFx } from '@game3d/fx'
+import { createFx, type GameFx } from '@game3d/fx'
+import {
+  createDefaultGameEventPresenter,
+  type GameEventPresenter,
+} from '@game3d/presentation'
 
+export interface GameSessionOptions {
+  random?: RandomSource
+  clock?: Clock
+  presenter?: GameEventPresenter
+}
+
+/** Back-compat helper used in tests; prefers injecting a {@link GameEventPresenter}. */
 export function playEvents(
   events: GameEvent[],
   state: GameState,
   gameFx: GameFx,
 ): void {
   const now = performance.now()
-  for (const event of events) {
-    if (event.sfx) playSfx(event.sfx)
-    if (event.music === 'stop') stopMusic()
-    else if (event.music) playMusic(event.music)
-    if (event.kind === 'pause') setMusicPaused(true)
-    if (event.kind === 'resume') setMusicPaused(false)
-    recordEvent(gameFx, event, state, now)
-  }
-  syncStrikes(gameFx, state, now)
+  createDefaultGameEventPresenter({ gameFx }).present(events, state, now)
 }
 
 /** Mutable simulation owned by one hook instance; the engine mutates `state` in place. */
 export class GameSession {
   state: GameState = createInitialState()
   gameFx: GameFx = createFx()
-  readonly random: () => number
+  readonly random: RandomSource
+  readonly clock: Clock
+  private readonly presenter: GameEventPresenter
 
-  constructor(random: () => number = Math.random) {
-    this.random = random
+  constructor(options: GameSessionOptions = {}) {
+    this.random = options.random ?? Math.random
+    this.clock = options.clock ?? (() => performance.now())
+    this.presenter = options.presenter ?? createDefaultGameEventPresenter(this)
   }
 
   /** A new run reopens the level 1 panel with its slide-in sound. */
@@ -38,7 +45,8 @@ export class GameSession {
   }
 
   flush(setClock: (now: number) => void): void {
-    playEvents(drainEvents(this.state), this.state, this.gameFx)
-    setClock(performance.now())
+    const now = this.clock()
+    this.presenter.present(drainEvents(this.state), this.state, now)
+    setClock(now)
   }
 }

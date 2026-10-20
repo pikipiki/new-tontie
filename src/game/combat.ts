@@ -1,9 +1,10 @@
 import { catalogForFrame, mapCatalogItem, rollTreasureItem } from './catalog'
+import { getItemEffects } from './features'
 import { addCoin } from './money'
 import { hammerDamage } from './spec'
-import type { EnemySpawn, GameState, HoleIndex, ItemId } from './types'
+import type { EnemySpawn, GameState, ItemId } from './types'
 
-const HOLES: HoleIndex[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+export { heal } from './stats'
 
 export function syncPlayerAttack(state: GameState): void {
   state.playerAttack = hammerDamage(state.hammerLv)
@@ -28,10 +29,6 @@ export function applyDamage(state: GameState, amount: number): boolean {
 
 export function applyCoinDamage(state: GameState, amount: number): void {
   state.money = Math.max(0, state.money - amount)
-}
-
-export function heal(state: GameState, amount: number): void {
-  state.hp = Math.min(state.hpMax, state.hp + amount)
 }
 
 export function enemyFromCatalogFrame(frame: number): EnemySpawn {
@@ -118,95 +115,15 @@ export function shopEnemy(): EnemySpawn {
   return { kind: 'shop', hp: 1, maxHp: 1, attack: 0, score: 0 }
 }
 
-function forEachPacifiableHole(
-  state: GameState,
-  eachHole: (hole: HoleIndex, slot: GameState['holes'][HoleIndex]) => void,
-): void {
-  for (const hole of HOLES) {
-    const slot = state.holes[hole]
-    if (
-      slot.phase !== 'off' &&
-      slot.enemy.kind !== 'none' &&
-      slot.enemy.kind !== 'boss'
-    ) {
-      eachHole(hole, slot)
-    }
-  }
-}
-
-function applyAllCoin(state: GameState): void {
-  forEachPacifiableHole(state, (_hole, slot) => {
-    addCoin(state, Math.min(30, Math.floor(slot.enemy.score / 5)))
-    slot.enemy.attack = 0
-  })
-}
-
-function applyAllLife(state: GameState): void {
-  forEachPacifiableHole(state, (_hole, slot) => {
-    slot.enemy.attack = 0
-  })
-  heal(state, 12)
-}
-
-/** DefineSprite_669 takara() + item() */
+/** DefineSprite_669 takara() + item() — dispatches registered item features. */
 export function applyItem(
   state: GameState,
   item: ItemId,
   healAmount = 8,
 ): void {
-  switch (item) {
-    case 'life':
-    case 'utsuwa':
-      heal(state, healAmount)
-      break
-    case 'coin':
-      addCoin(state, healAmount)
-      break
-    case 'stone':
-      state.stone = true
-      break
-    case 'gun':
-      state.gun = 1
-      state.gunAmmo = 8
-      break
-    case 'wing':
-      state.wing = true
-      break
-    case 'allcoin':
-      applyAllCoin(state)
-      break
-    case 'alllife':
-      applyAllLife(state)
-      break
-    case 'hammer1':
-      state.hammerLv = 1
-      state.bronze = false
-      state.silver = false
-      state.gold = false
-      break
-    case 'hammer2':
-      state.hammerLv = 2
-      state.bronze = true
-      break
-    case 'hammer3':
-      state.hammerLv = 3
-      state.silver = true
-      break
-    case 'hammer4':
-      state.hammerLv = 4
-      state.gold = true
-      break
-    case 'sekiban1':
-      state.sekiban1 = true
-      break
-    case 'sekiban2':
-      state.sekiban2 = true
-      break
-    case 'sekiban3':
-      state.sekiban3 = true
-      break
-    default:
-      break
+  const effect = getItemEffects().get(item)
+  if (effect) {
+    effect(state, healAmount)
   }
   syncPlayerAttack(state)
 }
