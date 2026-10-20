@@ -220,3 +220,10 @@ body {
     opacity: 0.25;
   }
 }
+
+/* Netlify injects this separate badge frame at the edge; keep the game controls unobstructed. */
+iframe#nl-badge-frame {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

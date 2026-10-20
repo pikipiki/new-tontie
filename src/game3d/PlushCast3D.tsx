@@ -4,7 +4,6 @@ import { ExtrudeGeometry, Shape, type Group } from 'three'
 import { HOLE_ORDER } from '@/game/layout'
 import type { GameState, HoleIndex } from '@/game/types'
 import { fxProgress, previewStrike, useGameFx } from './fx'
-import { GlbModel } from './GlbModel'
 import { PINK_FLIGHT_MS, pinkFlightPose } from './plushAnimation'
 import { moleLiftWorld } from './layout3d'
 import { mobGlbHeight, mobGlbKey, catalogFrameGlbKey } from './resolveMobGlb'
@@ -203,7 +202,9 @@ export function PlushPlayer3D({
             ref={mallet}
             rotation={[0, 0, -2.08]}
           >
-            <GlbModel url="/game/models/hammer.glb" scale={0.95} />
+            <group scale={0.95}>
+              <HammerModel hammerLv={state.hammerLv} wing={state.wing} />
+            </group>
           </group>
         </group>
       </group>
@@ -212,7 +213,7 @@ export function PlushPlayer3D({
           <PlushGoonk3D pink seed={2} flying />
         </group>
         <group ref={flyerHammer}>
-          <HammerModel hammerLv={state.hammerLv} />
+          <HammerModel hammerLv={state.hammerLv} wing={state.wing} />
         </group>
       </group>
     </>

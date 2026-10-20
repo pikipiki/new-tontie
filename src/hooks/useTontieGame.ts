@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import {
+  installAudioLifecycle,
   playMusic,
   playSfx,
   setMusicPaused,
@@ -83,6 +84,7 @@ class GameSession {
 }
 
 export function useTontieGame(): TontieGame {
+  useEffect(installAudioLifecycle, [])
   const [session] = useState(() => new GameSession())
   const [started, setStarted] = useState(false)
   const [shopIndex, setShopIndex] = useState(0)
@@ -111,12 +113,14 @@ export function useTontieGame(): TontieGame {
   )
 
   const pause = useCallback(() => {
+    unlockAudio()
     togglePause(session.state)
     flush()
   }, [flush, session])
 
   const buy = useCallback(
     (index: number) => {
+      unlockAudio()
       setShopIndex(index)
       buyShopIndex(session.state, index)
       flush()
