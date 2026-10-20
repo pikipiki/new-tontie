@@ -21,12 +21,8 @@ export function useTontieGame(): TontieGame {
     session.flush(setClock)
   }, [session])
 
-  const { start, hit, pause, buy, leaveShop, restart } = useTontieGameActions(
-    session,
-    flush,
-    setStarted,
-    setShopIndex,
-  )
+  const { start, hit, pause, buy, leaveShop, continueGame, restart } =
+    useTontieGameActions(session, flush, setStarted, setShopIndex)
 
   useTontieGameLoop(started, session, flush)
 
@@ -69,6 +65,7 @@ export function useTontieGame(): TontieGame {
     buy,
     selectShop: setShopIndex,
     leaveShop,
+    continueGame,
     restart,
   }
 }

@@ -3,6 +3,7 @@ import type { MeshPhysicalMaterial } from 'three'
 import { Vector3 } from 'three'
 import { stuffedTube } from '@game3d/plushGoonk/mesh'
 import { FingerRow } from '@game3d/plushGoonk/plushFingers'
+import { LaserGripArm } from './LaserGripArm'
 
 function ScaredArm({
   side,
@@ -162,16 +163,19 @@ export function PlushArm({
   side,
   material,
   holding = false,
+  aiming = false,
   scared = false,
 }: {
   side: number
   material: MeshPhysicalMaterial
   holding?: boolean
+  aiming?: boolean
   scared?: boolean
 }) {
   if (scared) {
     return <ScaredArm side={side} material={material} />
   }
+  if (aiming) return <LaserGripArm material={material} />
   if (holding) {
     return <HoldingArm material={material} />
   }

@@ -1,7 +1,7 @@
-import { HAMMER_STRIKE_FRAMES } from '../spec'
+import { HAMMER_STRIKE_FRAMES, LASER_DAMAGE } from '../spec'
 import type { GameState, HoleIndex } from '../types'
 import { retireHole } from './holes'
-import { emit, HOLES, hurt } from './shared'
+import { emit, hurt } from './shared'
 import {
   strikeBossKill,
   strikeItemPickup,
@@ -9,20 +9,24 @@ import {
   strikeMobKill,
   strikeShop,
   strikeTreasure,
-  tickGunAfterKill,
+  consumeLaserAmmo,
 } from './strikeResolve'
 
-export function resolveStrike(state: GameState, hole: HoleIndex): void {
+export function resolveStrike(
+  state: GameState,
+  hole: HoleIndex,
+  laser = false,
+): void {
   const slot = state.holes[hole]
-  const dmg = state.playerAttack
+  const dmg = laser ? LASER_DAMAGE : state.playerAttack
   const frame = slot.enemy.catalogFrame
 
   if (
     slot.phase === 'off' ||
     slot.enemy.kind === 'none' ||
-    (slot.phase === 'falling' && !state.wing)
+    (slot.phase === 'falling' && !state.wing && !laser)
   ) {
-    strikeMiss(state, hole)
+    strikeMiss(state, hole, !laser)
     return
   }
 
@@ -44,7 +48,7 @@ export function resolveStrike(state: GameState, hole: HoleIndex): void {
   slot.enemy.hp -= dmg
   if (slot.enemy.hp > 0) {
     emit(state, { kind: 'hit', hole, frame, sfx: 'hit' })
-    if (slot.enemy.counterDamage && slot.phase === 'falling') {
+    if (!laser && slot.enemy.counterDamage && slot.phase === 'falling') {
       hurt(state, slot.enemy.counterDamage, hole)
     }
     return
@@ -65,7 +69,6 @@ export function resolveStrike(state: GameState, hole: HoleIndex): void {
   }
 
   retireHole(state, hole, false)
-  tickGunAfterKill(state)
 }
 
 export function triggerHammerStrike(state: GameState, hole: HoleIndex): void {
@@ -99,17 +102,13 @@ export function flushHits(state: GameState): void {
     }
     state.pikoOk = false
     state.levelStats.swings += 1
-    if (state.gun > 0) {
-      emit(state, { kind: 'hit', sfx: 'gun' })
-      for (const holeIndex of HOLES) {
-        if (state.holes[holeIndex].phase !== 'off') {
-          triggerHammerStrike(state, holeIndex)
-          resolveStrike(state, holeIndex)
-        }
-      }
-    } else {
-      resolveStrike(state, hole)
+    const laser = state.gun > 0
+    if (laser) {
+      emit(state, { kind: 'hit', sfx: 'gun', hole })
+      triggerHammerStrike(state, hole)
+      consumeLaserAmmo(state)
     }
+    resolveStrike(state, hole, laser)
     state.pikoOk = true
   }
 }

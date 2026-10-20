@@ -32,6 +32,7 @@ export interface HoleFx {
 
 export interface GameFx {
   holes: Record<HoleIndex, HoleFx>
+  laser: { at: number; hole: HoleIndex } | null
   damageAt: number
   guardAt: number
   banner: { kind: BannerKind; level: number; at: number } | null
@@ -59,6 +60,7 @@ export function createFx(): GameFx {
   }
   return {
     holes,
+    laser: null,
     damageAt: NEVER,
     guardAt: NEVER,
     banner: null,
@@ -88,6 +90,14 @@ export function recordEvent(
   const slot = event.hole === undefined ? null : gameFx.holes[event.hole]
   switch (event.kind) {
     case 'hit':
+      if (event.sfx === 'gun') {
+        const hole = event.hole ?? 5
+        gameFx.laser = {
+          at: now,
+          hole,
+        }
+        break
+      }
       if (slot) slot.hitAt = now
       break
     case 'kill':

@@ -7,7 +7,7 @@ import {
   strikeMobKill,
   strikeShop,
   strikeTreasure,
-  tickGunAfterKill,
+  consumeLaserAmmo,
 } from '@game/engine/strikeResolve'
 import { fresh, place } from '@game/__tests__/helpers/events.helpers'
 import type { HoleIndex } from '@game/types'
@@ -58,7 +58,7 @@ describe('strikeResolve helpers', () => {
     expect(hole(state, 9).phase).toBe('off')
   })
 
-  it('clears the board on boss kill and ticks gun ammo', () => {
+  it('clears the board on boss kill and consumes ammo for a shot', () => {
     const state = fresh()
     state.gun = 1
     state.gunAmmo = 1
@@ -71,19 +71,19 @@ describe('strikeResolve helpers', () => {
     const gunState = fresh()
     gunState.gun = 1
     gunState.gunAmmo = 1
-    tickGunAfterKill(gunState)
+    consumeLaserAmmo(gunState)
     expect(gunState.gun).toBe(0)
     expect(drainEvents(gunState).at(-1)?.sfx).toBe('gun_end')
 
     const idle = createInitialState()
     startLevel(idle)
-    tickGunAfterKill(idle)
+    consumeLaserAmmo(idle)
     expect(idle.gun).toBe(0)
 
     const armed = fresh()
     armed.gun = 1
     armed.gunAmmo = 3
-    tickGunAfterKill(armed)
+    consumeLaserAmmo(armed)
     expect(armed.gun).toBe(1)
     expect(armed.gunAmmo).toBe(2)
   })

@@ -1,4 +1,5 @@
 import { heal } from '../stats'
+import { LASER_AMMO } from '../spec'
 import { addCoin } from '../money'
 import type { GameState, HoleIndex } from '../types'
 import type { ItemEffectFeature } from './types'
@@ -65,7 +66,7 @@ function pickupItemEffects(): ItemEffectFeature[] {
       id: 'gun',
       apply: (state) => {
         state.gun = 1
-        state.gunAmmo = 8
+        state.gunAmmo = LASER_AMMO
       },
     },
     {

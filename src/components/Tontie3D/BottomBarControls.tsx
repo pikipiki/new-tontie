@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import type { GameState } from '@game/types'
 import type { TontieGame } from '@/hooks/useTontieGame'
 import { CoinIcon } from './ShopIcon'
-import { themeColors } from './theme'
 import { GameButton } from './ui'
 
 export function BottomBarWallet({ state }: { state: GameState }) {
@@ -16,15 +15,6 @@ export function BottomBarWallet({ state }: { state: GameState }) {
     >
       <CoinIcon size={16} />
       {state.money}
-      {state.gun > 0 && (
-        <Box
-          component="span"
-          aria-label={t('game.gun', { n: state.gunAmmo })}
-          sx={{ ml: 1, color: themeColors.hudAccentCyan }}
-        >
-          ⚡{state.gunAmmo}
-        </Box>
-      )}
     </Box>
   )
 }

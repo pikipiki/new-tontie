@@ -70,22 +70,31 @@ export function pinkFlightPose(
   return { body, pivot, yaw, angle: swing.angle + pose.tilt, amount }
 }
 
-export const PINK_SNACK_SECONDS = 3.6
+export const PINK_SNACK_SECONDS = 10.8
 
-/** Lift the snack, take a bite, chew, then lower it before the next bite. */
+/** Four bites consume the whole donut, then a fresh one pops into the same hand. */
 export function pinkSnackPose(seconds: number) {
   const phase = Math.max(0, seconds) % PINK_SNACK_SECONDS
+  const bitePhase = phase % 2.5
   const smooth = (value: number) => {
     const clamped = Math.min(1, Math.max(0, value))
     return clamped * clamped * (3 - 2 * clamped)
   }
-  const lift = smooth((phase - 0.2) / 0.7) * (1 - smooth((phase - 1.9) / 0.7))
-  const chewing = phase >= 1.05 && phase < 2.45
-  const chew = chewing ? (1 + Math.sin((phase - 1.05) * 24)) / 2 : 0
+  const active = phase < 9.6
+  const lift = active
+    ? smooth((bitePhase - 0.1) / 0.5) * (1 - smooth((bitePhase - 1.55) / 0.55))
+    : 0
+  const chewing = active && bitePhase >= 0.85 && bitePhase < 1.8
+  const chew = chewing ? (1 + Math.sin((bitePhase - 0.85) * 24)) / 2 : 0
+  const eaten = Math.min(4, Math.max(0, Math.floor((phase - 0.95) / 2.5) + 1))
   return {
     lift,
     chew,
-    bitten: phase >= 1.1 && phase < 3.1,
-    crumb: phase >= 1.1 && phase < 1.8 ? (phase - 1.1) / 0.7 : null,
+    remaining: 4 - eaten,
+    donutScale: eaten < 4 ? smooth(phase / 0.22) : 0,
+    crumb:
+      active && bitePhase >= 0.95 && bitePhase < 1.65
+        ? (bitePhase - 0.95) / 0.7
+        : null,
   }
 }

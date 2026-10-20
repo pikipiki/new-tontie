@@ -1,45 +1,12 @@
 import Box from '@mui/material/Box'
 import { useTranslation } from 'react-i18next'
-import type { GameState } from '@game/types'
 import { BANNER_MS, DAMAGE_MS, type GameFx } from '@game3d/fx'
 import { FPS } from '@game/spec'
 import type { TontieGame } from '@/hooks/useTontieGame'
 import { INK, RED, themeColors, WHITE, YELLOW, srOnly } from './theme'
+import { Hearts } from './Hearts'
+import { LaserAmmoDisplay } from './LaserAmmoDisplay'
 import { BottomBarControls, BottomBarWallet } from './BottomBarControls'
-
-const HEART_SLOTS = 8
-
-function Hearts({ state }: { state: GameState }) {
-  const { t } = useTranslation()
-  const filled = Math.max(
-    0,
-    Math.min(
-      HEART_SLOTS,
-      Math.ceil((state.hp / Math.max(1, state.hpMax)) * HEART_SLOTS),
-    ),
-  )
-  return (
-    <Box
-      role="img"
-      aria-label={t('game.life', {
-        hp: Math.max(0, state.hp),
-        max: state.hpMax,
-      })}
-      sx={{
-        fontSize: { xs: 16, sm: 22 },
-        letterSpacing: 1,
-        lineHeight: 1,
-        color: themeColors.hudHeart,
-        whiteSpace: 'nowrap',
-      }}
-    >
-      {'♥'.repeat(filled)}
-      <Box component="span" sx={{ color: themeColors.hudMutedWhite }}>
-        {'♥'.repeat(HEART_SLOTS - filled)}
-      </Box>
-    </Box>
-  )
-}
 
 /** Accessible mirror of the live displays mounted on the 3D cabinet. */
 export function TopBar({ game, high }: { game: TontieGame; high: number }) {
@@ -70,20 +37,28 @@ export function BottomBar({
 }) {
   const { t } = useTranslation()
   const { state } = game
+  const showAmmo =
+    state.gun > 0 ||
+    (game.gameFx.laser !== null && game.clock - game.gameFx.laser.at < 1500)
   return (
     <Box
       component="footer"
       sx={{
-        position: 'absolute',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        bottom: 'max(16px, env(safe-area-inset-bottom))',
+        position: 'relative',
+        flexShrink: 0,
+        mx: 'auto',
+        mb: 'max(12px, env(safe-area-inset-bottom))',
+        boxSizing: 'border-box',
         width: 'min(calc(100% - 32px), 680px)',
         zIndex: 3,
         borderRadius: '24px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 1.5,
+        display: 'grid',
+        gap: 0.5,
+        '@media (max-height: 500px) and (orientation: landscape)': {
+          gridTemplateColumns: 'minmax(0, 1.3fr) minmax(0, 1fr)',
+          gap: 1.5,
+          alignItems: 'center',
+        },
         px: 1.5,
         pt: 0.75,
         pb: 0.75,
@@ -96,31 +71,32 @@ export function BottomBar({
         textShadow: `0 2px 0 ${themeColors.hudTextShadow}`,
       }}
     >
-      <Box sx={{ display: 'grid', gap: 0.25, minWidth: 0 }}>
-        <Hearts state={state} />
-        <BottomBarWallet state={state} />
-      </Box>
+      <Hearts state={state} />
       <Box
-        component="p"
-        aria-label={t('game.level', { n: state.level })}
-        sx={{
-          flex: 1,
-          textAlign: 'center',
-          fontSize: 15,
-          letterSpacing: 1,
-          m: 0,
-        }}
+        sx={{ display: 'flex', alignItems: 'center', gap: 0.5, minWidth: 0 }}
       >
-        {t('game.level', { n: state.level })}
+        <Box sx={{ display: 'grid', gap: 0.25, minWidth: 46 }}>
+          <BottomBarWallet state={state} />
+          <Box
+            component="span"
+            aria-label={t('game.level', { n: state.level })}
+            sx={{ fontSize: 11, whiteSpace: 'nowrap' }}
+          >
+            {t('game.level', { n: state.level })}
+          </Box>
+        </Box>
+        <Box sx={{ flex: 1, minWidth: 0, px: 0.5 }}>
+          {showAmmo && <LaserAmmoDisplay ammo={state.gunAmmo} />}
+        </Box>
+        <BottomBarControls
+          game={game}
+          muted={muted}
+          onToggleMute={onToggleMute}
+          pauseLabel={t('game.pause')}
+          soundOnLabel={t('game.soundOn')}
+          soundOffLabel={t('game.soundOff')}
+        />
       </Box>
-      <BottomBarControls
-        game={game}
-        muted={muted}
-        onToggleMute={onToggleMute}
-        pauseLabel={t('game.pause')}
-        soundOnLabel={t('game.soundOn')}
-        soundOffLabel={t('game.soundOff')}
-      />
     </Box>
   )
 }

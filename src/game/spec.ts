@@ -44,5 +44,9 @@ export function hammerDamage(hammerLv: number): number {
   return HAMMER_DAMAGE[hammerLv] ?? 7
 }
 
+/** DefineSprite_208 frame 5: 50 rounds, 8 damage; frame_20 spends one round per shot. */
+export const LASER_AMMO = 50
+export const LASER_DAMAGE = 8
+
 /** doka strike clip (DefineSprite_261 / 669) frame count used on hit. */
 export const HAMMER_STRIKE_FRAMES = 8

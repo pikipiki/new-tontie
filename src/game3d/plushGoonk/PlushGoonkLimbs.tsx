@@ -6,12 +6,14 @@ export function PlushGoonkArms({
   pink,
   snacking,
   flying,
+  holdingWeapon,
   frightened,
   material,
 }: {
   pink: boolean
   snacking: boolean
   flying: boolean
+  holdingWeapon: boolean
   frightened: boolean
   material: MeshPhysicalMaterial
 }) {
@@ -19,9 +21,7 @@ export function PlushGoonkArms({
     <>
       {[-1, 1].map((side) =>
         pink && snacking && !flying && side === -1 ? (
-          <PinkSnack3D key={side}>
-            <PlushArm side={side} material={material} />
-          </PinkSnack3D>
+          <PinkSnack3D key={side} material={material} />
         ) : (
           <group
             key={side}
@@ -33,6 +33,7 @@ export function PlushGoonkArms({
                 side={side}
                 material={material}
                 holding={pink && flying && side === 1}
+                aiming={pink && holdingWeapon && side === 1}
                 scared={frightened}
               />
             </group>

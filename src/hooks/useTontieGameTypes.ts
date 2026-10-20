@@ -15,5 +15,6 @@ export interface TontieGame {
   buy: (index: number) => void
   selectShop: (index: number) => void
   leaveShop: () => void
+  continueGame: () => void
   restart: () => void
 }

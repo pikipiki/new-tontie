@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterAll, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@reference/enemy-catalog.json', () => ({
   default: { entries: [] },
@@ -15,4 +15,9 @@ describe('catalog fallbacks (empty enemy catalog)', () => {
       score: 5,
     })
   })
+})
+
+afterAll(() => {
+  vi.doUnmock('@reference/enemy-catalog.json')
+  vi.resetModules()
 })

@@ -29,6 +29,7 @@ export function TontieScene3D({
   photo?: boolean
   high?: number
 }) {
+  const playerProps = { photo, state, now, attract }
   return (
     <>
       <color attach="background" args={[SKY]} />
@@ -74,7 +75,7 @@ export function TontieScene3D({
           score={photo ? 350 : state.score}
           high={photo ? 800 : high}
         />
-        <PlushPlayer3D photo={photo} state={state} attract={attract} />
+        <PlushPlayer3D {...playerProps} />
         {attract ? (
           <PlushAttract3D />
         ) : (

@@ -11,6 +11,6 @@
       "hole": 8
     }
   ],
-  "expectedFingerprint": "playing|2|0|0|52|1|3|0|0|rm1on0tm2tm1on0on0on0on0on0",
-  "note": "Normal-mode ramp (DefineSprite_590 frame 3); START pressed on each level panel; 45-frame LEVEL CLEAR (up_boad 26 → 71) between levels."
+  "expectedFingerprint": "gameOver|1|0|0|0|1|2|0|0|tm1on0on0on0tm1on0on0on0on0",
+  "note": "Finite-health regression: this sparse-input run ends at zero HP in level 1, as frame_20 damage() requires; no automatic continues."
 }

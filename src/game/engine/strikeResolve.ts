@@ -7,10 +7,14 @@ import { retireHole } from './holes'
 import { clearLevel } from './progression'
 import { emit, HOLES, hurt } from './shared'
 
-export function strikeMiss(state: GameState, hole: HoleIndex): void {
+export function strikeMiss(
+  state: GameState,
+  hole: HoleIndex,
+  penalize = true,
+): void {
   emit(state, { kind: 'miss', hole, sfx: 'karaburi' })
   state.levelStats.misses += 1
-  hurt(state, INIT.karaburi)
+  if (penalize) hurt(state, INIT.karaburi)
 }
 
 export function strikeTreasure(state: GameState, hole: HoleIndex): void {
@@ -75,11 +79,11 @@ export function strikeMobKill(
   onEnemyKilled(state, slot.enemy)
 }
 
-export function tickGunAfterKill(state: GameState): void {
+export function consumeLaserAmmo(state: GameState): void {
   if (state.gun <= 0) {
     return
   }
-  state.gunAmmo -= 1
+  state.gunAmmo = Math.max(0, state.gunAmmo - 1)
   if (state.gunAmmo <= 0) {
     state.gun = 0
     emit(state, { kind: 'pickup', sfx: 'gun_end' })

@@ -1,14 +1,22 @@
 import { useFrame } from '@react-three/fiber'
-import { useRef, type ReactNode } from 'react'
-import type { Group, Mesh } from 'three'
+import { useRef } from 'react'
+import type { Group, MeshPhysicalMaterial } from 'three'
 import { themeColors } from '@game3d/theme'
 import { pinkSnackPose } from '@game3d/plushAnimation'
+import { PlushSnackArm3D } from './PlushSnackArm3D'
+import {
+  PINK_MOUTH,
+  SNACK_HAND_REST,
+  SNACK_HAND_BITE,
+  SNACK_DONUT_OFFSET,
+  snackAge,
+} from './snackRig'
 
 const plush = themeColors.plush
 const SPRINKLES = plush.snackSprinkles
 
-function Donut({ bitten = false }: { bitten?: boolean }) {
-  const arc = bitten ? Math.PI * 1.5 : Math.PI * 2
+function Donut({ quarters }: { quarters: number }) {
+  const arc = (quarters * Math.PI) / 2
   return (
     <group rotation={[0, 0, Math.PI / 2]}>
       <mesh castShadow>
@@ -48,42 +56,35 @@ function Donut({ bitten = false }: { bitten?: boolean }) {
   )
 }
 
-/** The left hand and snack share a shoulder pivot; the right hand keeps its mallet. */
-export function PinkSnack3D({ children }: { children: ReactNode }) {
+/** The left hand brings its donut to the central mouth, beneath the long nose. */
+export function PinkSnack3D({ material }: { material: MeshPhysicalMaterial }) {
   const root = useRef<Group>(null)
-  const shoulder = useRef<Group>(null)
-  const full = useRef<Group>(null)
-  const bitten = useRef<Group>(null)
-  const mouth = useRef<Mesh>(null)
+  const donut = useRef<Group>(null)
+  const portions = useRef<(Group | null)[]>([])
   const crumbs = useRef<Group>(null)
-  const started = useRef<number | null>(null)
+  const started = useRef<{ age: number; last: number | null }>({
+    age: 0,
+    last: null,
+  })
   useFrame(({ clock }) => {
-    if (!root.current || !shoulder.current) return
-    // Reset while the resting character is hidden during a flight.
-    let ancestor = root.current.parent
-    while (ancestor) {
-      if (!ancestor.visible) {
-        started.current = null
-        return
-      }
-      ancestor = ancestor.parent
-    }
-    started.current ??= clock.elapsedTime
-    const pose = pinkSnackPose(clock.elapsedTime - started.current)
-    shoulder.current.rotation.set(-0.23 * pose.lift, 0, 1.3 * pose.lift)
-    if (full.current) full.current.visible = !pose.bitten
-    if (bitten.current) bitten.current.visible = pose.bitten
-    if (mouth.current) {
-      mouth.current.scale.y = 0.009 + 0.016 * pose.chew
-      mouth.current.scale.x = 0.03 + 0.006 * pose.chew
-    }
+    if (!root.current || !donut.current) return
+    const age = snackAge(root.current, started, clock.elapsedTime)
+    if (age === null) return
+    const pose = pinkSnackPose(age)
+    donut.current.position
+      .lerpVectors(SNACK_HAND_REST, SNACK_HAND_BITE, pose.lift)
+      .add(SNACK_DONUT_OFFSET)
+    donut.current.scale.setScalar(pose.donutScale)
+    portions.current.forEach((portion, index) => {
+      if (portion) portion.visible = index + 1 === pose.remaining
+    })
     if (crumbs.current) {
       crumbs.current.visible = pose.crumb !== null
       const crumbPhase = pose.crumb ?? 0
       crumbs.current.position.set(
-        -0.16 - crumbPhase * 0.025,
-        0.37 - crumbPhase * crumbPhase * 0.27,
-        0.35,
+        PINK_MOUTH[0] + crumbPhase * 0.02,
+        PINK_MOUTH[1] - crumbPhase * crumbPhase * 0.2,
+        PINK_MOUTH[2] + 0.02,
       )
       crumbs.current.rotation.z = crumbPhase * 2
       crumbs.current.scale.setScalar(1 - crumbPhase * 0.7)
@@ -91,27 +92,20 @@ export function PinkSnack3D({ children }: { children: ReactNode }) {
   })
   return (
     <group ref={root}>
-      <group ref={shoulder} position={[-0.27, 0.43, 0.015]}>
-        <group position={[0.27, -0.43, -0.015]}>
-          {children}
-          <group position={[-0.355, 0.29, 0.31]} rotation={[0.12, -0.1, 0]}>
-            <group ref={full}>
-              <Donut />
-            </group>
-            <group ref={bitten} visible={false}>
-              <Donut bitten />
-            </group>
+      <PlushSnackArm3D material={material} />
+      <group ref={donut} rotation={[0.12, -0.1, 0]}>
+        {[1, 2, 3, 4].map((quarters, index) => (
+          <group
+            key={quarters}
+            ref={(node) => {
+              portions.current[index] = node
+            }}
+            visible={quarters === 4}
+          >
+            <Donut quarters={quarters} />
           </group>
-        </group>
+        ))}
       </group>
-      <mesh
-        ref={mouth}
-        position={[-0.14, 0.36, 0.258]}
-        scale={[0.03, 0.009, 0.009]}
-      >
-        <sphereGeometry args={[1, 16, 12]} />
-        <meshStandardMaterial color={plush.snackInk} roughness={0.9} />
-      </mesh>
       <group ref={crumbs} visible={false}>
         {[0, 1, 2].map((crumbIndex) => (
           <mesh

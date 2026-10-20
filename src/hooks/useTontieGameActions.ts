@@ -3,6 +3,7 @@ import { setMusicPaused, stopMusic, unlockAudio } from '@game/audio'
 import {
   buyShopIndex,
   closeShop,
+  continueGame as spendContinue,
   queueHit,
   startLevel,
   togglePause,
@@ -54,6 +55,11 @@ export function useTontieGameActions(
     flush()
   }, [flush, session, setShopIndex])
 
+  const continueGame = useCallback(() => {
+    unlockAudio()
+    if (spendContinue(session.state)) flush()
+  }, [flush, session])
+
   const restart = useCallback(() => {
     unlockAudio()
     stopMusic()
@@ -63,5 +69,5 @@ export function useTontieGameActions(
     flush()
   }, [flush, session, setShopIndex])
 
-  return { start, hit, pause, buy, leaveShop, restart }
+  return { start, hit, pause, buy, leaveShop, continueGame, restart }
 }

@@ -33,6 +33,7 @@
     "gameOver": "Game over",
     "win": "Gagné !",
     "finalScore": "Score : {{n}}",
+    "continue": "Continuer ({{n}} restants)",
     "restart": "Rejouer",
     "loading": "Chargement…",
     "levelTab": "NIVEAU",

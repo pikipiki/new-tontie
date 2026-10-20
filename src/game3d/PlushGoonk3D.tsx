@@ -11,6 +11,7 @@ import {
 } from '@game3d/plushGoonk/PlushGoonkLimbs'
 import { Stitching } from '@game3d/plushGoonk/Stitching'
 import { usePlushFabric } from '@game3d/plushGoonk/usePlushFabric'
+import { PinkMouth3D } from './PinkMouth3D'
 import { YellowTuft } from '@game3d/plushGoonk/YellowTuft'
 
 function GoonkBowl({
@@ -38,6 +39,7 @@ export function PlushGoonk3D({
   damaged = false,
   flying = false,
   snacking = false,
+  holdingWeapon = false,
   shatter = true,
   seed = 0,
 }: {
@@ -46,6 +48,7 @@ export function PlushGoonk3D({
   damaged?: boolean
   flying?: boolean
   snacking?: boolean
+  holdingWeapon?: boolean
   shatter?: boolean
   seed?: number
 }) {
@@ -93,11 +96,13 @@ export function PlushGoonk3D({
         pink={pink}
         snacking={snacking}
         flying={flying}
+        holdingWeapon={holdingWeapon}
         frightened={frightened}
         material={material}
       />
       <PlushGoonkFeet material={material} />
       {pink && <YellowTuft />}
+      {pink && <PinkMouth3D snacking={snacking && !flying} />}
       <GoonkBowl bowl={bowl} frightened={frightened} shatter={shatter} />
       {frightened && <CryingFace />}
     </group>

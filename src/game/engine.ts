@@ -14,8 +14,8 @@ export {
   statPercent,
 } from './engine/constants'
 export { beginRound } from './engine/progression'
-import { trySpawn, tickHole } from './engine/holes'
-import { afterLevelClear, nextLevel } from './engine/progression'
+import { retireHole, trySpawn, tickHole } from './engine/holes'
+import { afterLevelClear, beginRound, nextLevel } from './engine/progression'
 import {
   flushHits,
   tickHammerStrikes,
@@ -99,6 +99,21 @@ export function startLevel(state: GameState): void {
     kind: 'roundStart',
     music: isBossLevel(state.level) ? 'boss' : 'game',
   })
+}
+
+/** The original Continue button spends one credit, resets score and halves coins. */
+export function continueGame(state: GameState): boolean {
+  if (state.phase !== 'gameOver' || state.continues <= 0) return false
+  state.continues -= 1
+  state.hp = state.hpMax
+  state.score = 0
+  state.money = Math.round(state.money / 2)
+  state.gun = 0
+  state.gunAmmo = 0
+  state.stone = false
+  for (const hole of HOLES) retireHole(state, hole, false)
+  beginRound(state)
+  return true
 }
 
 export function queueHit(state: GameState, hole: HoleIndex): void {

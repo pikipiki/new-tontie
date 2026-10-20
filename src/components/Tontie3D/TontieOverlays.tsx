@@ -15,7 +15,10 @@ export function WelcomePanel({ game }: { game: TontieGame }) {
     <Box
       sx={{
         position: 'absolute',
-        bottom: 'max(106px, calc(env(safe-area-inset-bottom) + 94px))',
+        bottom: 'max(154px, calc(env(safe-area-inset-bottom) + 142px))',
+        '@media (max-height: 500px) and (orientation: landscape)': {
+          bottom: 98,
+        },
         left: { xs: '50%', sm: 'auto' },
         right: { xs: 'auto', sm: 24 },
         transform: { xs: 'translateX(-50%)', sm: 'none' },
@@ -119,6 +122,11 @@ export function EndPanel({
         <Box sx={{ fontSize: 22, fontWeight: 900, color: PURPLE }}>
           {t('game.finalScore', { n: game.state.score })}
         </Box>
+        {game.state.phase === 'gameOver' && game.state.continues > 0 && (
+          <GameButton onClick={game.continueGame}>
+            {t('game.continue', { n: game.state.continues })}
+          </GameButton>
+        )}
         <GameButton autoFocus onClick={game.restart} label={t('game.restart')}>
           ↻ {t('game.restart')}
         </GameButton>

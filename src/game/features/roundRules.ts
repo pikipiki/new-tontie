@@ -40,26 +40,25 @@ function registerBuiltinRoundRules(): void {
     },
   })
   registerRoundRule({
-    id: 'hp-continues',
+    id: 'hp-game-over',
     phase: 'after-spawn',
     tick: (state) => {
       if (state.hp > 0) {
         return
       }
-      state.continues -= 1
-      if (state.continues <= 0) {
-        state.phase = 'gameOver'
-        emit(state, { kind: 'gameOver', music: 'gameover' })
-      } else {
-        state.hp = state.hpMax
-      }
+      state.hp = 0
+      state.phase = 'gameOver'
+      state.pikoOk = false
+      state.pendingHits = []
+      state.hammerStrikes = []
+      emit(state, { kind: 'gameOver', music: 'gameover' })
     },
   })
   registerRoundRule({
     id: 'round-timer',
     phase: 'after-spawn',
     tick: (state) => {
-      if (state.roundFramesLeft <= 0) {
+      if (state.phase === 'playing' && state.roundFramesLeft <= 0) {
         endRound(state)
       }
     },

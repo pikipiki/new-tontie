@@ -14,7 +14,7 @@ import { fresh, place } from '@game/__tests__/helpers/events.helpers'
 import { HAMMER_STRIKE_FRAMES } from '@game/spec'
 
 describe('hammer strike queue', () => {
-  it('flushes gun hits across the board', () => {
+  it('fires the gun only at the selected hole', () => {
     const state = fresh()
     state.gun = 1
     place(state, 1, { kind: 'mob', hp: 1, attack: 0 })
@@ -22,7 +22,7 @@ describe('hammer strike queue', () => {
     state.pendingHits.push(1)
     flushHits(state)
     expect(state.holes[1].phase).toBe('off')
-    expect(state.holes[2].phase).toBe('off')
+    expect(state.holes[2].phase).toBe('top')
     expect(drainEvents(state).some((event) => event.sfx === 'gun')).toBe(true)
   })
 
