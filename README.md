@@ -16,6 +16,7 @@ npm run dev
 npm test
 npm run build
 npm run export:assets   # Java + ffdec → public/game/sprites (optional visuals)
+blender --background --python scripts/blender/plush_photoreal.py   # photoreal Goonk plushies → reference/plush/goonk-plush.blend + renders
 ```
 
 Regression: `npm test` (15 tests) — RNG fingerprints + `reference/replays/baseline.json`.

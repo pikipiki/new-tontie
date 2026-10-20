@@ -34,6 +34,8 @@ export function MoleCharacter3D({
   const lift = useRef<Group>(null)
   const body = useRef<Group>(null)
   const key = mobGlbKey(enemy)
+  /** Wounded but alive (e.g. the bowl Goonk after its first hit): cracked bowl, scared, trembling. */
+  const damaged = enemy.hp > 0 && enemy.hp < enemy.maxHp
   const target = moleLiftWorld(
     phase,
     koma,
@@ -59,6 +61,9 @@ export function MoleCharacter3D({
       sx *= 1 + 0.2 * k
       shake = Math.sin(hit * 46) * 0.05 * (1 - hit)
     }
+    if (damaged) {
+      shake += Math.sin(t * 63) * 0.012
+    }
     b.scale.set(sx, sy, sx)
     b.position.x = shake
     b.rotation.z = 0.06 * idle * Math.sin(t * 2.1)
@@ -72,7 +77,7 @@ export function MoleCharacter3D({
     <group ref={lift} position={[0, target, 0]}>
       <group ref={body} rotation={[MOB_TILT_X, 0, 0]}>
         <Suspense fallback={null}>
-          <MobModel3D url={mobGlbUrl(key)} seed={hole} />
+          <MobModel3D url={mobGlbUrl(key)} seed={hole} damaged={damaged} />
         </Suspense>
       </group>
     </group>

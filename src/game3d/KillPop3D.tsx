@@ -41,7 +41,7 @@ export function KillPop3D({
     <group ref={ref} visible={false}>
       <group rotation={[MOB_TILT_X, 0, 0]}>
         <Suspense fallback={null}>
-          <MobModel3D url={mobGlbUrl(glbKey)} />
+          <MobModel3D url={mobGlbUrl(glbKey)} damaged />
         </Suspense>
       </group>
     </group>

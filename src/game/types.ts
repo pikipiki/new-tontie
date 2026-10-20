@@ -120,6 +120,8 @@ export interface GameEvent {
   frame?: number
   /** Shop offer index for buy / noBuy. */
   offer?: number
+  /** Score awarded by a kill. */
+  points?: number
 }
 
 export type GamePhase =

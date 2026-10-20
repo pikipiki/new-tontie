@@ -341,7 +341,13 @@ function resolveStrike(state: GameState, hole: HoleIndex): void {
   }
 
   const bomb = frame !== undefined && BOMB_FRAMES.includes(frame)
-  emit(state, { kind: 'kill', hole, frame, sfx: bomb ? 'bokan' : 'todome' })
+  emit(state, {
+    kind: 'kill',
+    hole,
+    frame,
+    sfx: bomb ? 'bokan' : 'todome',
+    points: slot.enemy.score,
+  })
   onEnemyKilled(state, slot.enemy)
 
   if (slot.enemy.kind === 'boss') {
