@@ -1,3 +1,4 @@
+import { pendingSwapCue } from '@game/adventure/swaps'
 import { useState } from 'react'
 import type { ThreeEvent } from '@react-three/fiber'
 import { themeColors } from '@game3d/theme'
@@ -109,6 +110,14 @@ function HoleMole3D({ hole, state }: { hole: HoleIndex; state: GameState }) {
       phaseTicks={slot.phaseTicks}
       extraHitRemaining={slot.nikaiRemaining}
       actor={state.adventure?.actors[hole]}
+      swapCue={
+        state.adventure ? pendingSwapCue(state.adventure, hole) : undefined
+      }
+      heldWeapon={
+        state.adventure?.stolenWeapon?.holder === hole
+          ? state.adventure.stolenWeapon
+          : undefined
+      }
       role={
         slot.nikaiRemaining > 0 ? 'helmet' : state.adventure?.actors[hole]?.role
       }
@@ -117,6 +126,8 @@ function HoleMole3D({ hole, state }: { hole: HoleIndex; state: GameState }) {
 }
 
 function targetHeight(state: GameState, hole: HoleIndex, occupied: boolean) {
+  const stolen = state.adventure?.stolenWeapon
+  if (stolen && (stolen.holder ?? stolen.dropHole) === hole) return 1.3
   if (state.adventure?.actors[hole]?.role === 'boss' && occupied)
     return hole === 8 ? 2.5 : 1.4
   return occupied ? mobGlbHeight(mobGlbKey(state.holes[hole].enemy)) : 0

@@ -153,7 +153,8 @@ function AdventureHowTo() {
       Rest to eat: each bite charges sugar. Finish a donut for a mini frenzy,
       then tap <strong>Sugar Rush</strong> to freeze Goonks and double points.
       <br />
-      Complete missions, choose powers, outsmart two bosses.
+      Bananas warn of a swap and weapon theft. Tap the carrier to take your
+      weapon back. Complete missions and outsmart two bosses.
     </Box>
   )
 }

@@ -1,3 +1,4 @@
+import { dropWeapon } from './weapons'
 import type { GameState, HoleIndex } from '../types'
 import { FPS } from '../spec'
 import { HOLES, emptyHole } from '../engine/shared'
@@ -6,9 +7,16 @@ import { missionFor } from './content'
 import type { AdventureRole } from './types'
 
 export function removeActor(state: GameState, hole: HoleIndex): void {
+  dropWeapon(state, hole)
   state.holes[hole] = emptyHole()
   state.moguraOn = Math.max(0, state.moguraOn - 1)
-  if (state.adventure) Reflect.deleteProperty(state.adventure.actors, hole)
+  if (state.adventure) {
+    Reflect.deleteProperty(state.adventure.actors, hole)
+    for (const other of HOLES) {
+      const actor = state.adventure.actors[other]
+      if (actor?.swapWith === hole) actor.swapWith = null
+    }
+  }
 }
 function nextRole(state: GameState): AdventureRole {
   const adventure = state.adventure
@@ -36,7 +44,10 @@ export function spawnAdventure(state: GameState, random: () => number): void {
   adventure.spawnIn -= 1
   const limit = adventure.boss ? 3 + Math.floor(adventure.stage / 2) : 4
   if (adventure.spawnIn > 0 || state.moguraOn >= limit) return
-  const available = HOLES.filter((hole) => state.holes[hole].phase === 'off')
+  const available = HOLES.filter(
+    (hole) =>
+      state.holes[hole].phase === 'off' && !isDroppedWeaponHole(state, hole),
+  )
   const hole =
     available[
       Math.min(available.length - 1, Math.floor(random() * available.length))
@@ -61,4 +72,9 @@ export function spawnAdventure(state: GameState, random: () => number): void {
   }
   adventure.spawnIn =
     Math.max(10, 22 - adventure.stage * 2) + Math.floor(random() * 6)
+}
+
+function isDroppedWeaponHole(state: GameState, hole: HoleIndex): boolean {
+  const stolen = state.adventure?.stolenWeapon
+  return stolen?.holder === null && stolen.dropHole === hole
 }

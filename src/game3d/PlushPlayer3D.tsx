@@ -32,7 +32,8 @@ export function PlushPlayer3D({
     muzzle = useRef<Group>(null),
     flash = useRef<Group>(null)
   const gameFx = useGameFx()
-  const laser = laserIsEquipped(state, gameFx, now)
+  const laser =
+    !state.adventure?.stolenWeapon && laserIsEquipped(state, gameFx, now)
   usePlushPlayerFlight(
     state,
     photo,
@@ -59,7 +60,7 @@ export function PlushPlayer3D({
         <group ref={flyerBody}>
           <PlushGoonk3D pink seed={2} flying />
         </group>
-        <group ref={flyerHammer}>
+        <group ref={flyerHammer} visible={!state.adventure?.stolenWeapon}>
           <HammerModel hammerLv={state.hammerLv} wing={state.wing} />
         </group>
       </group>

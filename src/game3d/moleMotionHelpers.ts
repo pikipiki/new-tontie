@@ -1,3 +1,5 @@
+import type { SwapCue } from '@game/adventure/swaps'
+import { bananaFacing } from './bananaMotion'
 import type { Group } from 'three'
 import type { AdventureActor } from '@game/adventure/types'
 import type { HoleIndex, MolePhase } from '@game/types'
@@ -10,6 +12,7 @@ interface Pose {
   target: number
   damaged: boolean
   actor?: AdventureActor
+  swapCue?: SwapCue
   reduced: boolean
 }
 export function updateMoleMotion(
@@ -49,6 +52,12 @@ export function updateMoleMotion(
   bodyGroup.rotation.z = 0.06 * idle * Math.sin(time * 2.1)
   bodyGroup.rotation.y =
     actor?.role === 'thief' ? Math.sin(seconds * 4) * 0.16 : 0
+  if (pose.swapCue)
+    bodyGroup.rotation.y = bananaFacing(
+      hole,
+      pose.swapCue.partner,
+      pose.swapCue.progress,
+    )
   if (actor?.swapWith && !reduced) {
     bodyGroup.position.y = Math.abs(Math.sin(time * 18)) * 0.07
     bodyGroup.rotation.z += Math.sin(time * 20) * 0.12

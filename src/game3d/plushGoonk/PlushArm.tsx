@@ -172,10 +172,10 @@ export function PlushArm({
   aiming?: boolean
   scared?: boolean
 }) {
+  if (aiming) return <LaserGripArm material={material} />
   if (scared) {
     return <ScaredArm side={side} material={material} />
   }
-  if (aiming) return <LaserGripArm material={material} />
   if (holding) {
     return <HoldingArm material={material} />
   }

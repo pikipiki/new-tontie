@@ -88,6 +88,15 @@ export function AdventureHud({ game }: { game: TontieGame }) {
 
 function AdventureNotice({ adventure }: { adventure: AdventureState }) {
   const active = adventure.frenzyFrames > 0
+  let message =
+    adventure.noticeFrames > 0
+      ? adventure.notice
+      : 'Rest to eat & charge • Tap to fly & strike'
+  if (adventure.stolenWeapon)
+    message =
+      adventure.stolenWeapon.holder === null
+        ? 'DISARMED · Tap your dropped weapon to recover it'
+        : 'DISARMED · Tap the Goonk carrying your weapon'
   return (
     <Box
       role="status"
@@ -103,9 +112,7 @@ function AdventureNotice({ adventure }: { adventure: AdventureState }) {
         textOverflow: 'ellipsis',
       }}
     >
-      {adventure.noticeFrames > 0
-        ? adventure.notice
-        : 'Rest to eat & charge • Tap to fly & strike'}
+      {message}
     </Box>
   )
 }

@@ -75,6 +75,9 @@ function holeLabel(
   hole: HoleIndex,
   translate: TFunction,
 ): string {
+  const stolen = state.adventure?.stolenWeapon
+  if (stolen && (stolen.holder ?? stolen.dropHole) === hole)
+    return `Recover your weapon, hole ${String(hole)}`
   const slot = state.holes[hole]
   if (slot.phase === 'off' || slot.enemy.kind === 'none')
     return translate('game.holeEmpty', { n: hole })

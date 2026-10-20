@@ -1,7 +1,9 @@
+import { stealWeapon, moveWeaponWithSwap } from './weapons'
 import type { GameState, HoleIndex } from '../types'
 import { FPS } from '../spec'
 import { emit, HOLES, hurt } from '../engine/shared'
 import { missionFor } from './content'
+import { swapReserved, SWAP_WARNING_FRAMES } from './swaps'
 import { announce } from './state'
 import { removeActor } from './spawn'
 
@@ -32,15 +34,20 @@ function playTrick(state: GameState, hole: HoleIndex): void {
       emit(state, { kind: 'guard', hole: target, sfx: 'kan' })
     }
   } else if (actor.role === 'prankster') {
+    if (swapReserved(adventure, hole)) return
     actor.swapWith =
       HOLES.find(
         (other) =>
           other !== hole &&
           adventure.actors[other] &&
-          adventure.actors[other].role !== 'boss',
+          adventure.actors[other].role !== 'boss' &&
+          !swapReserved(adventure, other),
       ) ?? null
     if (actor.swapWith)
-      announce(state, 'Swap incoming! Follow the jester’s cyan rings')
+      announce(
+        state,
+        'Bananas! Stop either partner before they swap and steal your weapon',
+      )
   }
 }
 function finishSwap(state: GameState, hole: HoleIndex): void {
@@ -60,12 +67,14 @@ function finishSwap(state: GameState, hole: HoleIndex): void {
   state.holes[other] = slot
   adventure.actors[hole] = friend
   adventure.actors[other] = actor
-  announce(state, 'SWAP!')
+  moveWeaponWithSwap(state, hole, other)
+  stealWeapon(state, other)
 }
 export function escapeActor(state: GameState, hole: HoleIndex): void {
   const adventure = state.adventure
   const actor = adventure?.actors[hole]
   if (!adventure || !actor) return
+  if (swapReserved(adventure, hole)) return
   if (actor.role !== 'innocent') {
     state.levelStats.lost += 1
     hurt(state, adventure.upgrades.includes('cakeShield') ? 2 : 4, hole)
@@ -92,7 +101,8 @@ export function tickActors(state: GameState): void {
       actor.acted = true
       playTrick(state, hole)
     }
-    if (actor.swapWith && actor.age >= FPS * 2 + FPS) finishSwap(state, hole)
+    if (actor.swapWith && actor.age >= FPS * 2 + SWAP_WARNING_FRAMES)
+      finishSwap(state, hole)
     if (actor.age > FPS * 5) escapeActor(state, hole)
   }
 }

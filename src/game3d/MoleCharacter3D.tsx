@@ -1,3 +1,7 @@
+import type { SwapCue } from '@game/adventure/swaps'
+import type { StolenWeapon } from '@game/adventure/types'
+import { SwapCueContext } from './SwapCueContext'
+import { StolenWeaponHeld3D } from './StolenWeaponModel3D'
 import type { AdventureRole } from '@game/adventure/types'
 import { AdventureAccessory3D } from './AdventureAccessory3D'
 import { useMoleMotion } from './useMoleMotion'
@@ -19,6 +23,8 @@ export function MoleCharacter3D({
   extraHitRemaining,
   role,
   actor,
+  swapCue,
+  heldWeapon,
 }: {
   hole: HoleIndex
   enemy: EnemySpawn
@@ -28,6 +34,8 @@ export function MoleCharacter3D({
   extraHitRemaining: number
   role?: AdventureRole
   actor?: AdventureActor
+  swapCue?: SwapCue
+  heldWeapon?: StolenWeapon
 }) {
   const lift = useRef<Group>(null)
   const body = useRef<Group>(null)
@@ -41,7 +49,7 @@ export function MoleCharacter3D({
     mobGlbHeight(key) + 0.05,
   )
 
-  useMoleMotion({ hole, phase, target, damaged, lift, body, actor })
+  useMoleMotion({ hole, phase, target, damaged, lift, body, actor, swapCue })
 
   if (phase === 'off' || enemy.kind === 'none') {
     return null
@@ -50,9 +58,17 @@ export function MoleCharacter3D({
   return (
     <group ref={lift} position={[0, target, 0]}>
       <group ref={body} rotation={[MOB_TILT_X, 0, 0]}>
-        <Suspense fallback={null}>
-          <MobModel3D url={mobGlbUrl(key)} seed={hole} damaged={damaged} />
-        </Suspense>
+        <SwapCueContext.Provider value={swapCue}>
+          <Suspense fallback={null}>
+            <MobModel3D
+              url={mobGlbUrl(key)}
+              seed={hole}
+              damaged={damaged}
+              holdingWeapon={Boolean(heldWeapon)}
+            />
+          </Suspense>
+        </SwapCueContext.Provider>
+        <StolenWeaponHeld3D weapon={heldWeapon} />
         <AdventureAccessory3D role={role} />
       </group>
     </group>

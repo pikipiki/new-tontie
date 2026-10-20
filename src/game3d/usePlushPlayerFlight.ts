@@ -50,7 +50,10 @@ export function usePlushPlayerFlight(
     const { latest, hole } = latestStrikeHole(gameFx)
     const laserStrike =
       state.gun > 0 || (gameFx.laser !== null && latest <= gameFx.laser.at)
-    const flight = laserStrike ? null : fxProgress(latest, now, PINK_FLIGHT_MS)
+    const flight =
+      laserStrike || state.adventure?.stolenWeapon
+        ? null
+        : fxProgress(latest, now, PINK_FLIGHT_MS)
     root.visible = flight === null
     applyPlushIdleMotion(root, mallet, clock.elapsedTime)
     flyer.visible = flight !== null

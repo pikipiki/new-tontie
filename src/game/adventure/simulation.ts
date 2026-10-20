@@ -12,6 +12,7 @@ import { failAdventure, finishAdventureStage } from './state'
 export function tickAdventure(state: GameState, random: () => number): void {
   const adventure = state.adventure
   if (!adventure || state.phase !== 'playing') return
+  if (adventure.stolenWeapon) adventure.stolenWeapon.age += 1
   resolveAdventureHits(state)
   tickHammerStrikes(state)
   state.roundFramesLeft -= 1

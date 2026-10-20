@@ -1,3 +1,4 @@
+import { recoverWeapon } from './weapons'
 import type { GameState, HoleIndex } from '../types'
 import { FPS } from '../spec'
 import { emit, HOLES, hurt } from '../engine/shared'
@@ -62,27 +63,37 @@ export function resolveAdventureHits(state: GameState): void {
   while (state.pendingHits.length > 0) {
     const hole = state.pendingHits.shift()
     if (!hole) break
-    const laser = state.gun > 0
-    adventure.flightFrames = FPS
-    state.levelStats.swings += 1
-    triggerHammerStrike(state, hole)
-    if (laser) {
-      emit(state, { kind: 'hit', hole, sfx: 'gun' })
-      consumeLaserAmmo(state)
-    }
-    if (adventure.actors[hole]?.role === 'boss') {
-      strikeConductor(state, hole, laser)
-      continue
-    }
-    if (!adventure.actors[hole]) {
-      state.levelStats.misses += 1
-      if (!laser) hurt(state, 3, hole)
-      emit(state, { kind: 'miss', hole, sfx: 'karaburi' })
-      continue
-    }
-    const killed = hitActor(state, hole, laser)
-    if (!laser) bounceHammer(state, hole, killed)
+    resolveAdventureHit(state, hole)
   }
+}
+
+function resolveAdventureHit(state: GameState, hole: HoleIndex): void {
+  const adventure = state.adventure
+  if (!adventure) return
+  if (adventure.stolenWeapon) {
+    recoverWeapon(state, hole)
+    return
+  }
+  const laser = state.gun > 0
+  adventure.flightFrames = FPS
+  state.levelStats.swings += 1
+  triggerHammerStrike(state, hole)
+  if (laser) {
+    emit(state, { kind: 'hit', hole, sfx: 'gun' })
+    consumeLaserAmmo(state)
+  }
+  if (adventure.actors[hole]?.role === 'boss') {
+    strikeConductor(state, hole, laser)
+    return
+  }
+  if (!adventure.actors[hole]) {
+    state.levelStats.misses += 1
+    if (!laser) hurt(state, 3, hole)
+    emit(state, { kind: 'miss', hole, sfx: 'karaburi' })
+    return
+  }
+  const killed = hitActor(state, hole, laser)
+  if (!laser) bounceHammer(state, hole, killed)
 }
 
 function bounceHammer(

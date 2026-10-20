@@ -1,3 +1,4 @@
+import type { SwapCue } from '@game/adventure/swaps'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useFrame } from '@react-three/fiber'
 import { useRef, type RefObject } from 'react'
@@ -15,6 +16,7 @@ interface MotionProps {
   lift: RefObject<Group | null>
   body: RefObject<Group | null>
   actor?: AdventureActor
+  swapCue?: SwapCue
 }
 export function useMoleMotion({
   hole,
@@ -24,6 +26,7 @@ export function useMoleMotion({
   lift,
   body,
   actor,
+  swapCue,
 }: MotionProps) {
   const reduced = useReducedMotion()
   const gameFx = useGameFx()
@@ -35,7 +38,7 @@ export function useMoleMotion({
     updateMoleMotion(
       liftGroup,
       bodyGroup,
-      { hole, phase, target, damaged, actor, reduced },
+      { hole, phase, target, damaged, actor, reduced, swapCue },
       gameFx.holes[hole].hitAt,
       clock.elapsedTime,
       delta,

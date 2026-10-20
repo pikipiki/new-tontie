@@ -140,6 +140,13 @@ describe('complete six-mission adventures', () => {
 function autoStrike(state: ReturnType<typeof adventureGame>['state']) {
   const adventure = state.adventure
   if (!adventure || state.phase !== 'playing') return
+  if (adventure.stolenWeapon) {
+    queueHit(
+      state,
+      adventure.stolenWeapon.holder ?? adventure.stolenWeapon.dropHole,
+    )
+    return
+  }
   if (adventure.boss) {
     if (!adventure.boss.warning) queueHit(state, adventure.boss.weak)
   }

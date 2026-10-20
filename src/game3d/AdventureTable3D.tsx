@@ -1,3 +1,5 @@
+import { BananaSwapCues3D } from './BananaSwapCues3D'
+import { StolenWeaponScene3D } from './StolenWeaponScene3D'
 import { ConductorBoss3D } from './ConductorBoss3D'
 import { SugarStorm3D } from './SugarStorm3D'
 import { useRef } from 'react'
@@ -111,9 +113,6 @@ function BossTable({ state }: { state: GameState }) {
 export function AdventureTable3D({ state }: { state: GameState }) {
   const adventure = state.adventure
   if (!adventure) return null
-  const swappers = Object.entries(adventure.actors).filter(
-    ([, actor]) => actor.swapWith,
-  )
   return (
     <group>
       {missionFor(adventure.stage).kind === 'cake' && (
@@ -122,24 +121,8 @@ export function AdventureTable3D({ state }: { state: GameState }) {
       <BossTable state={state} />
       <ConductorBoss3D state={state} />
       <SugarStorm3D state={state} />
-      {swappers.flatMap(([hole, actor]) =>
-        [Number(hole), actor.swapWith].map((target) => {
-          if (!target) return null
-          const [posX, , posZ] = holeWorldPosition(
-            target as import('@game/types').HoleIndex,
-          )
-          return (
-            <mesh
-              key={`${hole}-${String(target)}`}
-              position={[posX, BOARD_SURFACE_Y + 0.05, posZ]}
-              rotation={[-Math.PI / 2, 0, 0]}
-            >
-              <torusGeometry args={[0.44, 0.035, 8, 32]} />
-              <meshBasicMaterial color={colors.hudAccentCyan} />
-            </mesh>
-          )
-        }),
-      )}
+      <BananaSwapCues3D adventure={adventure} />
+      <StolenWeaponScene3D state={state} />
     </group>
   )
 }

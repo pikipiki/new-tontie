@@ -1,3 +1,4 @@
+import { SWAP_WARNING_FRAMES } from '../swaps'
 import { describe, expect, it } from 'vitest'
 import { FPS } from '../../spec'
 import { queueHit, tick } from '../../engine'
@@ -47,7 +48,7 @@ describe('Goonks cooperate', () => {
     actFor(state, FPS * 2)
     expect(adventure.actors[5]?.swapWith).toBe(4)
     expect(adventure.actors[5]?.role).toBe('prankster')
-    actFor(state, FPS)
+    actFor(state, SWAP_WARNING_FRAMES)
     expect(adventure.actors[4]?.role).toBe('prankster')
     expect(adventure.actors[5]?.role).toBe('singer')
   })
@@ -58,7 +59,7 @@ describe('Goonks cooperate', () => {
     actFor(state, FPS * 2)
     queueHit(state, 5)
     resolveAdventureHits(state)
-    actFor(state, FPS)
+    actFor(state, SWAP_WARNING_FRAMES)
     expect(adventure.actors[4]?.role).toBe('singer')
   })
 })

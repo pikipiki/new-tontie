@@ -68,7 +68,7 @@ export function PlushIdlePlayer3D({
           position={[0.36, 0.38, 0.16]}
           ref={malletRef}
           rotation={[0, 0, -2.08]}
-          visible={!laser}
+          visible={!laser && !state.adventure?.stolenWeapon}
         >
           <group scale={0.95}>
             <HammerModel hammerLv={state.hammerLv} wing={state.wing} />

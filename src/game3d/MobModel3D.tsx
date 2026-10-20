@@ -52,14 +52,18 @@ export function MobModel3D(props: {
   seed?: number
   damaged?: boolean
   shatter?: boolean
+  holdingWeapon?: boolean
 }) {
   if (props.url === mobGlbUrl('5') || props.url === mobGlbUrl('default'))
-    return <PlushGoonk3D seed={props.seed} />
+    return (
+      <PlushGoonk3D seed={props.seed} holdingWeapon={props.holdingWeapon} />
+    )
   if (props.url === mobGlbUrl('6'))
     return (
       <PlushGoonk3D
         seed={props.seed}
         bowl
+        holdingWeapon={props.holdingWeapon}
         damaged={props.damaged}
         shatter={props.shatter}
       />

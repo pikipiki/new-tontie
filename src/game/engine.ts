@@ -128,7 +128,7 @@ export function queueHit(state: GameState, hole: HoleIndex): void {
     return
   }
   state.pendingHits.push(hole)
-  if (state.gun === 0) {
+  if (state.gun === 0 && !state.adventure?.stolenWeapon) {
     triggerHammerStrike(state, hole)
   }
 }

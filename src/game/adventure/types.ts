@@ -28,7 +28,17 @@ export interface AdventureActor {
   swappedFrom?: HoleIndex
   swapAge?: number
 }
+export interface StolenWeapon {
+  wing: boolean
+  holder: HoleIndex | null
+  dropHole: HoleIndex
+  hammerLv: number
+  gun: number
+  ammo: number
+  age: number
+}
 export interface AdventureState {
+  stolenWeapon: StolenWeapon | null
   stage: number
   progress: number
   cake: number

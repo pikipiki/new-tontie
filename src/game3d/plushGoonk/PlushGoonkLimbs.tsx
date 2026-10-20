@@ -1,6 +1,6 @@
 import type { MeshPhysicalMaterial } from 'three'
 import { PinkSnack3D } from '@game3d/PinkSnack3D'
-import { PlushArm } from '@game3d/plushGoonk/PlushArm'
+import { PlushArmRig3D } from './PlushArmRig3D'
 
 export function PlushGoonkArms({
   pink,
@@ -23,21 +23,14 @@ export function PlushGoonkArms({
         pink && snacking && !flying && side === -1 ? (
           <PinkSnack3D key={side} material={material} />
         ) : (
-          <group
+          <PlushArmRig3D
             key={side}
-            position={[side * 0.27, 0.43, 0.015]}
-            rotation={[0, 0, 0]}
-          >
-            <group position={[-side * 0.27, -0.43, -0.015]}>
-              <PlushArm
-                side={side}
-                material={material}
-                holding={pink && flying && side === 1}
-                aiming={pink && holdingWeapon && side === 1}
-                scared={frightened}
-              />
-            </group>
-          </group>
+            side={side}
+            material={material}
+            holding={pink && flying && side === 1}
+            aiming={holdingWeapon && side === 1}
+            scared={frightened}
+          />
         ),
       )}
     </>

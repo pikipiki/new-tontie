@@ -1,3 +1,4 @@
+import { restoreWeapon } from './weapons'
 import type { GameState } from '../types'
 import { FPS } from '../spec'
 import { emptyHole, emit, freshStats, HOLES } from '../engine/shared'
@@ -6,6 +7,7 @@ import type { AdventureState, UpgradeId } from './types'
 
 export function createAdventure(): AdventureState {
   return {
+    stolenWeapon: null,
     stage: 1,
     progress: 0,
     cake: 6,
@@ -33,6 +35,7 @@ export function announce(state: GameState, message: string): void {
   state.adventure.noticeFrames = FPS * 3
 }
 export function clearBoard(state: GameState): void {
+  restoreWeapon(state)
   for (const hole of HOLES) state.holes[hole] = emptyHole()
   state.moguraOn = 0
   state.pendingHits = []

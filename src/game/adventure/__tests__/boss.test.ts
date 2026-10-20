@@ -58,7 +58,7 @@ describe('boss helpers', () => {
     queueHit(state, hole)
     tick(state, () => 0.3)
     expect(adventure.progress).toBe(progress)
-    expect(adventure.boss?.hp).toBe(6)
+    expect(adventure.boss?.hp).toBe(12)
     expect(state.holes[hole].nikaiRemaining).toBe(0)
     expect(adventure.actors[7]?.role).toBe('boss')
   })
