@@ -12,6 +12,7 @@ import {
   MOB_TILT_X,
 } from '@game3d/layout3d'
 import { MobModel3D } from '@game3d/MobModel3D'
+import { mobGlbUrl } from '@game3d/resolveMobGlb'
 export function CabinetPatches3D() {
   return (
     <group position={[0, BOARD_SURFACE_Y, 0]}>
@@ -64,7 +65,7 @@ function DisplayPlush({
       rotation={[MOB_TILT_X, 0.1 * ((hole % 3) - 1), 0]}
     >
       <MobModel3D
-        url={`/game/models/mobs/${bowl ? '6' : '5'}.glb`}
+        url={mobGlbUrl(bowl ? '6' : '5')}
         seed={hole}
         damaged={damaged}
       />

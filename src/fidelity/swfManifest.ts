@@ -1,6 +1,8 @@
+import { publicUrl } from '@constants/publicUrl'
+
 /** Canonical Eyezmaze Tontie v1 — must match reference/tontie.swf byte-for-byte. */
 export const CANONICAL_SWF = {
-  url: '/game/tontie.swf',
+  url: publicUrl('game/tontie.swf'),
   sha256: '2b91801d763ff6c1fdf52d461849e11e4c3fa31a9dd6aea3b836f4dfff9f8193',
   bytes: 360757,
 } as const

@@ -6,7 +6,9 @@ import {
   showDamageState,
 } from '@game3d/sceneMutations'
 import { PlushGoonk3D } from '@game3d/PlushGoonk3D'
+import { mobGlbUrl } from '@game3d/resolveMobGlb'
 import { useClonedGltf } from '@game3d/useClonedGltf'
+import { publicUrl } from '@constants/publicUrl'
 
 const BLINK_MS = 140
 
@@ -51,12 +53,9 @@ export function MobModel3D(props: {
   damaged?: boolean
   shatter?: boolean
 }) {
-  if (
-    props.url === '/game/models/mobs/5.glb' ||
-    props.url === '/game/models/mobs/default.glb'
-  )
+  if (props.url === mobGlbUrl('5') || props.url === mobGlbUrl('default'))
     return <PlushGoonk3D seed={props.seed} />
-  if (props.url === '/game/models/mobs/6.glb')
+  if (props.url === mobGlbUrl('6'))
     return (
       <PlushGoonk3D
         seed={props.seed}
@@ -65,7 +64,7 @@ export function MobModel3D(props: {
         shatter={props.shatter}
       />
     )
-  if (props.url === '/game/models/player.glb')
+  if (props.url === publicUrl('game/models/player.glb'))
     return <PlushGoonk3D seed={props.seed} pink />
   return <GltfMobModel3D {...props} />
 }

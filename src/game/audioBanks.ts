@@ -1,3 +1,4 @@
+import { publicUrl } from '@constants/publicUrl'
 import type { MusicLabel, SoundLabel } from './types'
 
 /** DefineSprite_65 frame labels (`_root.sound(label)`) → DefineSound ids. */
@@ -67,5 +68,5 @@ export function readMutedPreference(): boolean {
 }
 
 export function soundUrl(soundId: number): string {
-  return `/game/sounds/${String(soundId)}.mp3`
+  return publicUrl(`game/sounds/${String(soundId)}.mp3`)
 }

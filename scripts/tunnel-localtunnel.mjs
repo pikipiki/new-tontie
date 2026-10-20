@@ -9,7 +9,6 @@ import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PORT = Number(process.env.TONTIE_DEV_PORT ?? 5173)
-const LOCAL = `http://127.0.0.1:${String(PORT)}`
 const startVite = !process.argv.includes('--no-dev')
 
 function waitForPort(port) {

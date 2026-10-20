@@ -5,9 +5,10 @@ import { ImpactRing3D } from '@game3d/Burst3D'
 import { useGameFx } from '@game3d/fx'
 import { PINK_FLIGHT_MS } from '@game3d/plushAnimation'
 import { applyHammerAppearance } from '@game3d/hammerAppearance'
+import { publicUrl } from '@constants/publicUrl'
 import { useClonedGltf } from '@game3d/useClonedGltf'
 
-const HAMMER_GLB = '/game/models/hammer.glb'
+const HAMMER_GLB = publicUrl('game/models/hammer.glb')
 
 /** The resting and flying player share the exact same equipped weapon. */
 export function HammerModel({

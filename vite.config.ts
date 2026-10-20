@@ -34,9 +34,8 @@ function ruffleAssetsPlugin(): Plugin {
   }
 }
 
-/** GitHub project Pages serves from `/repo-name/` (set GITHUB_PAGES=true in CI). */
-const pagesBase =
-  process.env.GITHUB_PAGES === 'true' ? '/new-tontie/' : undefined
+/** GitHub Pages: relative base so lazy chunks resolve next to `assets/` (see DEPLOY-FREE.md). */
+const pagesBase = process.env.GITHUB_PAGES === 'true' ? './' : undefined
 
 export default defineConfig({
   base: process.env.VITE_BASE_PATH ?? pagesBase ?? '/',

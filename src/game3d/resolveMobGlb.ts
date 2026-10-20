@@ -1,3 +1,4 @@
+import { publicUrl } from '@constants/publicUrl'
 import type { EnemySpawn } from '@game/types'
 import modelsManifest from '@reference/models.manifest.json'
 
@@ -40,7 +41,7 @@ export function mobModelKey(enemy: EnemySpawn): string {
 }
 
 export function mobGlbUrl(key: string): string {
-  return `/game/models/mobs/${key}.glb`
+  return publicUrl(`game/models/mobs/${key}.glb`)
 }
 
 export function mobGlbAvailable(key: string): boolean {

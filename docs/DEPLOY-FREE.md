@@ -14,7 +14,7 @@ Aucune solution **gratuite** ne garantit l’accès depuis la Russie : ça dépe
 
 ### URL à tester
 
-`https://pikipiki.github.io/new-tontie/`
+`https://pikipiki.github.io/new-tontie/` (build CI avec `GITHUB_PAGES=true` → `base: ./` + chemins `publicUrl()`)
 
 Envoie ce lien à ton amie. Si ça **timeout** comme Netlify, passe à l’option 2.
 

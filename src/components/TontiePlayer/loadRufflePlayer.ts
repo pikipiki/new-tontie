@@ -1,3 +1,4 @@
+import { publicUrl } from '@constants/publicUrl'
 import { CANONICAL_SWF, verifyCanonicalSwf } from '@/fidelity/swfManifest'
 
 interface RufflePlayerElement extends HTMLElement {
@@ -28,7 +29,10 @@ export async function loadRufflePlayer(
 
   const ruffleGlobal = window.RufflePlayer ?? {}
   window.RufflePlayer = ruffleGlobal
-  ruffleGlobal.config = { ...ruffleGlobal.config, publicPath: '/ruffle/' }
+  ruffleGlobal.config = {
+    ...ruffleGlobal.config,
+    publicPath: publicUrl('ruffle/'),
+  }
 
   await import('@ruffle-rs/ruffle')
 
