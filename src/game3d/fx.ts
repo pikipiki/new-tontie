@@ -6,6 +6,7 @@ import { HAMMER_STRIKE_FRAMES, FPS } from '@/game/spec'
 export const STRIKE_MS = (HAMMER_STRIKE_FRAMES / FPS) * 1000
 export const HIT_MS = 280
 export const KILL_MS = 560
+export const SCORE_POP_MS = 900
 export const MISS_MS = 420
 export const PICKUP_MS = 700
 export const DAMAGE_MS = 450
@@ -23,6 +24,8 @@ export interface HoleFx {
   /** Catalog frame of the enemy that was just defeated (kept for the pop-out animation). */
   killFrame: number | null
   killBomb: boolean
+  /** Score of the last kill, for the floating "+points" popup. */
+  killPoints: number
   missAt: number
   pickupAt: number
 }
@@ -50,6 +53,7 @@ export function createFx(): GameFx {
       killAt: NEVER,
       killFrame: null,
       killBomb: false,
+      killPoints: 0,
       missAt: NEVER,
       pickupAt: NEVER,
     }
@@ -92,6 +96,7 @@ export function recordEvent(
         slot.killAt = now
         slot.killFrame = event.frame ?? null
         slot.killBomb = event.sfx === 'bokan'
+        slot.killPoints = event.points ?? 0
       }
       break
     case 'miss':

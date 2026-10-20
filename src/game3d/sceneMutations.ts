@@ -1,7 +1,7 @@
 import {
   Color,
   Mesh,
-  MeshStandardMaterial,
+  MeshLambertMaterial,
   PerspectiveCamera,
   type Camera,
   type Object3D,
@@ -25,23 +25,30 @@ export function setNodesScaleY(nodes: readonly Object3D[], y: number): void {
   for (const n of nodes) n.scale.y = y
 }
 
+/** Damage-state variants baked in the GLB: `Intact*` nodes before the first hit, `Damaged*` after. */
+export function showDamageState(root: Object3D, damaged: boolean): void {
+  root.traverse((o) => {
+    if (o.name.startsWith('Intact')) o.visible = !damaged
+    else if (o.name.startsWith('Damaged')) o.visible = damaged
+  })
+}
+
+/** Recolours matching meshes; metallic tints get a faint self-glow in place of PBR reflections. */
 export function tintMeshesByPrefix(
   root: Object3D,
   prefix: string,
   color: string,
   metalness: number,
-  roughness: number,
 ): void {
   const tint = new Color(color)
   root.traverse((o) => {
     if (
       o instanceof Mesh &&
       o.name.startsWith(prefix) &&
-      o.material instanceof MeshStandardMaterial
+      o.material instanceof MeshLambertMaterial
     ) {
       o.material.color.copy(tint)
-      o.material.metalness = metalness
-      o.material.roughness = roughness
+      o.material.emissive.copy(tint).multiplyScalar(metalness * 0.25)
     }
   })
 }

@@ -32,7 +32,7 @@ OUT_MOBS = ROOT / "public/game/models/mobs"
 OUT_MODELS = ROOT / "public/game/models"
 MANIFEST = ROOT / "reference/models.manifest.json"
 
-TEX_SIZE = 128
+TEX_SIZE = 256
 
 # Must match src/game/layout.ts + src/game3d/layout3d.ts
 GAME_PX = 400.0
@@ -46,10 +46,6 @@ HOLE_POS = {
 HOLE_RADIUS = 0.3
 PIT_DEPTH = 1.1
 SLAB_THICK = 1.3
-TILE_W = 1.0
-TILE_D = 0.78
-TILE_H = 0.08
-
 
 # --------------------------------------------------------------------------- textures
 
@@ -98,7 +94,7 @@ def height_pattern(kind: str) -> list[float]:
         return _HEIGHTS[kind]
     s = TEX_SIZE
     if kind == "plush":
-        h = _mix((0.45, _value_noise(s, 16, 1)), (0.35, _value_noise(s, 42, 2)), (0.2, _value_noise(s, 128, 3)))
+        h = _mix((0.35, _value_noise(s, 16, 1)), (0.3, _value_noise(s, 42, 2)), (0.2, _value_noise(s, 128, 3)), (0.15, _value_noise(s, 256, 16)))
     elif kind == "rock":
         big = _value_noise(s, 6, 4)
         crack = _value_noise(s, 10, 5)
@@ -194,8 +190,9 @@ def material(
     emit: float = 0.0,
     bump: float = 0.6,
     color2: str | None = None,
+    sheen: float = 0.0,
 ) -> bpy.types.Material:
-    key = f"{name}|{color}|{pattern}|{color2}"
+    key = f"{name}|{color}|{pattern}|{color2}|{sheen}"
     if key in _MATS:
         return _MATS[key]
     mat = bpy.data.materials.new(name)
@@ -221,6 +218,11 @@ def material(
     if emit > 0:
         bsdf.inputs["Emission Color"].default_value = (*(srgb_to_linear(c) for c in rgb), 1.0)
         bsdf.inputs["Emission Strength"].default_value = emit
+    if sheen > 0:
+        # Velvet rim light of the plush fabric (exported as KHR_materials_sheen).
+        bsdf.inputs["Sheen Weight"].default_value = sheen
+        bsdf.inputs["Sheen Roughness"].default_value = 0.35
+        bsdf.inputs["Sheen Tint"].default_value = (*(min(1.0, srgb_to_linear(c) * 1.6 + 0.25) for c in rgb), 1.0)
     _MATS[key] = mat
     return mat
 
@@ -266,9 +268,9 @@ def cylinder(loc, r: float, depth: float, rot=(0, 0, 0), verts: int = 32) -> bpy
     return o
 
 
-def torus(loc, major: float, minor: float, rot=(0, 0, 0), seg: int = 40) -> bpy.types.Object:
+def torus(loc, major: float, minor: float, rot=(0, 0, 0), seg: int = 32, minor_seg: int = 8) -> bpy.types.Object:
     bpy.ops.mesh.primitive_torus_add(
-        major_radius=major, minor_radius=minor, location=loc, rotation=rot, major_segments=seg, minor_segments=12
+        major_radius=major, minor_radius=minor, location=loc, rotation=rot, major_segments=seg, minor_segments=minor_seg
     )
     o = _active()
     _apply_scale(o)
@@ -288,12 +290,12 @@ def box(loc, size, rot=(0, 0, 0), bevel: float = 0.0) -> bpy.types.Object:
     return o
 
 
-def capsule(p0, p1, r: float) -> list[bpy.types.Object]:
+def capsule(p0, p1, r: float, verts: int = 12) -> list[bpy.types.Object]:
     a, b = Vector(p0), Vector(p1)
     d = b - a
     rot = d.to_track_quat("Z", "Y").to_euler()
-    body = cylinder(tuple((a + b) / 2), r, d.length, rot=tuple(rot), verts=24)
-    return [body, sphere(tuple(a), r, 20, 10), sphere(tuple(b), r, 20, 10)]
+    body = cylinder(tuple((a + b) / 2), r, d.length, rot=tuple(rot), verts=verts)
+    return [body, sphere(tuple(a), r, verts, verts // 2), sphere(tuple(b), r, verts, verts // 2)]
 
 
 def join(objs: list[bpy.types.Object], name: str) -> bpy.types.Object:
@@ -336,6 +338,7 @@ def blob(
     smooth: int = 8,
     rocky: float = 0.0,
     uv_size: float = 0.5,
+    decimate: float = 0.25,
 ) -> bpy.types.Object:
     """Union of primitives → voxel remesh → (rock displace) → smooth → cube UV → material."""
     obj = join(parts, name)
@@ -357,7 +360,7 @@ def blob(
     sm.iterations = smooth
     _apply_mod(obj, sm)
     dec = obj.modifiers.new("Decimate", "DECIMATE")
-    dec.ratio = 0.45
+    dec.ratio = decimate
     _apply_mod(obj, dec)
     shade_smooth(obj)
     cube_uv(obj, uv_size)
@@ -662,14 +665,347 @@ def shop_stall() -> list[bpy.types.Object]:
     return out
 
 
+# --------------------------------------------------------------------------- Goonk plushies
+# Velvet plush family: pear body, drooping trunk nose, googly eyes, four-finger hands.
+
+
+def plush_mat(name: str, color: str, dark: str) -> bpy.types.Material:
+    return material(name, color, "plush", rough=0.9, bump=0.32, color2=dark, sheen=1.0)
+
+
+def googly(
+    center,
+    r: float,
+    look=(0.0, -0.25),
+    rig: str = "EyeRig",
+    turn: float = 0.0,
+    sclera_scale: float = 1.0,
+    pupil: float = 0.46,
+) -> bpy.types.Object:
+    """Toy googly eye: white oval dome, black pupil resting low, glossy highlight."""
+    sr = r * sclera_scale
+    sclera = solid(sphere((0, 0, 0), (sr, sr * 0.5, sr * 1.18), 24, 12), "Sclera", material("GooglyWhite", "#fbfbf6", rough=0.18), None)
+    lx, lz = look[0] * sr * 0.55, look[1] * sr * 0.6
+    k = max(0.0, 1 - (lx / sr) ** 2 - (lz / (sr * 1.18)) ** 2)
+    front = -sr * 0.5 * math.sqrt(k)
+    pr = sr * pupil
+    pupil_o = solid(sphere((lx, front + pr * 0.12, lz), (pr, pr * 0.28, pr), 16, 8), "Pupil", material("GooglyBlack", "#0a0a10", rough=0.12), None)
+    spec = solid(
+        sphere((lx - pr * 0.35, front - pr * 0.2, lz + pr * 0.4), (pr * 0.28, pr * 0.1, pr * 0.28), 8, 4),
+        "Spec",
+        material("GooglySpec", "#ffffff", rough=0.05, emit=1.2),
+        None,
+    )
+    e = empty(rig, center)
+    for o in (sclera, pupil_o, spec):
+        o.parent = e
+    e.rotation_euler = (0, 0, turn)
+    return e
+
+
+def trunk_parts(base, mid, tip, r0: float, r1: float, n: int = 10) -> list[bpy.types.Object]:
+    """Drooping trunk nose as a chain of spheres along a quadratic curve (merged by the body remesh)."""
+    a, b, c = Vector(base), Vector(mid), Vector(tip)
+    parts = []
+    for i in range(n + 1):
+        t = i / n
+        p = a * (1 - t) ** 2 + b * 2 * (1 - t) * t + c * t * t
+        r = r0 + (r1 - r0) * t
+        parts.append(sphere(tuple(p), r, 20, 10))
+    parts.append(sphere(tuple(c), (r1 * 1.15, r1 * 1.15, r1 * 0.95), 20, 10))
+    return parts
+
+
+def plush_arm(name: str, shoulder, elbow, hand, finger_dir, spread, mat, r: float = 0.042) -> bpy.types.Object:
+    """Soft arm ending in a three-finger plush hand (one blob, so seams vanish)."""
+    h = Vector(hand)
+    d = Vector(finger_dir).normalized()
+    s = Vector(spread).normalized()
+    parts = [*capsule(shoulder, elbow, r), *capsule(elbow, hand, r * 0.92), sphere(hand, (r * 1.25, r * 1.05, r * 1.15), 24, 12)]
+    for i in range(3):
+        off = (i - 1) * r * 0.78
+        base = h + s * off + d * r * 0.5
+        tip = base + d * r * (1.45 - abs(i - 1) * 0.2) + s * off * 0.5
+        parts += capsule(tuple(base), tuple(tip), r * 0.46)
+    return blob(parts, name, mat, voxel=0.0065, smooth=3, uv_size=0.25, decimate=0.1)
+
+
+def plush_body(parts: list[bpy.types.Object], mat) -> bpy.types.Object:
+    return blob(parts, "Body", mat, voxel=0.0095, smooth=6, uv_size=0.35, decimate=0.1)
+
+
+def pear(cz: float, w: float, d: float, h: float) -> list[bpy.types.Object]:
+    """Pear-shaped plush body: head dome over a wider belly, two little feet."""
+    return [
+        sphere((0, 0, cz + h * 0.18), (w * 0.9, d * 0.9, h * 0.62)),
+        sphere((0, 0, cz - h * 0.12), (w, d, h * 0.5)),
+        sphere((w * 0.42, -d * 0.35, 0.045), (w * 0.3, d * 0.38, 0.05)),
+        sphere((-w * 0.42, -d * 0.35, 0.045), (w * 0.3, d * 0.38, 0.05)),
+    ]
+
+
+def goonk_nose(zc: float, fwd: float = 0.0) -> list[bpy.types.Object]:
+    """Violet trunk: wide at the face, leaves it horizontally, then droops into a round bulb."""
+    return trunk_parts((0, -0.17 - fwd, zc), (0, -0.36 - fwd, zc), (0.0, -0.39 - fwd, zc - 0.17), 0.095, 0.045, n=14)
+
+
+def goonk_cone_nose(zc: float, length: float = 0.24, droop_deg: float = 30) -> list[bpy.types.Object]:
+    """Pink snout: straight thick cone pointing forward and slightly down."""
+    a = math.radians(droop_deg)
+    base = Vector((0, -0.17, zc))
+    tip = base + Vector((0, -math.cos(a), -math.sin(a))) * length
+    return trunk_parts(tuple(base), tuple((base + tip) / 2), tuple(tip), 0.1, 0.03, n=12)
+
+
+def goonk_ears(z: float, x: float) -> list[bpy.types.Object]:
+    return [sphere((side * x, 0.02, z), (0.07, 0.04, 0.075), rot=(0, side * 0.6, 0)) for side in (1, -1)]
+
+
+def goonk_grip_arms(fur, z: float, x: float) -> list[bpy.types.Object]:
+    """Long arms bent at the elbow, four-finger hands gripping the rim of the hole."""
+    return [
+        plush_arm(
+            "Arm",
+            (side * x, -0.02, z),
+            (side * (x + 0.12), -0.07, z - 0.1),
+            (side * (x + 0.07), -0.21, z - 0.17),
+            (side * 0.1, -0.75, -0.65),
+            (1, 0, 0.0),
+            fur,
+            r=0.036,
+        )
+        for side in (1, -1)
+    ]
+
+
+VIOLET = ("#7f52dc", "#5631b4")
+
+
+def goonk_violet() -> list[bpy.types.Object]:
+    """Violet Goonk plush (replaces the green Tontie, catalog frame 5)."""
+    fur = plush_mat("VioletPlush", *VIOLET)
+    w, d, h, cz = 0.29, 0.26, 0.54, 0.3
+    parts = pear(cz, w, d, h) + goonk_ears(0.58, 0.17) + goonk_nose(0.4)
+    out = [plush_body(parts, fur)]
+    for side in (1, -1):
+        out.append(googly((side * 0.092, -0.215, 0.5), 0.056, look=(side * 0.75, -0.3), turn=side * 0.3))
+    out += goonk_grip_arms(fur, 0.34, 0.22)
+    return out
+
+
+BOWL_R, BOWL_H = 0.315, 0.36
+
+
+def bowl_r(z: float, R: float = BOWL_R, H: float = BOWL_H) -> float:
+    """Outer radius of the upside-down rice bowl at height z above the rim."""
+    r0 = R * 0.46
+    k = max(0.0, 1 - (z / H) ** 2)
+    return r0 + (R - r0) * math.sqrt(k)
+
+
+def bowl_point(rim_z: float, az: float, z: float, lift: float = 0.003) -> Vector:
+    r = bowl_r(z) + lift
+    return Vector((r * math.sin(az), -r * math.cos(az), rim_z + z))
+
+
+def lathe(name: str, profile: list[tuple[float, float]], steps: int = 48) -> bpy.types.Object:
+    """Surface of revolution around Z from (radius, z) points."""
+    bm = bmesh.new()
+    verts = [bm.verts.new((r, 0, z)) for r, z in profile]
+    edges = [bm.edges.new((a, b)) for a, b in zip(verts, verts[1:])]
+    bmesh.ops.spin(bm, geom=verts + edges, cent=(0, 0, 0), axis=(0, 0, 1), angle=math.tau, steps=steps, use_duplicate=False)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    mesh = bpy.data.meshes.new(name)
+    bm.to_mesh(mesh)
+    bm.free()
+    o = bpy.data.objects.new(name, mesh)
+    bpy.context.collection.objects.link(o)
+    return o
+
+
+def ceramic_bowl(rim_z: float) -> list[bpy.types.Object]:
+    """Upside-down rice bowl: glazed white wall, foot ring on top, blue rim bands and diamond chain."""
+    R, H = BOWL_R, BOWL_H
+    n = 14
+    prof = [(bowl_r(H * math.sin(i / n * math.pi / 2)), H * math.sin(i / n * math.pi / 2)) for i in range(n + 1)]
+    r0 = bowl_r(H)
+    prof += [(r0 - 0.002, H + 0.03), (r0 - 0.022, H + 0.03), (r0 - 0.024, H + 0.01), (0.0, H + 0.006)]
+    shell = lathe("BowlShell", prof, steps=36)
+    sol = shell.modifiers.new("Solidify", "SOLIDIFY")
+    sol.thickness = 0.014
+    sol.offset = 0
+    _apply_mod(shell, sol)
+    shell.location = (0, 0, rim_z)
+    bpy.ops.object.select_all(action="DESELECT")
+    shell.select_set(True)
+    bpy.context.view_layer.objects.active = shell
+    bpy.ops.object.transform_apply(location=True, rotation=False, scale=False)
+    glaze = material("Glaze", "#f7f3ea", rough=0.14)
+    blue = material("BowlBlue", "#2a4fae", rough=0.22)
+    out = [solid(shell, "BowlShell", glaze, None)]
+    lines = []
+    for z, t in ((0.006, 0.011), (0.02, 0.004), (0.092, 0.006), (H - 0.06, 0.005), (H - 0.012, 0.005)):
+        lines.append(torus((0, 0, rim_z + z), bowl_r(z) + 0.008, t, seg=40, minor_seg=5))
+    out.append(solid(join(lines, "BowlLines"), "BowlLines", blue, None))
+    marks = []
+    count = 22
+    for i in range(count):
+        az = i / count * math.tau
+        for z, size, tag in ((0.056, 0.042, "d"), (H - 0.036, 0.02, "s")):
+            p = bowl_point(rim_z, az, z, 0.009)
+            m = box(tuple(p), (size, 0.005, size), rot=(0, math.pi / 4, 0))
+            m.rotation_euler = (0, 0, az) if tag == "d" else (0, 0, az)
+            _apply_scale(m)
+            m.location = p
+            marks.append(m)
+        dot = sphere(tuple(bowl_point(rim_z, az + math.pi / count, 0.056, 0.006)), 0.009, 6, 4)
+        marks.append(dot)
+    out.append(solid(join(marks, "BowlDiamonds"), "BowlDiamonds", blue, None))
+    return out
+
+
+def bowl_crack(rim_z: float) -> bpy.types.Object:
+    """Zigzag fracture across the front of the bowl (shown after the first hammer hit)."""
+    H = BOWL_H
+    ink = material("Crack", "#3b3029", rough=0.6)
+    main = [(-0.05, 0.0), (0.12, 0.15), (-0.03, 0.32), (0.15, 0.5), (0.03, 0.68), (0.2, 0.86), (0.08, 0.98)]
+    branch = [(-0.03, 0.32), (-0.25, 0.42), (-0.2, 0.58), (-0.42, 0.68)]
+    twig = [(0.15, 0.5), (0.37, 0.44), (0.52, 0.58)]
+    segs = []
+    for path, r in ((main, 0.0075), (branch, 0.006), (twig, 0.005)):
+        pts = [bowl_point(rim_z, az, f * H, 0.009) for az, f in path]
+        for a, b in zip(pts, pts[1:]):
+            segs += capsule(tuple(a), tuple(b), r, verts=6)
+    chip = sphere(tuple(bowl_point(rim_z, -0.05, 0.01, -0.002)), (0.032, 0.012, 0.022), 12, 6)
+    segs.append(chip)
+    return solid(join(segs, "DamagedCrack"), "DamagedCrack", ink, None)
+
+
+def goonk_bowl() -> list[bpy.types.Object]:
+    """Violet Goonk wearing a rice bowl down to its eyes (replaces the red Tontie, frame 6, two hits).
+
+    Intact*: calm eyes peeking under the rim, hands on the hole rim. Damaged* (after the first
+    hit): cracked bowl, wide scared eyes, sweat drop, hands pressed to its cheeks.
+    """
+    fur = plush_mat("VioletPlush", *VIOLET)
+    w, d, h, cz = 0.29, 0.26, 0.5, 0.29
+    parts = pear(cz, w, d, h) + goonk_nose(0.33)
+    out = [plush_body(parts, fur)]
+    rim_z = 0.43
+    out.append(group("Bowl", ceramic_bowl(rim_z)))
+    out.append(group("DamagedBowl", [bowl_crack(rim_z)]))
+
+    calm = []
+    scared = []
+    for side in (1, -1):
+        calm.append(googly((side * 0.095, -0.222, 0.41), 0.054, look=(side * 0.7, -0.55), turn=side * 0.3))
+        scared.append(
+            googly((side * 0.098, -0.222, 0.395), 0.054, look=(side * 0.05, -0.1), rig="EyeRigScared", turn=side * 0.3, sclera_scale=1.2, pupil=0.24)
+        )
+    calm += goonk_grip_arms(fur, 0.3, 0.22)
+    for side in (1, -1):
+        scared.append(
+            plush_arm(
+                "Arm",
+                (side * 0.23, -0.04, 0.3),
+                (side * 0.32, -0.19, 0.22),
+                (side * 0.2, -0.26, 0.26),
+                (-side * 0.6, -0.3, 0.75),
+                (0, 0.4, 1),
+                fur,
+                r=0.036,
+            )
+        )
+    sweat = [sphere((0.22, -0.2, 0.39), (0.024, 0.016, 0.03), 16, 8), cone((0.22, -0.2, 0.425), 0.018, 0.0, 0.032, verts=16)]
+    scared.append(solid(join(sweat, "Sweat"), "Sweat", material("Sweat", "#8fd6ff", rough=0.08, emit=0.25), None))
+    mouth = sphere((0.085, -0.255, 0.19), (0.032, 0.012, 0.024), 16, 8)
+    scared.append(solid(mouth, "Mouth", material("Mouth", "#2a0f3a", rough=0.5), None))
+    out.append(group("IntactPose", calm))
+    out.append(group("DamagedPose", scared))
+    return out
+
+
+def star_prism(loc, r_out: float, r_in: float, depth: float, rot=(0, 0, 0)) -> bpy.types.Object:
+    bm = bmesh.new()
+    ring = []
+    for i in range(10):
+        a = math.pi / 2 + i * math.pi / 5
+        r = r_out if i % 2 == 0 else r_in
+        ring.append(bm.verts.new((r * math.cos(a), r * math.sin(a), 0)))
+    face = bm.faces.new(ring)
+    ext = bmesh.ops.extrude_face_region(bm, geom=[face])
+    bmesh.ops.translate(bm, verts=[v for v in ext["geom"] if isinstance(v, bmesh.types.BMVert)], vec=(0, 0, depth))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    mesh = bpy.data.meshes.new("Star")
+    bm.to_mesh(mesh)
+    bm.free()
+    o = bpy.data.objects.new("Star", mesh)
+    bpy.context.collection.objects.link(o)
+    o.location = loc
+    o.rotation_euler = rot
+    bev = o.modifiers.new("Bevel", "BEVEL")
+    bev.width = depth * 0.35
+    bev.segments = 2
+    _apply_mod(o, bev)
+    return o
+
+
+PLAYER_SHOULDER = (0.2, -0.02, 0.48)
+
+
+def goonk_pink() -> list[bpy.types.Object]:
+    """Pink Goonk plush with its yellow tuft: the player who swings the hammer.
+
+    The hammer arm lives in hammer.glb (pivot = shoulder); this body keeps the other arm.
+    """
+    fur = plush_mat("PinkPlush", "#f08cc8", "#cf63a6")
+    w, d, h, cz = 0.29, 0.26, 0.72, 0.4
+    parts = pear(cz, w, d, h) + goonk_cone_nose(0.57)
+    out = [plush_body(parts, fur)]
+    for side in (1, -1):
+        out.append(googly((side * 0.095, -0.21, 0.66), 0.056, look=(-side * 0.8, 0.0), turn=side * 0.3))
+    out.append(plush_arm("Arm", (-0.22, -0.02, 0.46), (-0.31, -0.07, 0.36), (-0.31, -0.14, 0.27), (-0.1, -0.6, -1.0), (0, 0, 1), fur))
+    hair = material("Tuft", "#ffd42e", "plush", rough=0.8, bump=0.4, sheen=0.5)
+    rnd = random.Random(7)
+    strands = []
+    for i in range(16):
+        a = i / 16 * math.tau
+        tilt = 0.35 + rnd.random() * 0.35
+        length = 0.09 + rnd.random() * 0.06
+        base = (math.cos(a) * 0.035, math.sin(a) * 0.03, 0.75)
+        strands.append(cone(base, 0.014, 0.0, length, rot=(math.sin(a) * -tilt, math.cos(a) * tilt, 0), verts=8))
+        strands[-1].location.z += length * 0.4
+    out.append(solid(join(strands, "Tuft"), "Tuft", hair, 0.2))
+    return out
+
+
+def export_player() -> dict:
+    clear_scene()
+    root = group("Player", goonk_pink())
+    objs = descendants(root)
+    out = OUT_MODELS / "player.glb"
+    export_selection(objs, out)
+    lo, hi = world_bbox(objs)
+    size = hi - lo
+    sx, sy, sz = PLAYER_SHOULDER
+    return {
+        "glb": str(out.relative_to(ROOT)),
+        "faces": sum(len(o.data.polygons) for o in objs if o.type == "MESH"),
+        "size": [round(size.x, 3), round(size.z, 3), round(size.y, 3)],
+        "shoulder": [sx, sz, -sy],
+        "source": "procedural/blender (Goonk pink plush)",
+    }
+
+
 # --------------------------------------------------------------------------- catalogue
 
 T = tontie
 
 MOBS: dict[str, list] = {
     # key: list of (builder, kwargs, loc, scale)
-    "5": [(T, dict(body="#008078", dark="#005850", iris="#1d2a9c"), (0, 0, 0), 1.0)],
-    "6": [(T, dict(body="#c80000", dark="#900000", iris="#6a0000", horn_color="#c8c8c8"), (0, 0, 0), 1.0)],
+    "5": [(goonk_violet, dict(), (0, 0, 0), 1.0)],
+    "6": [(goonk_bowl, dict(), (0, 0, 0), 1.0)],
     "7": [(spike_ball, dict(color="#009860"), (-0.08, 0, 0), 1.0)],
     "8": [(slime, dict(body="#a880f8", dark="#4000c0", radius=0.17, face=None, horn_color="#60c8f8"), (0, 0, 0), 1.0)],
     "9": [(T, dict(body="#f8c800", dark="#d8a000", iris="#707000", horn_color="#f8e8a8"), (0, 0, 0), 0.62)],
@@ -761,22 +1097,31 @@ def build_mob(key: str) -> dict:
 
 
 def export_hammer() -> dict:
-    """doka hammer (DefineSprite_261): upright mallet head at -X, handle to the grip at the origin."""
+    """Plush mallet held by the pink Goonk: upright pink head at -X, purple handle, yellow grip,
+    and the plush's arm from its shoulder (the swing pivot, at the origin) to the hand."""
     clear_scene()
     head_x = -0.52
-    metal = material("HeadMetal", "#eef0f2", "metal", rough=0.3, metal=0.8, bump=0.3)
-    band = material("Band", "#33363c", "metal", rough=0.4, metal=0.6)
-    wood = material("Grip", "#f2d060", "wood", rough=0.6)
-    head = cylinder((head_x, 0, 0), 0.13, 0.3, verts=48)
-    bev = head.modifiers.new("Bevel", "BEVEL")
-    bev.width = 0.02
-    bev.segments = 4
-    _apply_mod(head, bev)
-    objs = [solid(head, "HeadBody", metal, 0.3)]
-    objs.append(solid(join([cylinder((head_x, 0, z), 0.136, 0.035, verts=48) for z in (-0.11, 0.11)], "Band"), "Band", band, 0.3))
-    objs.append(solid(cylinder((-0.2, 0, 0), 0.038, 0.42, rot=(0, math.pi / 2, 0)), "Handle", wood, 0.3))
-    objs.append(solid(join([torus((x, 0, 0), 0.04, 0.008, rot=(0, math.pi / 2, 0), seg=24) for x in (-0.1, -0.06, -0.02)], "Wrap"), "Wrap", band, 0.3))
-    objs.append(solid(sphere((0.01, 0, 0), 0.05, 20, 10), "Knob", wood, 0.3))
+    pink = material("HeadPlush", "#ff86bd", "plush", rough=0.9, bump=0.3, color2="#e8609e", sheen=0.7)
+    handle = material("HandlePlush", "#8b55dc", "plush", rough=0.85, bump=0.6, sheen=0.5)
+    grip = material("GripPlush", "#f3c21f", "plush", rough=0.8, bump=0.6, sheen=0.4)
+    star = material("Star", "#ffd92e", "plush", rough=0.7, bump=0.4, sheen=0.4)
+    fur = plush_mat("PinkPlush", "#f49ccd", "#d873ad")
+    head = blob(
+        [cylinder((head_x, 0, 0), 0.145, 0.27, verts=48), sphere((head_x, 0, 0.12), (0.142, 0.142, 0.05)), sphere((head_x, 0, -0.12), (0.142, 0.142, 0.05))],
+        "HeadBody",
+        pink,
+        voxel=0.008,
+        smooth=4,
+        uv_size=0.3,
+    )
+    objs = [head]
+    objs.append(solid(torus((head_x, 0, 0), 0.146, 0.012, rot=(0, 0, 0), seg=48), "Seam", material("Seam", "#e45d9b", "plush"), 0.3))
+    for side in (-1, 1):
+        objs.append(solid(star_prism((head_x, side * 0.148, 0.0), 0.075, 0.033, 0.018, rot=(side * math.pi / 2, 0, 0)), "Star", star, 0.2))
+    objs.append(solid(cylinder((-0.27, 0, 0), 0.032, 0.26, rot=(0, math.pi / 2, 0)), "Handle", handle, 0.3))
+    objs.append(solid(cylinder((-0.11, 0, 0), 0.04, 0.1, rot=(0, math.pi / 2, 0)), "Grip", grip, 0.3))
+    objs.append(solid(sphere((-0.055, 0, 0), 0.045, 20, 10), "Knob", grip, 0.3))
+    objs.append(plush_arm("PlayerArm", (0.0, 0.0, 0.0), (-0.05, -0.05, -0.05), (-0.12, -0.02, 0.0), (0, 1, 0.15), (1, 0, 0), fur, r=0.04))
     out = OUT_MODELS / "hammer.glb"
     export_selection(objs, out)
     lo, hi = world_bbox(objs)
@@ -785,8 +1130,8 @@ def export_hammer() -> dict:
         "glb": str(out.relative_to(ROOT)),
         "faces": sum(len(o.data.polygons) for o in objs),
         "size": [round(size.x, 3), round(size.z, 3), round(size.y, 3)],
-        "pivot": "grip at origin, head centre at x = -0.52",
-        "source": "procedural/blender (DefineSprite_261 shape)",
+        "pivot": "player shoulder at origin, head centre at x = -0.52",
+        "source": "procedural/blender (Goonk plush mallet)",
     }
 
 
@@ -810,24 +1155,74 @@ def boolean(target: bpy.types.Object, cutter: bpy.types.Object, op: str) -> None
     bpy.data.objects.remove(cutter, do_unlink=True)
 
 
-def export_board() -> dict:
-    """Blender Z-up: X right, -Y = screen up (glTF -Z), Z up. Tile top at Z = 0."""
-    clear_scene()
-    grass = material("Grass", "#5aa81e", "grass", rough=0.95, color2="#86c934", bump=0.8)
-    tile = material("Tile", "#9fd84a", "tile", rough=0.8, color2="#b4e36a", bump=0.4)
-    pit = material("Pit", "#1a120b", rough=1.0)
-    rim = material("Rim", "#5b3d22", "wood", rough=0.8)
+TITLE_FONT = Path("/System/Library/Fonts/Supplemental/Arial Rounded Bold.ttf")
 
-    slab = box((0, 0, -TILE_H - SLAB_THICK / 2), (BOARD_WORLD, BOARD_WORLD, SLAB_THICK))
+
+def felt_text(text: str, loc, size: float, mat: bpy.types.Material, extrude: float, offset: float = 0.0) -> bpy.types.Object:
+    """Upright felt lettering facing the player (-Y), converted to a light mesh."""
+    cu = bpy.data.curves.new(f"Text_{text}", "FONT")
+    cu.body = text
+    if TITLE_FONT.exists():
+        cu.font = bpy.data.fonts.load(str(TITLE_FONT), check_existing=True)
+    cu.size = size
+    cu.align_x = "CENTER"
+    cu.align_y = "CENTER"
+    cu.extrude = extrude
+    cu.offset = offset
+    cu.bevel_depth = extrude * 0.4
+    cu.bevel_resolution = 0
+    cu.resolution_u = 2
+    o = bpy.data.objects.new(f"Text_{text}", cu)
+    bpy.context.collection.objects.link(o)
+    o.location = loc
+    o.rotation_euler = (math.pi / 2, 0, 0)
+    bpy.context.view_layer.objects.active = o
+    bpy.ops.object.select_all(action="DESELECT")
+    o.select_set(True)
+    bpy.ops.object.convert(target="MESH")
+    o = _active()
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
+    return solid(o, f"Text_{text}", mat, 0.2, smooth=False)
+
+
+def goonk_patch(x: float, y: float, z: float, r: float, body_mat, look: float = 1.0) -> list[bpy.types.Object]:
+    """Flat felt Goonk face sewn on a panel (facing -Y): head disc, googly eyes, drooping trunk."""
+    face = (math.pi / 2, 0, 0)
+    out = [solid(cylinder((x, y, z), r, 0.02, rot=face, verts=24), "PatchHead", body_mat, 0.2)]
+    for i, side in enumerate((1, -1)):
+        ex = x + side * r * 0.38
+        out.append(solid(cylinder((ex, y - 0.012, z + r * 0.25), r * 0.27, 0.012, rot=face, verts=16), "PatchEye", material("FeltWhite", "#fffaf0", "plush", rough=0.9, bump=0.3), 0.2))
+        px = ex + look * (side if i == 0 else side) * r * 0.1
+        out.append(solid(cylinder((px, y - 0.02, z + r * 0.2), r * 0.13, 0.008, rot=face, verts=12), "PatchPupil", material("FeltBlack", "#120a1c", rough=0.9), None))
+    out.append(solid(join(capsule((x, y - 0.015, z + r * 0.05), (x + r * 0.1, y - 0.015, z - r * 0.55), r * 0.17, verts=8), "PatchTrunk"), "PatchTrunk", body_mat, 0.2))
+    return out
+
+
+def table_mascot(builder, loc, scale: float, yaw: float) -> bpy.types.Object:
+    """A plush Goonk sitting on a corner of the table (static, part of board.glb)."""
+    return group(f"Mascot_{builder.__name__}", builder(), loc=loc, scale=scale, rot=(0, 0, yaw))
+
+
+def export_board() -> dict:
+    """Plush arcade table. Blender Z-up: X right, -Y = screen up (glTF -Z), Z up. Carpet top at Z = 0.
+
+    Pink fuzzy carpet, holes with padded violet plush rims and a deep dark-violet pit, a padded
+    violet bumper around the edge, glossy violet cabinet sides and yellow felt star appliques.
+    """
+    clear_scene()
+    carpet = material("Carpet", "#f3a3d3", "plush", rough=0.95, color2="#e07fbf", bump=1.1, sheen=0.8)
+    cabinet = material("Cabinet", "#5a2f9c", "tile", rough=0.4, color2="#6c3cb4", bump=0.2)
+    pit = material("Pit", "#1c0d2e", rough=1.0)
+    rim = material("RimPlush", "#8a5ad8", "plush", rough=0.9, bump=0.9, color2="#6a3cc0", sheen=0.9)
+    bumper = material("BumperPlush", "#7a48cc", "plush", rough=0.9, bump=0.9, color2="#5c30aa", sheen=0.9)
+    felt = material("StarFelt", "#ffd23a", "plush", rough=0.9, bump=0.6, sheen=0.5)
+    # the upright panel only catches the key light at a grazing angle, so it glows a little
+    back_plush = material("BackPlush", "#ffb8e0", "plush", rough=0.95, bump=1.0, color2="#f08cc8", sheen=0.8, emit=0.35)
+
+    slab = box((0, 0, -SLAB_THICK / 2), (BOARD_WORLD, BOARD_WORLD, SLAB_THICK))
     slab.name = "Board"
-    slab.data.materials.append(grass)
-    tiles = []
-    for hole in HOLE_POS:
-        cx, cz = hole_center(hole)
-        t = box((cx, -cz, -TILE_H / 2), (TILE_W, TILE_D, TILE_H))
-        t.data.materials.append(tile)
-        tiles.append(t)
-    boolean(slab, join(tiles, "Tiles"), "UNION")
+    slab.data.materials.append(carpet)
+    slab.data.materials.append(cabinet)
 
     cutters = []
     for hole in HOLE_POS:
@@ -837,32 +1232,92 @@ def export_board() -> dict:
         cutters.append(c)
     boolean(slab, join(cutters, "Cutters"), "DIFFERENCE")
 
-    rings = []
-    for hole in HOLE_POS:
-        cx, cz = hole_center(hole)
-        r = torus((cx, -cz, 0.0), HOLE_RADIUS + 0.025, 0.03, seg=40)
-        r.data.materials.append(rim)
-        rings.append(r)
-    boolean(slab, join(rings, "Rings"), "UNION")
-
-    pit_slots = {i for i, m in enumerate(slab.data.materials) if m and m.name.startswith("Pit")}
-    pit_centers = [p.center for p in slab.data.polygons if p.material_index in pit_slots]
+    slots = {m.name.split(".")[0]: i for i, m in enumerate(slab.data.materials) if m}
+    pit_slot, carpet_slot, cab_slot = slots["Pit"], slots["Carpet"], slots["Cabinet"]
+    for poly in slab.data.polygons:
+        if poly.material_index == carpet_slot and poly.normal.z < 0.5:
+            poly.material_index = cab_slot
+    pit_centers = [p.center for p in slab.data.polygons if p.material_index == pit_slot]
     for hole in HOLE_POS:
         cx, cz = hole_center(hole)
         near = sum(1 for c in pit_centers if (c.x - cx) ** 2 + (c.y + cz) ** 2 < (HOLE_RADIUS + 0.01) ** 2)
         if near < 40:
             raise RuntimeError(f"hole {hole} not cut ({near} pit faces)")
-
     slab.data.polygons.foreach_set("use_smooth", [False] * len(slab.data.polygons))
-    cube_uv(slab, 1.2)
+    cube_uv(slab, 0.6)
+
+    rings = [torus((cx, -cz, 0.012), HOLE_RADIUS + 0.035, 0.058, seg=28, minor_seg=6) for cx, cz in map(hole_center, HOLE_POS)]
+    rings_o = solid(join(rings, "HoleRims"), "HoleRims", rim, 0.3)
+
+    half = BOARD_WORLD / 2
+    rails = []
+    for x0, y0, x1, y1 in ((-half, -half, half, -half), (half, -half, half, half), (half, half, -half, half), (-half, half, -half, -half)):
+        rails += capsule((x0, y0, 0.03), (x1, y1, 0.03), 0.09)
+    bumper_o = solid(join(rails, "Bumper"), "Bumper", bumper, 0.4)
+
+    stars = [
+        star_prism((x, -z, 0.0), 0.11 * k, 0.05 * k, 0.012, rot=(0, 0, a))
+        for x, z, k, a in ((-1.65, 1.72, 1.0, 0.2), (0.0, 1.78, 0.75, -0.3), (1.65, 1.7, 0.9, 0.5), (-1.7, -1.55, 0.8, -0.2), (1.7, -1.6, 1.0, 0.1), (0.0, -1.6, 0.7, 0.4))
+    ]
+    stars_o = solid(join(stars, "Stars"), "Stars", felt, 0.2)
+
+    # cabinet back panel standing behind the far edge (Blender +Y), facing the player
+    back_h = 1.8
+    back = solid(box((0, half + 0.1, back_h / 2 - 0.1), (BOARD_WORLD + 0.18, 0.2, back_h + 0.2), bevel=0.04), "BackPanel", back_plush, 0.6, smooth=False)
+    frame = []
+    for p0, p1 in (((-half, half, 0.0), (-half, half, back_h)), ((half, half, 0.0), (half, half, back_h)), ((-half, half, back_h), (half, half, back_h))):
+        frame += capsule(p0, p1, 0.1)
+    frame_o = solid(join(frame, "BackFrame"), "BackFrame", bumper, 0.4)
+    back_stars = [
+        star_prism((x, half - 0.005, z), 0.16 * k, 0.07 * k, 0.02, rot=(math.pi / 2, 0, a))
+        for x, z, k, a in ((-1.78, 1.55, 0.75, 0.2), (1.78, 1.5, 0.8, -0.1), (-0.6, 0.38, 0.7, 0.5), (0.05, 0.42, 0.5, 0.0), (0.65, 0.36, 0.65, -0.3), (-1.65, 0.95, 0.5, -0.4), (1.65, 1.0, 0.55, 0.3))
+    ]
+    back_stars_o = solid(join(back_stars, "BackStars"), "BackStars", felt, 0.2)
+
+    # title in yellow felt letters on a violet felt outline
+    title_y = half - 0.02
+    title = felt_text("TONTIE", (0, title_y - 0.04, 1.0), 0.62, material("TitleFelt", "#ffd23a", "plush", rough=0.85, bump=0.6, sheen=0.5), 0.035)
+    outline = felt_text("TONTIE", (0, title_y - 0.01, 1.0), 0.62, material("TitleOutline", "#4b1f8f", "plush", rough=0.9, bump=0.5), 0.018, offset=0.035)
+
+    # little felt Goonk faces sewn on the back panel and on the front plate
+    violet_felt = material("PatchViolet", "#8a5ad8", "plush", rough=0.9, bump=0.6, color2="#6a3cc0", sheen=0.6)
+    pink_felt = material("PatchPink", "#ff8fcf", "plush", rough=0.9, bump=0.6, color2="#e46aae", sheen=0.6)
+    patches = []
+    for x, z, r, m, look in ((-1.32, 0.5, 0.2, violet_felt, 1.0), (1.32, 0.55, 0.2, pink_felt, -1.0), (-1.95, 0.25, 0.13, pink_felt, -1.0), (1.95, 0.28, 0.13, violet_felt, 1.0)):
+        patches += goonk_patch(x, half - 0.01, z, r, m, look)
+
+    # cream sign plate on the front of the cabinet, with Goonks and stars
+    plate_y = -half - 0.012
+    plate = solid(box((0, plate_y, -0.32), (2.9, 0.025, 0.42), bevel=0.02), "FrontPlate", material("PlateFelt", "#fff1dc", "plush", rough=0.9, bump=0.5), 0.3, smooth=False)
+    plate_trim = solid(join(capsule((-1.45, plate_y - 0.01, -0.11), (1.45, plate_y - 0.01, -0.11), 0.025) + capsule((-1.45, plate_y - 0.01, -0.53), (1.45, plate_y - 0.01, -0.53), 0.025), "PlateTrim"), "PlateTrim", bumper, 0.3)
+    for i, x in enumerate((-1.1, -0.37, 0.37, 1.1)):
+        patches += goonk_patch(x, plate_y - 0.015, -0.32, 0.14, violet_felt if i % 2 == 0 else pink_felt, 1.0 if i < 2 else -1.0)
+    plate_stars = [star_prism((x, plate_y - 0.02, -0.32), 0.07, 0.03, 0.012, rot=(math.pi / 2, 0, a)) for x, a in ((-1.33, 0.3), (-0.73, -0.2), (0.0, 0.1), (0.73, 0.4), (1.33, -0.3))]
+    plate_stars_o = solid(join(plate_stars, "PlateStars"), "PlateStars", felt, 0.2)
+
+    # quilted piping inset on the carpet
+    inset = half - 0.3
+    piping = []
+    for x0, y0, x1, y1 in ((-inset, -inset, inset, -inset), (inset, -inset, inset, inset), (inset, inset, -inset, inset), (-inset, inset, -inset, -inset)):
+        piping += capsule((x0, y0, 0.0), (x1, y1, 0.0), 0.022)
+    piping_o = solid(join(piping, "Piping"), "Piping", rim, 0.3)
+
+    # plush Goonks sitting on the far corners, gripping the bumper
+    mascots = [
+        table_mascot(goonk_violet, (-1.78, half - 0.22, 0.02), 0.62, 0.35),
+        table_mascot(goonk_violet, (1.8, half - 0.25, 0.02), 0.55, -0.4),
+    ]
+    mascot_objs = [o for m in mascots for o in descendants(m)]
+
+    objs = [slab, rings_o, bumper_o, stars_o, back, frame_o, back_stars_o, title, outline, plate, plate_trim, plate_stars_o, piping_o, *patches, *mascot_objs]
     out = OUT_MODELS / "board.glb"
-    export_selection([slab], out)
+    export_selection(objs, out)
     dims = slab.dimensions
     return {
         "glb": str(out.relative_to(ROOT)),
-        "faces": len(slab.data.polygons),
+        "faces": sum(len(o.data.polygons) for o in objs if o.type == "MESH"),
         "size": [round(dims.x, 3), round(dims.z, 3), round(dims.y, 3)],
-        "source": "procedural/blender (HOLE_POS)",
+        "source": "procedural/blender (HOLE_POS, plush arcade table)",
         "holeRadius": HOLE_RADIUS,
         "pitDepth": PIT_DEPTH,
     }
@@ -888,7 +1343,7 @@ def main() -> int:
             errors.append(f"{key}: {exc}")
             print("FAIL mob", key, exc)
 
-    for name, fn in (("hammer", export_hammer), ("board", export_board)):
+    for name, fn in (("hammer", export_hammer), ("player", export_player), ("board", export_board)):
         if only and name not in only:
             continue
         try:

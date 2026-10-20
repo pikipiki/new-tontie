@@ -161,12 +161,14 @@ describe('game events (sound / music / animation cues)', () => {
     place(s, 4, { catalogFrame: 6 })
     queueHit(s, 4)
     tick(s, neverSpawn)
-    expect(drainEvents(s)).toContainEqual({
-      kind: 'kill',
-      hole: 4,
-      frame: 6,
-      sfx: 'todome',
-    })
+    expect(drainEvents(s)).toContainEqual(
+      expect.objectContaining({
+        kind: 'kill',
+        hole: 4,
+        frame: 6,
+        sfx: 'todome',
+      }),
+    )
   })
 
   it('bombs explode with bokan', () => {

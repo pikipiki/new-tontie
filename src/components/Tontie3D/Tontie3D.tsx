@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
-import { useGLTF } from '@react-three/drei'
+import { PerformanceMonitor, useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { isMuted, setMuted } from '@/game/audio'
@@ -21,7 +21,20 @@ import { useTontieGame, type TontieGame } from '@/hooks/useTontieGame'
 import { CartoonTitle, LevelClearPanel, LevelIntroPanel } from './LevelPanels'
 import { CoinIcon } from './ShopIcon'
 import { ShopPanel } from './ShopPanel'
-import { INK, panelCard, PURPLE, RED, SKY, srOnly, YELLOW } from './theme'
+import {
+  CABINET_PINK,
+  CABINET_PINK_DEEP,
+  CABINET_VIOLET,
+  INK,
+  LED_RED,
+  LED_SCREEN,
+  panelCard,
+  PURPLE,
+  RED,
+  SKY,
+  srOnly,
+  YELLOW,
+} from './theme'
 import { GameButton, Overlay } from './ui'
 
 for (let i = 5; i <= 24; i++) {
@@ -32,6 +45,7 @@ for (const key of ['default', 'treasure', 'shop']) {
 }
 useGLTF.preload('/game/models/board.glb')
 useGLTF.preload('/game/models/hammer.glb')
+useGLTF.preload('/game/models/player.glb')
 
 const HEART_SLOTS = 8
 
@@ -67,7 +81,154 @@ function Hearts({ state }: { state: GameState }) {
   )
 }
 
-function TopBar({
+const HIGH_SCORE_KEY = 'tontie.highScore'
+
+function readHighScore(): number {
+  try {
+    return Number(localStorage.getItem(HIGH_SCORE_KEY)) || 0
+  } catch {
+    return 0
+  }
+}
+
+function useHighScore(score: number): number {
+  useEffect(() => {
+    if (score <= readHighScore()) return
+    try {
+      localStorage.setItem(HIGH_SCORE_KEY, String(score))
+    } catch {
+      // private mode: no stored record, the current score is shown instead
+    }
+  }, [score])
+  return Math.max(readHighScore(), score)
+}
+
+/** Black LED screen with red seven-segment-style digits over their unlit "8" ghosts. */
+function LedScreen({
+  label,
+  value,
+  digits,
+  ariaLabel,
+  role = 'img',
+  blink = false,
+}: {
+  label: string
+  value: number
+  digits: number
+  ariaLabel: string
+  role?: 'img' | 'timer'
+  blink?: boolean
+}) {
+  const text = String(Math.min(value, 10 ** digits - 1)).padStart(digits, ' ')
+  const led = {
+    fontFamily: '"Courier New", ui-monospace, monospace',
+    fontWeight: 700,
+    fontSize: { xs: 22, sm: 30 },
+    letterSpacing: '0.08em',
+    lineHeight: 1,
+    whiteSpace: 'pre',
+  } as const
+  return (
+    <Box role={role} aria-label={ariaLabel} sx={{ minWidth: 0 }}>
+      <Box
+        aria-hidden
+        sx={{
+          fontSize: { xs: 10, sm: 12 },
+          fontWeight: 900,
+          letterSpacing: 1,
+          color: LED_RED,
+          textAlign: 'center',
+          mb: 0.25,
+        }}
+      >
+        {label}
+      </Box>
+      <Box
+        aria-hidden
+        sx={{
+          position: 'relative',
+          px: 0.75,
+          py: 0.5,
+          bgcolor: LED_SCREEN,
+          border: `2px solid ${CABINET_PINK_DEEP}`,
+          borderRadius: '8px',
+          boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.9)',
+          textAlign: 'right',
+        }}
+      >
+        <Box sx={{ ...led, color: 'rgba(255,58,46,0.1)' }}>
+          {'8'.repeat(digits)}
+        </Box>
+        <Box
+          sx={{
+            ...led,
+            position: 'absolute',
+            inset: 0,
+            px: 0.75,
+            py: 0.5,
+            color: LED_RED,
+            textShadow: '0 0 6px rgba(255,58,46,0.85)',
+            animation: blink ? 'tontie-blink 0.5s steps(1) infinite' : 'none',
+          }}
+        >
+          {text}
+        </Box>
+      </Box>
+    </Box>
+  )
+}
+
+/** Pink velour marquee of the plush cabinet: time, score and high score screens. */
+function TopBar({ game }: { game: TontieGame }) {
+  const { t } = useTranslation()
+  const { state } = game
+  const seconds = Math.max(0, Math.ceil(state.roundFramesLeft / FPS))
+  const high = useHighScore(state.score)
+  return (
+    <Box
+      component="header"
+      sx={{ px: 1, pt: 'max(8px, env(safe-area-inset-top))', pb: 0.75 }}
+    >
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'auto 1fr 1fr',
+          gap: { xs: 0.75, sm: 1.5 },
+          p: { xs: 0.75, sm: 1 },
+          borderRadius: '18px',
+          background: `linear-gradient(180deg, ${CABINET_PINK} 0%, ${CABINET_PINK_DEEP} 100%)`,
+          border: `3px solid ${CABINET_VIOLET}`,
+          boxShadow:
+            'inset 0 2px 0 rgba(255,255,255,0.45), 0 4px 0 #3a1a70, 0 10px 24px rgba(0,0,0,0.45)',
+        }}
+      >
+        <LedScreen
+          label={t('game.hudTime')}
+          value={seconds}
+          digits={2}
+          role="timer"
+          ariaLabel={t('game.time', { s: seconds })}
+          blink={state.phase === 'playing' && seconds <= 5}
+        />
+        <LedScreen
+          label={t('game.hudScore')}
+          value={state.score}
+          digits={6}
+          ariaLabel={t('game.score', { n: state.score })}
+        />
+        <LedScreen
+          label={t('game.hudHigh')}
+          value={high}
+          digits={6}
+          ariaLabel={t('game.highScore', { n: high })}
+        />
+      </Box>
+    </Box>
+  )
+}
+
+/** Violet cabinet strip: lives, coins, level and the sound / pause buttons. */
+function BottomBar({
   game,
   muted,
   onToggleMute,
@@ -78,36 +239,30 @@ function TopBar({
 }) {
   const { t } = useTranslation()
   const { state } = game
-  const seconds = Math.max(0, Math.ceil(state.roundFramesLeft / FPS))
   return (
     <Box
-      component="header"
+      component="footer"
       sx={{
-        display: 'grid',
-        gridTemplateColumns: '1fr auto 1fr',
+        display: 'flex',
         alignItems: 'center',
-        gap: 1,
+        gap: 1.5,
         px: 1.5,
-        pt: 'max(8px, env(safe-area-inset-top))',
-        pb: 1,
+        pt: 0.75,
+        pb: 'max(8px, env(safe-area-inset-bottom))',
         color: '#fff',
-        textShadow: '0 2px 0 rgba(0,0,0,0.25)',
+        background: `linear-gradient(180deg, ${CABINET_VIOLET} 0%, #43208a 100%)`,
+        borderTop: `3px solid ${CABINET_PINK_DEEP}`,
+        boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)',
+        fontWeight: 900,
+        textShadow: '0 2px 0 rgba(0,0,0,0.3)',
       }}
     >
-      <Box
-        sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, minWidth: 0 }}
-      >
+      <Box sx={{ display: 'grid', gap: 0.25, minWidth: 0 }}>
         <Hearts state={state} />
         <Box
           aria-label={t('game.money', { n: state.money })}
           role="img"
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 0.5,
-            fontWeight: 900,
-            fontSize: 15,
-          }}
+          sx={{ display: 'flex', alignItems: 'center', gap: 0.5, fontSize: 15 }}
         >
           <CoinIcon size={16} />
           {state.money}
@@ -123,60 +278,22 @@ function TopBar({
         </Box>
       </Box>
       <Box
-        role="timer"
-        aria-label={t('game.time', { s: seconds })}
-        sx={{
-          fontWeight: 900,
-          fontSize: { xs: 34, sm: 40 },
-          lineHeight: 1,
-          fontVariantNumeric: 'tabular-nums',
-          color: seconds <= 5 ? '#ffe14d' : '#fff',
-        }}
+        sx={{ flex: 1, textAlign: 'center', fontSize: 15, letterSpacing: 1 }}
       >
-        {seconds}
+        {t('game.level', { n: state.level })}
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-        <GameButton
-          variant="icon"
-          label={muted ? t('game.soundOn') : t('game.soundOff')}
-          onClick={onToggleMute}
-        >
-          {muted ? '🔇' : '🔊'}
+      <GameButton
+        variant="icon"
+        label={muted ? t('game.soundOn') : t('game.soundOff')}
+        onClick={onToggleMute}
+      >
+        {muted ? '🔇' : '🔊'}
+      </GameButton>
+      {game.started && state.phase === 'playing' && (
+        <GameButton variant="icon" label={t('game.pause')} onClick={game.pause}>
+          ⏸
         </GameButton>
-        {game.started && state.phase === 'playing' && (
-          <GameButton
-            variant="icon"
-            label={t('game.pause')}
-            onClick={game.pause}
-          >
-            ⏸
-          </GameButton>
-        )}
-      </Box>
-    </Box>
-  )
-}
-
-function BottomBar({ state }: { state: GameState }) {
-  const { t } = useTranslation()
-  return (
-    <Box
-      component="footer"
-      sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        px: 2,
-        pt: 1,
-        pb: 'max(10px, env(safe-area-inset-bottom))',
-        color: INK,
-        bgcolor: 'rgba(255,255,255,0.92)',
-        fontWeight: 900,
-        fontSize: 15,
-        letterSpacing: 1,
-      }}
-    >
-      <span>{t('game.level', { n: state.level })}</span>
-      <span>{t('game.score', { n: state.score })}</span>
+      )}
     </Box>
   )
 }
@@ -330,6 +447,8 @@ export function Tontie3D() {
   const { t } = useTranslation()
   const game = useTontieGame()
   const [muted, setMutedState] = useState(isMuted)
+  /** Capped pixel density, dropped to 1 as soon as the frame rate sags. */
+  const [dpr, setDpr] = useState(() => Math.min(1.5, window.devicePixelRatio))
   const now = game.clock
 
   const toggleMute = () => {
@@ -359,16 +478,17 @@ export function Tontie3D() {
         WebkitTapHighlightColor: 'transparent',
       }}
     >
-      <TopBar game={game} muted={muted} onToggleMute={toggleMute} />
+      <TopBar game={game} />
       <Box sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
         <Canvas
-          shadows
           flat
-          dpr={[1, 2]}
+          dpr={dpr}
           gl={{
             alpha: false,
-            antialias: true,
+            // On dense screens the extra pixels already hide jaggies; MSAA would only cost fill rate.
+            antialias: window.devicePixelRatio < 2,
             powerPreference: 'high-performance',
+            stencil: false,
           }}
           camera={{
             position: CAMERA_POSITION,
@@ -378,6 +498,11 @@ export function Tontie3D() {
           }}
           style={{ position: 'absolute', inset: 0, touchAction: 'none' }}
         >
+          <PerformanceMonitor
+            onDecline={() => {
+              setDpr(1)
+            }}
+          />
           <GameFxContext.Provider value={game.fx}>
             <TontieScene3D state={game.state} now={now} onHit={game.hit} />
           </GameFxContext.Provider>
@@ -385,7 +510,7 @@ export function Tontie3D() {
         <DamageFlash fx={game.fx} now={now} />
         <Banner fx={game.fx} now={now} />
       </Box>
-      <BottomBar state={game.state} />
+      <BottomBar game={game} muted={muted} onToggleMute={toggleMute} />
       <HoleButtons game={game} />
       <Overlays game={game} now={now} />
     </Box>

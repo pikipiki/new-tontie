@@ -83,6 +83,50 @@ export function hammerSwing(t: number): { angle: number; scale: number } {
   return { angle: HAMMER_RAISED * k, scale: 1 - 0.9 * k }
 }
 
+/** hammer.glb: head centre this far along -X from the pivot (the player's shoulder). */
+export const HAMMER_REACH = 0.52
+export const HAMMER_HEAD_HALF_HEIGHT = 0.16
+/** player.glb shoulder (glTF local, feet at y = 0) where the hammer arm attaches. */
+export const PLAYER_SHOULDER: readonly [number, number, number] = [
+  0.2, 0.48, 0.02,
+]
+/** The pink Goonk turns towards the hole while still showing its face to the camera. */
+export const PLAYER_YAW = -0.95
+/** Towards the camera, so the head lands on the front of the monster rather than inside it. */
+export const HAMMER_LANE_Z = 0.1
+/** The pink Goonk hovers with its feet this high above the top of its target. */
+export const PLAYER_HOVER = 0.14
+
+export interface StrikePose {
+  /** Shoulder pivot, relative to the hole centre at board level. */
+  pivot: [number, number, number]
+  /** Extra downward tilt (radians, +Z) when the target is below the shoulder. */
+  tilt: number
+  /** player.glb origin (feet, hovering), relative to the hole centre at board level. */
+  body: [number, number, number]
+}
+
+/**
+ * Where the pink Goonk stands and swings from so the mallet head lands on `hitY`
+ * (top of the monster, or the pit when empty). It floats above its target and swings down.
+ */
+export function strikePose(hitY: number): StrikePose {
+  const [sx, sy, sz] = PLAYER_SHOULDER
+  const headY = hitY + HAMMER_HEAD_HALF_HEIGHT + 0.01
+  const pivotY = hitY + PLAYER_HOVER + sy
+  const tilt = Math.asin(Math.min(1, (pivotY - headY) / HAMMER_REACH))
+  const pivotX = HAMMER_REACH * Math.cos(tilt)
+  const cos = Math.cos(PLAYER_YAW)
+  const sin = Math.sin(PLAYER_YAW)
+  const shoulderX = sx * cos + sz * sin
+  const shoulderZ = -sx * sin + sz * cos
+  return {
+    pivot: [pivotX, pivotY, HAMMER_LANE_Z],
+    tilt,
+    body: [pivotX - shoulderX, pivotY - sy, HAMMER_LANE_Z - shoulderZ],
+  }
+}
+
 export const BOARD_WIDTH = 4.2
 export const BOARD_DEPTH = 4.2
 /** World Y of the tile tops (board.glb tile top is at local y = 0). */

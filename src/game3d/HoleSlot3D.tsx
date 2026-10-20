@@ -2,7 +2,14 @@ import type { ThreeEvent } from '@react-three/fiber'
 import type { GameState, HoleIndex } from '@/game/types'
 import { Burst3D } from './Burst3D'
 import { BURSTS } from './burstStyles'
-import { HIT_MS, KILL_MS, MISS_MS, PICKUP_MS, useGameFx } from './fx'
+import {
+  HIT_MS,
+  KILL_MS,
+  MISS_MS,
+  PICKUP_MS,
+  SCORE_POP_MS,
+  useGameFx,
+} from './fx'
 import { HammerStrike3D } from './HammerStrike3D'
 import { KillPop3D } from './KillPop3D'
 import {
@@ -14,6 +21,7 @@ import {
   moleLiftWorld,
 } from './layout3d'
 import { MoleCharacter3D } from './MoleCharacter3D'
+import { ScorePop3D } from './ScorePop3D'
 import { catalogFrameGlbKey, mobGlbHeight, mobGlbKey } from './resolveMobGlb'
 
 const EMPTY_TAP_HEIGHT = 0.18
@@ -90,6 +98,9 @@ export function HoleSlot3D({
             position={[0, 0.35, 0]}
           />
         </>
+      )}
+      {now - fx.killAt < SCORE_POP_MS && fx.killPoints > 0 && (
+        <ScorePop3D key={fx.killAt} points={fx.killPoints} />
       )}
       {now - fx.hitAt < HIT_MS && (
         <Burst3D

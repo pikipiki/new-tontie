@@ -74,8 +74,7 @@ export function Burst3D({
       {style.shape === 'star' && <octahedronGeometry args={[1, 0]} />}
       {style.shape === 'puff' && <icosahedronGeometry args={[1, 1]} />}
       {style.shape === 'cube' && <boxGeometry args={[1, 1, 1]} />}
-      <meshStandardMaterial
-        roughness={0.5}
+      <meshLambertMaterial
         emissive="#ffffff"
         emissiveIntensity={style.shape === 'star' ? 0.35 : 0}
       />

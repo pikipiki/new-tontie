@@ -3,7 +3,7 @@
 :root {
   font-family: var(--font-family);
   color: var(--color-text);
-  background: #5a8fd4;
+  background: #24123a;
 }
 
 * {
@@ -150,6 +150,27 @@ body {
   }
 }
 
+@keyframes tontie-score-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.5);
+  }
+  18% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.2);
+  }
+  30% {
+    transform: translateY(-10px) scale(1);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-56px) scale(0.95);
+  }
+}
+
 @keyframes tontie-spin {
   to {
     transform: rotate(360deg);
@@ -191,5 +212,11 @@ body {
   *::after {
     animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+@keyframes tontie-blink {
+  50% {
+    opacity: 0.25;
   }
 }
