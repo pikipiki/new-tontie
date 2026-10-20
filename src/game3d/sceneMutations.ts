@@ -1,7 +1,7 @@
 import {
   Color,
   Mesh,
-  MeshLambertMaterial,
+  MeshStandardMaterial,
   PerspectiveCamera,
   type Camera,
   type Object3D,
@@ -45,10 +45,11 @@ export function tintMeshesByPrefix(
     if (
       o instanceof Mesh &&
       o.name.startsWith(prefix) &&
-      o.material instanceof MeshLambertMaterial
+      o.material instanceof MeshStandardMaterial
     ) {
       o.material.color.copy(tint)
-      o.material.emissive.copy(tint).multiplyScalar(metalness * 0.25)
+      o.material.metalness = metalness
+      o.material.roughness = metalness > 0 ? 0.28 : 0.85
     }
   })
 }

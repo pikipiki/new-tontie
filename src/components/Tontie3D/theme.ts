@@ -1,7 +1,7 @@
 /** EYEZMAZE up_boad palette: black ink outlines, purple tab text, yellow lettering. */
 export const INK = '#1c1530'
 /** Dim arcade hall behind the plush cabinet. */
-export const SKY = '#24123a'
+export const SKY = '#130f1b'
 /** Plush cabinet: pink velour bezel, violet trim, black LED screens with red segments. */
 export const CABINET_PINK = '#f29ad0'
 export const CABINET_PINK_DEEP = '#d86aae'

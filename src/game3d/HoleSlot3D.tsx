@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { ThreeEvent } from '@react-three/fiber'
 import type { GameState, HoleIndex } from '@/game/types'
 import { Burst3D } from './Burst3D'
@@ -38,6 +39,7 @@ export function HoleSlot3D({
   now: number
   onHit: (hole: HoleIndex) => void
 }) {
+  const [hovered, setHovered] = useState(false)
   const fx = useGameFx().holes[hole]
   const [x, , z] = holeWorldPosition(hole)
   const slot = state.holes[hole]
@@ -65,6 +67,15 @@ export function HoleSlot3D({
       <mesh
         position={[0, tapHeight / 2 - 0.05, 0]}
         onPointerDown={onPointerDown}
+        onPointerOver={() => {
+          setHovered(true)
+        }}
+        onPointerOut={() => {
+          setHovered(false)
+        }}
+        onPointerUp={() => {
+          setHovered(false)
+        }}
       >
         <boxGeometry args={[HOLE_TAP_WIDTH, tapHeight + 0.1, HOLE_TAP_DEPTH]} />
         <meshBasicMaterial
@@ -75,12 +86,26 @@ export function HoleSlot3D({
         />
       </mesh>
 
+      {(hovered || now - fx.strikeAt < 180) && (
+        <mesh position={[0, 0.04, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.39, 0.42, 48]} />
+          <meshBasicMaterial
+            color="#ffe091"
+            transparent
+            opacity={0.8}
+            toneMapped={false}
+            depthWrite={false}
+          />
+        </mesh>
+      )}
+
       <MoleCharacter3D
         hole={hole}
         enemy={slot.enemy}
         phase={slot.phase}
         koma={state.koma}
         phaseTicks={slot.phaseTicks}
+        extraHitRemaining={slot.nikaiRemaining}
       />
 
       <HammerStrike3D hole={hole} hitY={hitY} hammerLv={state.hammerLv} />

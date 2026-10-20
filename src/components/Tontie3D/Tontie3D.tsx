@@ -8,33 +8,14 @@ import { isMuted, setMuted } from '@/game/audio'
 import { HOLE_ORDER } from '@/game/layout'
 import { FPS } from '@/game/spec'
 import type { GameState, HoleIndex } from '@/game/types'
-import {
-  BANNER_MS,
-  DAMAGE_MS,
-  GameFxContext,
-  PANEL_OUT_MS,
-  type GameFx,
-} from '@/game3d/fx'
+import { BANNER_MS, DAMAGE_MS, GameFxContext, type GameFx } from '@/game3d/fx'
 import { BASE_FOV, CAMERA_POSITION } from '@/game3d/layout3d'
 import { TontieScene3D } from '@/game3d/TontieScene3D'
 import { useTontieGame, type TontieGame } from '@/hooks/useTontieGame'
 import { CartoonTitle, LevelClearPanel, LevelIntroPanel } from './LevelPanels'
 import { CoinIcon } from './ShopIcon'
 import { ShopPanel } from './ShopPanel'
-import {
-  CABINET_PINK,
-  CABINET_PINK_DEEP,
-  CABINET_VIOLET,
-  INK,
-  LED_RED,
-  LED_SCREEN,
-  panelCard,
-  PURPLE,
-  RED,
-  SKY,
-  srOnly,
-  YELLOW,
-} from './theme'
+import { INK, panelCard, PURPLE, RED, SKY, srOnly, YELLOW } from './theme'
 import { GameButton, Overlay } from './ui'
 
 for (let i = 5; i <= 24; i++) {
@@ -66,7 +47,7 @@ function Hearts({ state }: { state: GameState }) {
         max: state.hpMax,
       })}
       sx={{
-        fontSize: { xs: 18, sm: 22 },
+        fontSize: { xs: 16, sm: 22 },
         letterSpacing: 1,
         lineHeight: 1,
         color: '#ff3b6b',
@@ -103,126 +84,59 @@ function useHighScore(score: number): number {
   return Math.max(readHighScore(), score)
 }
 
-/** Black LED screen with red seven-segment-style digits over their unlit "8" ghosts. */
-function LedScreen({
-  label,
-  value,
-  digits,
-  ariaLabel,
-  role = 'img',
-  blink = false,
-}: {
-  label: string
-  value: number
-  digits: number
-  ariaLabel: string
-  role?: 'img' | 'timer'
-  blink?: boolean
-}) {
-  const text = String(Math.min(value, 10 ** digits - 1)).padStart(digits, ' ')
-  const led = {
-    fontFamily: '"Courier New", ui-monospace, monospace',
-    fontWeight: 700,
-    fontSize: { xs: 22, sm: 30 },
-    letterSpacing: '0.08em',
-    lineHeight: 1,
-    whiteSpace: 'pre',
-  } as const
+/** Accessible mirror of the live displays mounted on the 3D cabinet. */
+function TopBar({ game, high }: { game: TontieGame; high: number }) {
+  const { t } = useTranslation()
+  const seconds = Math.max(0, Math.ceil(game.state.roundFramesLeft / FPS))
   return (
-    <Box role={role} aria-label={ariaLabel} sx={{ minWidth: 0 }}>
-      <Box
-        aria-hidden
-        sx={{
-          fontSize: { xs: 10, sm: 12 },
-          fontWeight: 900,
-          letterSpacing: 1,
-          color: LED_RED,
-          textAlign: 'center',
-          mb: 0.25,
-        }}
-      >
-        {label}
-      </Box>
-      <Box
-        aria-hidden
-        sx={{
-          position: 'relative',
-          px: 0.75,
-          py: 0.5,
-          bgcolor: LED_SCREEN,
-          border: `2px solid ${CABINET_PINK_DEEP}`,
-          borderRadius: '8px',
-          boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.9)',
-          textAlign: 'right',
-        }}
-      >
-        <Box sx={{ ...led, color: 'rgba(255,58,46,0.1)' }}>
-          {'8'.repeat(digits)}
-        </Box>
-        <Box
-          sx={{
-            ...led,
-            position: 'absolute',
-            inset: 0,
-            px: 0.75,
-            py: 0.5,
-            color: LED_RED,
-            textShadow: '0 0 6px rgba(255,58,46,0.85)',
-            animation: blink ? 'tontie-blink 0.5s steps(1) infinite' : 'none',
-          }}
-        >
-          {text}
-        </Box>
-      </Box>
+    <Box component="header" sx={srOnly}>
+      <span role="timer" aria-label={t('game.time', { s: seconds })}>
+        {seconds}
+      </span>
+      <span aria-label={t('game.score', { n: game.state.score })}>
+        {game.state.score}
+      </span>
+      <span aria-label={t('game.highScore', { n: high })}>{high}</span>
     </Box>
   )
 }
 
-/** Pink velour marquee of the plush cabinet: time, score and high score screens. */
-function TopBar({ game }: { game: TontieGame }) {
+function WelcomePanel({ game }: { game: TontieGame }) {
   const { t } = useTranslation()
-  const { state } = game
-  const seconds = Math.max(0, Math.ceil(state.roundFramesLeft / FPS))
-  const high = useHighScore(state.score)
   return (
     <Box
-      component="header"
-      sx={{ px: 1, pt: 'max(8px, env(safe-area-inset-top))', pb: 0.75 }}
+      sx={{
+        position: 'absolute',
+        bottom: 'max(106px, calc(env(safe-area-inset-bottom) + 94px))',
+        left: { xs: '50%', sm: 'auto' },
+        right: { xs: 'auto', sm: 24 },
+        transform: { xs: 'translateX(-50%)', sm: 'none' },
+        zIndex: 3,
+        width: { xs: 'min(calc(100% - 32px), 490px)', sm: 'min(44vw, 490px)' },
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        p: '14px 18px',
+        borderRadius: '22px',
+        color: '#fff0e7',
+        background: 'rgba(38, 21, 40, 0.88)',
+        backdropFilter: 'blur(18px)',
+        border: '1px solid rgba(255, 196, 215, .26)',
+        boxShadow: '0 12px 44px #100b1880',
+      }}
     >
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'auto 1fr 1fr',
-          gap: { xs: 0.75, sm: 1.5 },
-          p: { xs: 0.75, sm: 1 },
-          borderRadius: '18px',
-          background: `linear-gradient(180deg, ${CABINET_PINK} 0%, ${CABINET_PINK_DEEP} 100%)`,
-          border: `3px solid ${CABINET_VIOLET}`,
-          boxShadow:
-            'inset 0 2px 0 rgba(255,255,255,0.45), 0 4px 0 #3a1a70, 0 10px 24px rgba(0,0,0,0.45)',
-        }}
-      >
-        <LedScreen
-          label={t('game.hudTime')}
-          value={seconds}
-          digits={2}
-          role="timer"
-          ariaLabel={t('game.time', { s: seconds })}
-          blink={state.phase === 'playing' && seconds <= 5}
-        />
-        <LedScreen
-          label={t('game.hudScore')}
-          value={state.score}
-          digits={6}
-          ariaLabel={t('game.score', { n: state.score })}
-        />
-        <LedScreen
-          label={t('game.hudHigh')}
-          value={high}
-          digits={6}
-          ariaLabel={t('game.highScore', { n: high })}
-        />
+      <Box sx={{ flex: 1, textAlign: 'left' }}>
+        <Box sx={{ fontWeight: 900, fontSize: 19 }}>{t('game.welcome')}</Box>
+        <Box sx={{ fontSize: 12, mt: 0.4, opacity: 0.7 }}>
+          {t('game.welcomeHint')}
+        </Box>
       </Box>
+      <GameButton
+        onClick={game.start}
+        label={t('game.startLabel', { n: game.state.level })}
+      >
+        ▶ {t('game.play')}
+      </GameButton>
     </Box>
   )
 }
@@ -243,16 +157,24 @@ function BottomBar({
     <Box
       component="footer"
       sx={{
+        position: 'absolute',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        bottom: 'max(16px, env(safe-area-inset-bottom))',
+        width: 'min(calc(100% - 32px), 680px)',
+        zIndex: 3,
+        borderRadius: '24px',
         display: 'flex',
         alignItems: 'center',
         gap: 1.5,
         px: 1.5,
         pt: 0.75,
-        pb: 'max(8px, env(safe-area-inset-bottom))',
+        pb: 0.75,
         color: '#fff',
-        background: `linear-gradient(180deg, ${CABINET_VIOLET} 0%, #43208a 100%)`,
-        borderTop: `3px solid ${CABINET_PINK_DEEP}`,
-        boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)',
+        background: 'rgba(28, 17, 36, .82)',
+        backdropFilter: 'blur(16px)',
+        border: '1px solid rgba(238,182,214,.2)',
+        boxShadow: '0 8px 32px #0d081b66',
         fontWeight: 900,
         textShadow: '0 2px 0 rgba(0,0,0,0.3)',
       }}
@@ -414,15 +336,14 @@ function EndPanel({
 function Overlays({ game, now }: { game: TontieGame; now: number }) {
   const { t } = useTranslation()
   const { state, fx } = game
+  if (!game.started) return <WelcomePanel game={game} />
   switch (state.phase) {
     case 'levelIntro':
       return (
         <LevelIntroPanel state={state} onStart={game.start} leaving={false} />
       )
     case 'playing':
-      return now - fx.startAt < PANEL_OUT_MS ? (
-        <LevelIntroPanel state={state} onStart={game.start} leaving />
-      ) : null
+      return null
     case 'levelClear':
       return <LevelClearPanel state={state} fx={fx} now={now} />
     case 'shop':
@@ -446,6 +367,10 @@ function Overlays({ game, now }: { game: TontieGame; now: number }) {
 export function Tontie3D() {
   const { t } = useTranslation()
   const game = useTontieGame()
+  const high = useHighScore(game.state.score)
+  const [photo] = useState(
+    () => new URLSearchParams(window.location.search).get('scene') === '1',
+  )
   const [muted, setMutedState] = useState(isMuted)
   /** Capped pixel density, dropped to 1 as soon as the frame rate sags. */
   const [dpr, setDpr] = useState(() => Math.min(1.5, window.devicePixelRatio))
@@ -478,10 +403,10 @@ export function Tontie3D() {
         WebkitTapHighlightColor: 'transparent',
       }}
     >
-      <TopBar game={game} />
+      <TopBar game={game} high={high} />
       <Box sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
         <Canvas
-          flat
+          shadows="percentage"
           dpr={dpr}
           gl={{
             alpha: false,
@@ -504,15 +429,24 @@ export function Tontie3D() {
             }}
           />
           <GameFxContext.Provider value={game.fx}>
-            <TontieScene3D state={game.state} now={now} onHit={game.hit} />
+            <TontieScene3D
+              state={game.state}
+              now={now}
+              onHit={game.hit}
+              high={high}
+              photo={photo}
+              attract={photo || !game.started}
+            />
           </GameFxContext.Provider>
         </Canvas>
         <DamageFlash fx={game.fx} now={now} />
         <Banner fx={game.fx} now={now} />
       </Box>
-      <BottomBar game={game} muted={muted} onToggleMute={toggleMute} />
+      {!photo && (
+        <BottomBar game={game} muted={muted} onToggleMute={toggleMute} />
+      )}
       <HoleButtons game={game} />
-      <Overlays game={game} now={now} />
+      {!photo && <Overlays game={game} now={now} />}
     </Box>
   )
 }

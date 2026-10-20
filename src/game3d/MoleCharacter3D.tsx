@@ -4,6 +4,7 @@ import type { Group } from 'three'
 import type { EnemySpawn, HoleIndex, MolePhase } from '@/game/types'
 import { fxProgress, HIT_MS, useGameFx } from './fx'
 import { MOB_TILT_X, moleLiftWorld } from './layout3d'
+import { plushIsFrightened } from './plushAnimation'
 import { MobModel3D } from './MobModel3D'
 import { mobGlbHeight, mobGlbKey, mobGlbUrl } from './resolveMobGlb'
 
@@ -23,19 +24,21 @@ export function MoleCharacter3D({
   phase,
   koma,
   phaseTicks,
+  extraHitRemaining,
 }: {
   hole: HoleIndex
   enemy: EnemySpawn
   phase: MolePhase
   koma: number
   phaseTicks: number
+  extraHitRemaining: number
 }) {
   const fx = useGameFx()
   const lift = useRef<Group>(null)
   const body = useRef<Group>(null)
   const key = mobGlbKey(enemy)
   /** Wounded but alive (e.g. the bowl Goonk after its first hit): cracked bowl, scared, trembling. */
-  const damaged = enemy.hp > 0 && enemy.hp < enemy.maxHp
+  const damaged = plushIsFrightened(enemy, extraHitRemaining)
   const target = moleLiftWorld(
     phase,
     koma,

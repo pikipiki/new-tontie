@@ -1,53 +1,50 @@
 import { useGLTF } from '@react-three/drei'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import {
   FrontSide,
   Mesh,
-  MeshLambertMaterial,
   SRGBColorSpace,
   type Group,
   type Material,
   type MeshStandardMaterial,
 } from 'three'
 
-/**
- * Cheap opaque Lambert copy for low-end phones: keeps the colour and normal maps of the Blender
- * export (the velour pile still reads) but drops the PBR / sheen shading.
- */
-function fixMaterial(mat: Material): MeshLambertMaterial {
-  const old = mat as MeshStandardMaterial
-  const map = old.map
-  if (map) {
-    map.colorSpace = SRGBColorSpace
-    map.needsUpdate = true
-  }
-  return new MeshLambertMaterial({
-    name: old.name,
-    map,
-    normalMap: old.normalMap,
-    normalScale: old.normalScale.clone(),
-    color: old.color.clone(),
-    emissive: old.emissive.clone(),
-    emissiveMap: old.emissiveMap,
-    transparent: false,
-    side: FrontSide,
-  })
-}
-
-/** Deep clone with per-instance materials, so tints never leak between instances. */
+/** Keep the exported velvet sheen, ceramic glaze and normal maps intact. */
 export function useClonedGltf(url: string): Group {
   const { scene } = useGLTF(url)
-  return useMemo(() => {
-    const clone = scene.clone(true)
-    clone.traverse((obj) => {
-      if (obj instanceof Mesh) {
-        const mesh = obj as Mesh
-        // A material array without geometry groups renders nothing, so keep single materials single.
-        mesh.material = Array.isArray(mesh.material)
-          ? mesh.material.map((m) => fixMaterial(m))
-          : fixMaterial(mesh.material)
+  const clone = useMemo(() => {
+    const root = scene.clone(true)
+    root.traverse((obj) => {
+      if (!(obj instanceof Mesh)) return
+      const copy = (source: MeshStandardMaterial) => {
+        const material = source.clone()
+        material.side = FrontSide
+        if (material.map) material.map.colorSpace = SRGBColorSpace
+        material.envMapIntensity = 0.65
+        return material
       }
+      obj.material = Array.isArray(obj.material)
+        ? obj.material.map((m: MeshStandardMaterial) => copy(m))
+        : copy(obj.material as MeshStandardMaterial)
+      obj.castShadow = true
+      obj.receiveShadow = true
     })
-    return clone
+    return root
   }, [scene])
+  useEffect(
+    () => () => {
+      clone.traverse((obj) => {
+        if (obj instanceof Mesh) {
+          const materials = Array.isArray(obj.material)
+            ? obj.material
+            : [obj.material]
+          materials.forEach((material: Material) => {
+            material.dispose()
+          })
+        }
+      })
+    },
+    [clone],
+  )
+  return clone
 }

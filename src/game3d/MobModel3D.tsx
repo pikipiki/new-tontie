@@ -5,6 +5,7 @@ import {
   setNodesScaleY,
   showDamageState,
 } from './sceneMutations'
+import { PlushGoonk3D } from './PlushGoonk3D'
 import { useClonedGltf } from './useClonedGltf'
 
 const BLINK_MS = 140
@@ -13,7 +14,7 @@ const BLINK_MS = 140
  * Blender mob with its eye rigs (nodes named `EyeRig*`) blinking on a per-instance rhythm.
  * `damaged` swaps the `Intact*` / `Damaged*` variants (e.g. the cracked bowl and scared face).
  */
-export function MobModel3D({
+function GltfMobModel3D({
   url,
   seed = 0,
   damaged = false,
@@ -38,4 +39,30 @@ export function MobModel3D({
   })
 
   return <primitive object={root} />
+}
+
+/** Photo-derived plush models replace the previous generic meshes for both first enemies. */
+export function MobModel3D(props: {
+  url: string
+  seed?: number
+  damaged?: boolean
+  shatter?: boolean
+}) {
+  if (
+    props.url === '/game/models/mobs/5.glb' ||
+    props.url === '/game/models/mobs/default.glb'
+  )
+    return <PlushGoonk3D seed={props.seed} />
+  if (props.url === '/game/models/mobs/6.glb')
+    return (
+      <PlushGoonk3D
+        seed={props.seed}
+        bowl
+        damaged={props.damaged}
+        shatter={props.shatter}
+      />
+    )
+  if (props.url === '/game/models/player.glb')
+    return <PlushGoonk3D seed={props.seed} pink />
+  return <GltfMobModel3D {...props} />
 }

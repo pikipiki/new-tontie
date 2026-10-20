@@ -145,6 +145,12 @@ export function syncStrikes(fx: GameFx, state: GameState, now: number): void {
   }
 }
 
+/** Interactive welcome cast uses the same single flying player as the live game. */
+export function previewStrike(fx: GameFx, hole: HoleIndex, now: number): void {
+  fx.holes[hole].strikeAt = now
+  fx.holes[hole].hitAt = now
+}
+
 export const GameFxContext = createContext<GameFx>(createFx())
 
 export function useGameFx(): GameFx {
