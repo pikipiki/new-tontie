@@ -1,6 +1,6 @@
-import { beginRound, createInitialState, drainEvents } from '@/game/engine'
-import type { GameEvent, GameState } from '@/game/types'
-import { playMusic, playSfx, setMusicPaused, stopMusic } from '@/game/audio'
+import { beginRound, createInitialState, drainEvents } from '@game/engine'
+import type { GameEvent, GameState } from '@game/types'
+import { playMusic, playSfx, setMusicPaused, stopMusic } from '@game/audio'
 import { createFx, recordEvent, syncStrikes, type GameFx } from '@game3d/fx'
 
 export function playEvents(
@@ -24,7 +24,11 @@ export function playEvents(
 export class GameSession {
   state: GameState = createInitialState()
   gameFx: GameFx = createFx()
-  readonly random = () => Math.random()
+  readonly random: () => number
+
+  constructor(random: () => number = Math.random) {
+    this.random = random
+  }
 
   /** A new run reopens the level 1 panel with its slide-in sound. */
   reset(): void {

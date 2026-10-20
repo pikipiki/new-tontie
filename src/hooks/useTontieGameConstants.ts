@@ -1,4 +1,4 @@
-import { SHOP_OFFERS } from '@/game/shop'
+import { SHOP_OFFERS } from '@game/shop'
 
 /** Shop grid: the offers, then EXIT in the last cell (3 columns). */
 export const SHOP_CELLS = SHOP_OFFERS.length + 1

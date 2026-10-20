@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import type { GameState, HoleIndex } from '@/game/types'
+import type { GameState, HoleIndex } from '@game/types'
 import {
   handleLevelIntroKey,
   handlePlayingKey,

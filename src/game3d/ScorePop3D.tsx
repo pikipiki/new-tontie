@@ -1,5 +1,5 @@
 import { Html } from '@react-three/drei'
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import { SCORE_POP_MS } from '@game3d/fx'
 
 const scene = themeColors.scene

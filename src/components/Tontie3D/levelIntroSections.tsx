@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import ButtonBase from '@mui/material/ButtonBase'
 import type { TFunction } from 'i18next'
-import type { EnemySpawn } from '@/game/types'
+import type { EnemySpawn } from '@game/types'
 import { catalogFrameGlbKey } from '@game3d/resolveMobGlb'
 import { MonsterPreview } from './MonsterPreview'
 import {

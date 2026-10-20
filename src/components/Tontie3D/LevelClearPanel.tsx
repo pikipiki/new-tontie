@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import { useTranslation } from 'react-i18next'
-import type { GameState } from '@/game/types'
+import type { GameState } from '@game/types'
 import type { GameFx } from '@game3d/fx'
 import {
   INK,

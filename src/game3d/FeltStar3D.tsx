@@ -1,4 +1,4 @@
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import { useMemo } from 'react'
 import { ExtrudeGeometry, Shape } from 'three'
 

@@ -1,4 +1,4 @@
-import type { GameState, HoleIndex } from '@/game/types'
+import type { GameState, HoleIndex } from '@game/types'
 import type { GameFx } from '@game3d/fx'
 
 export interface TontieGame {

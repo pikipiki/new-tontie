@@ -1,4 +1,5 @@
-import { themeColors } from '@/components/Tontie3D/theme'
+/** App shell tokens (MUI theme); palette source is `@game3d/theme`. */
+import { themeColors } from '@game3d/theme'
 
 export const designTokens = {
   colors: {

@@ -1,7 +1,7 @@
 import { RoundedBox } from '@react-three/drei'
 import { useEffect, useMemo } from 'react'
 import { CanvasTexture, SRGBColorSpace } from 'three'
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import { BOARD_SURFACE_Y } from '@game3d/layout3d'
 
 const scene = themeColors.scene

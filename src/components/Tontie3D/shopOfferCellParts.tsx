@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import type { TFunction } from 'i18next'
-import type { ShopOffer } from '@/game/shop'
+import type { ShopOffer } from '@game/shop'
 import { CoinIcon, ShopIcon } from './ShopIcon'
 import { cartoonText, INK, PAPER, RED, themeColors, YELLOW } from './theme'
 import { SHOP_FLASH_MS } from '@game3d/fx'

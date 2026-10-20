@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import type { HoleIndex } from '@game/types'
 import { ImpactRing3D } from '@game3d/Burst3D'
 import { useGameFx } from '@game3d/fx'

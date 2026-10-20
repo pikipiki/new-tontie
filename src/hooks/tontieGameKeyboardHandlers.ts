@@ -1,6 +1,6 @@
-import { numpadToHole } from '@/game/engine'
-import { SHOP_OFFERS } from '@/game/shop'
-import type { GameState, HoleIndex } from '@/game/types'
+import { numpadToHole } from '@game/engine'
+import { SHOP_OFFERS } from '@game/shop'
+import type { GameState, HoleIndex } from '@game/types'
 import {
   SHOP_CELLS,
   SHOP_EXIT_INDEX,

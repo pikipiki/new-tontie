@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { tick } from '@/game/engine'
-import { FPS } from '@/game/spec'
+import { tick } from '@game/engine'
+import { FPS } from '@game/spec'
 import type { GameSession } from './useTontieGameSession'
 import { MAX_CATCH_UP_MS } from './useTontieGameConstants'
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { installAudioLifecycle } from '@/game/audio'
+import { installAudioLifecycle } from '@game/audio'
 import { SHOP_CELLS, SHOP_EXIT_INDEX } from './useTontieGameConstants'
 import { useTontieGameActions } from './useTontieGameActions'
 import { useTontieGameKeyboard } from './useTontieGameKeyboard'

@@ -1,7 +1,7 @@
 import { useFrame } from '@react-three/fiber'
 import { useRef, type ReactNode } from 'react'
 import type { Group, Mesh } from 'three'
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import { pinkSnackPose } from '@game3d/plushAnimation'
 
 const plush = themeColors.plush

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ThreeEvent } from '@react-three/fiber'
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import type { GameState, HoleIndex } from '@game/types'
 import { useGameFx } from '@game3d/fx'
 import { HammerStrike3D } from '@game3d/HammerStrike3D'

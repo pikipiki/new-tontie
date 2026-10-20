@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SHOP_OFFERS } from '@/game/shop'
+import { SHOP_OFFERS } from '@game/shop'
 import { SHOP_FLASH_MS } from '@game3d/fx'
 import type { TontieGame } from '@/hooks/useTontieGame'
 import { CoinIcon } from './ShopIcon'

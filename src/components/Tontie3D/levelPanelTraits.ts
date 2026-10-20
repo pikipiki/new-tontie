@@ -1,5 +1,5 @@
-import { enemyFromCatalogFrame } from '@/game/combat'
-import { BOMB_FRAMES } from '@/game/engine'
+import { enemyFromCatalogFrame } from '@game/combat'
+import { BOMB_FRAMES } from '@game/engine'
 
 export function traitsFor(frame: number): string[] {
   const enemy = enemyFromCatalogFrame(frame)

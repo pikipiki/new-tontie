@@ -1,4 +1,4 @@
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import { useFrame } from '@react-three/fiber'
 
 const plush = themeColors.plush

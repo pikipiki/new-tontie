@@ -1,4 +1,4 @@
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import { BoxGeometry, Group, Mesh, MeshPhysicalMaterial, Texture } from 'three'
 import { describe, expect, it } from 'vitest'
 import { createInitialState } from '@game/engine'

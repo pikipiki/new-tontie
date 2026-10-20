@@ -4,7 +4,7 @@ import type { Group } from 'three'
 import { HOLE_ORDER } from '@game/layout'
 import type { HoleIndex } from '@game/types'
 import { previewStrike, useGameFx } from '@game3d/fx'
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import { FeltStar3D } from '@game3d/FeltStar3D'
 import {
   BOARD_SURFACE_Y,

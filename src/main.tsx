@@ -4,7 +4,7 @@ import '@/i18n'
 import i18n from '@/i18n'
 import './index.css'
 import App from './App.tsx'
-import { installReplayDevTools } from '@/game/replay-run'
+import { installReplayDevTools } from '@game/replay-run'
 
 installReplayDevTools()
 

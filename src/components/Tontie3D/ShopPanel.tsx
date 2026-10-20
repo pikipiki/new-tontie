@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import { useTranslation } from 'react-i18next'
-import { SHOP_OFFERS } from '@/game/shop'
+import { SHOP_OFFERS } from '@game/shop'
 import type { TontieGame } from '@/hooks/useTontieGame'
 import { INK, themeColors } from './theme'
 import { Overlay } from './ui'

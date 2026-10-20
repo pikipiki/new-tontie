@@ -1,4 +1,4 @@
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import { useEffect } from 'react'
 import { Mesh, MeshStandardMaterial, Object3D } from 'three'
 

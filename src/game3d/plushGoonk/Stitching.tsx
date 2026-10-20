@@ -1,4 +1,4 @@
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import { useEffect, useMemo } from 'react'
 
 const plush = themeColors.plush

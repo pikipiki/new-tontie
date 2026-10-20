@@ -1,7 +1,7 @@
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import { Color, InstancedMesh, Mesh, MeshBasicMaterial, Object3D } from 'three'
-import { WHITE } from '@/components/Tontie3D/theme'
+import { WHITE } from '@game3d/theme'
 import type { BurstStyle } from '@game3d/burstStyles'
 import { fxProgress } from '@game3d/fx'
 

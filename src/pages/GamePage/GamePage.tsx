@@ -1,5 +1,10 @@
 import { lazy, Suspense, useMemo } from 'react'
-import { Tontie3D } from '@components/Tontie3D/Tontie3D'
+
+const Tontie3D = lazy(() =>
+  import('@components/Tontie3D/Tontie3D').then((module) => ({
+    default: module.Tontie3D,
+  })),
+)
 
 const TontiePlayer = lazy(() =>
   import('@components/TontiePlayer/TontiePlayer').then((module) => ({
@@ -23,5 +28,9 @@ export function GamePage() {
       </Suspense>
     )
   }
-  return <Tontie3D />
+  return (
+    <Suspense fallback={null}>
+      <Tontie3D />
+    </Suspense>
+  )
 }

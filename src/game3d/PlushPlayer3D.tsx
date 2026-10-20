@@ -1,7 +1,7 @@
 import { RoundedBox } from '@react-three/drei'
 import { useRef } from 'react'
 import type { Group } from 'three'
-import { themeColors } from '@/components/Tontie3D/theme'
+import { themeColors } from '@game3d/theme'
 import type { GameState } from '@game/types'
 import { HammerModel } from '@game3d/HammerStrike3D'
 import {

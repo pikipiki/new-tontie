@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box'
 import ButtonBase from '@mui/material/ButtonBase'
 import { useTranslation } from 'react-i18next'
-import { offerHammerLv, offerOwned, SHOP_OFFERS } from '@/game/shop'
-import { hammerDamage } from '@/game/spec'
+import { offerHammerLv, offerOwned, SHOP_OFFERS } from '@game/shop'
+import { hammerDamage } from '@game/spec'
 import { SHOP_FLASH_MS } from '@game3d/fx'
 import { SHOP_EXIT_INDEX, type TontieGame } from '@/hooks/useTontieGame'
 import {
