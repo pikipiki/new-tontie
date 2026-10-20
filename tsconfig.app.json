@@ -11,6 +11,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
+      "@game": ["src/game"],
+      "@game/*": ["src/game/*"],
+      "@game3d": ["src/game3d"],
+      "@game3d/*": ["src/game3d/*"],
+      "@reference/*": ["reference/*"],
       "@components/*": ["src/components/*"],
       "@constants/*": ["src/constants/*"],
       "@hooks/*": ["src/hooks/*"],
@@ -28,5 +33,5 @@
     "noUnusedParameters": true
   },
   "include": ["src"],
-  "exclude": ["src/**/*.test.ts"]
+  "exclude": ["src/**/__tests__/**", "tests/**"]
 }

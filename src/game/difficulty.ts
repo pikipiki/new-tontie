@@ -18,7 +18,7 @@ export function applyLvSet(state: GameState): void {
 }
 
 export function applyLvSetBurst(state: GameState, times: number): void {
-  for (let i = 0; i < times; i++) {
+  for (let index = 0; index < times; index++) {
     applyLvSet(state)
   }
 }

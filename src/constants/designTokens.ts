@@ -1,18 +1,20 @@
+import { themeColors } from '@/components/Tontie3D/theme'
+
 export const designTokens = {
   colors: {
-    primary: '#e879a8',
-    secondary: '#8b5cf6',
-    background: '#f7e8ef',
-    paper: '#fff5fa',
-    board: '#f3b4d0',
-    hole: '#5c2d6e',
-    text: '#2d1b33',
-    textMuted: '#6b4a75',
-    border: 'rgba(45, 27, 51, 0.12)',
-    success: '#2e7d32',
-    error: '#c62828',
-    heroPink: '#f4a6c8',
-    enemyPurple: '#7c4dff',
+    primary: themeColors.cabinetPink,
+    secondary: themeColors.purple,
+    background: themeColors.paper,
+    paper: themeColors.paper,
+    board: themeColors.cabinetPinkDeep,
+    hole: themeColors.purpleDeep,
+    text: themeColors.ink,
+    textMuted: themeColors.purpleMuted,
+    border: themeColors.playerBorder,
+    success: themeColors.greenDeep,
+    error: themeColors.redDeep,
+    heroPink: themeColors.cabinetPink,
+    enemyPurple: themeColors.purple,
   },
   radius: {
     md: '16px',

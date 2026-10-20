@@ -19,7 +19,9 @@ export function runReplayState(script: ReplayScript): GameState {
   const state = createInitialState()
   const random = createSeededRandom(script.seed)
   const max = script.maxFrames ?? 60 * 17 * 25
-  const inputs = [...script.inputs].sort((a, b) => a.frame - b.frame)
+  const inputs = [...script.inputs].sort(
+    (left, right) => left.frame - right.frame,
+  )
   let inputIdx = 0
 
   for (let frame = 0; frame < max; frame++) {
@@ -44,8 +46,8 @@ export function runReplay(script: ReplayScript): string {
   return stateFingerprint(runReplayState(script))
 }
 
-export function installReplayDevTools(): void {
-  if (import.meta.env.DEV) {
+export function installReplayDevTools(enabled = import.meta.env.DEV): void {
+  if (enabled) {
     ;(
       window as unknown as { tontieReplay: typeof runReplayState }
     ).tontieReplay = runReplayState

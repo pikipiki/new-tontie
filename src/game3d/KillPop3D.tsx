@@ -1,10 +1,10 @@
 import { useFrame } from '@react-three/fiber'
 import { Suspense, useRef } from 'react'
 import type { Group } from 'three'
-import { fxProgress, KILL_MS } from './fx'
-import { MOB_TILT_X } from './layout3d'
-import { MobModel3D } from './MobModel3D'
-import { mobGlbUrl } from './resolveMobGlb'
+import { fxProgress, KILL_MS } from '@game3d/fx'
+import { MOB_TILT_X } from '@game3d/layout3d'
+import { MobModel3D } from '@game3d/MobModel3D'
+import { mobGlbUrl } from '@game3d/resolveMobGlb'
 
 /** todome: the defeated mob jumps out of the hole spinning, squashes and vanishes. */
 export function KillPop3D({
@@ -19,22 +19,35 @@ export function KillPop3D({
   const ref = useRef<Group>(null)
 
   useFrame(() => {
-    const g = ref.current
-    if (!g) return
-    const t = fxProgress(startAt, performance.now(), KILL_MS)
-    g.visible = t !== null
-    if (t === null) return
+    const group = ref.current
+    if (!group) return
+    const progress = fxProgress(startAt, performance.now(), KILL_MS)
+    group.visible = progress !== null
+    if (progress === null) return
     if (bomb) {
-      const s =
-        t < 0.3 ? 1 + t * 1.6 : Math.max(0, 1.48 * (1 - (t - 0.3) / 0.25))
-      g.scale.set(s, s * (t < 0.3 ? 1 - t * 0.5 : 1), s)
-      g.position.y = -0.12
+      const scale =
+        progress < 0.3
+          ? 1 + progress * 1.6
+          : Math.max(0, 1.48 * (1 - (progress - 0.3) / 0.25))
+      group.scale.set(
+        scale,
+        scale * (progress < 0.3 ? 1 - progress * 0.5 : 1),
+        scale,
+      )
+      group.position.y = -0.12
       return
     }
-    g.position.y = -0.12 + Math.sin(t * Math.PI) * 0.55
-    g.rotation.y = t * Math.PI * 3
-    const s = t < 0.15 ? 1 + t * 1.5 : (1 - (t - 0.15) / 0.85) * 1.22
-    g.scale.set(s, s * (t < 0.15 ? 1 - t * 2 : 1), s)
+    group.position.y = -0.12 + Math.sin(progress * Math.PI) * 0.55
+    group.rotation.y = progress * Math.PI * 3
+    const scale =
+      progress < 0.15
+        ? 1 + progress * 1.5
+        : (1 - (progress - 0.15) / 0.85) * 1.22
+    group.scale.set(
+      scale,
+      scale * (progress < 0.15 ? 1 - progress * 2 : 1),
+      scale,
+    )
   })
 
   return (

@@ -15,21 +15,24 @@ import {
 
 export function findNodesByPrefix(root: Object3D, prefix: string): Object3D[] {
   const found: Object3D[] = []
-  root.traverse((o) => {
-    if (o.name.startsWith(prefix)) found.push(o)
+  root.traverse((node) => {
+    if (node.name.startsWith(prefix)) found.push(node)
   })
   return found
 }
 
-export function setNodesScaleY(nodes: readonly Object3D[], y: number): void {
-  for (const n of nodes) n.scale.y = y
+export function setNodesScaleY(
+  nodes: readonly Object3D[],
+  scaleY: number,
+): void {
+  for (const node of nodes) node.scale.y = scaleY
 }
 
 /** Damage-state variants baked in the GLB: `Intact*` nodes before the first hit, `Damaged*` after. */
 export function showDamageState(root: Object3D, damaged: boolean): void {
-  root.traverse((o) => {
-    if (o.name.startsWith('Intact')) o.visible = !damaged
-    else if (o.name.startsWith('Damaged')) o.visible = damaged
+  root.traverse((node) => {
+    if (node.name.startsWith('Intact')) node.visible = !damaged
+    else if (node.name.startsWith('Damaged')) node.visible = damaged
   })
 }
 
@@ -41,15 +44,15 @@ export function tintMeshesByPrefix(
   metalness: number,
 ): void {
   const tint = new Color(color)
-  root.traverse((o) => {
+  root.traverse((node) => {
     if (
-      o instanceof Mesh &&
-      o.name.startsWith(prefix) &&
-      o.material instanceof MeshStandardMaterial
+      node instanceof Mesh &&
+      node.name.startsWith(prefix) &&
+      node.material instanceof MeshStandardMaterial
     ) {
-      o.material.color.copy(tint)
-      o.material.metalness = metalness
-      o.material.roughness = metalness > 0 ? 0.28 : 0.85
+      node.material.color.copy(tint)
+      node.material.metalness = metalness
+      node.material.roughness = metalness > 0 ? 0.28 : 0.85
     }
   })
 }

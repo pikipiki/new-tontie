@@ -16,10 +16,10 @@ export const SHOP_OFFERS: ShopOffer[] = [
     id: 'hammer2',
     label: 'Bronze hammer (lv2)',
     price: PRICES[0] ?? 10,
-    apply: (s) => {
-      if (s.hammerLv >= 2) return false
-      s.hammerLv = 2
-      s.bronze = true
+    apply: (state) => {
+      if (state.hammerLv >= 2) return false
+      state.hammerLv = 2
+      state.bronze = true
       return true
     },
   },
@@ -27,10 +27,10 @@ export const SHOP_OFFERS: ShopOffer[] = [
     id: 'hammer3',
     label: 'Silver hammer (lv3)',
     price: PRICES[1] ?? 50,
-    apply: (s) => {
-      if (s.hammerLv >= 3) return false
-      s.hammerLv = 3
-      s.silver = true
+    apply: (state) => {
+      if (state.hammerLv >= 3) return false
+      state.hammerLv = 3
+      state.silver = true
       return true
     },
   },
@@ -38,10 +38,10 @@ export const SHOP_OFFERS: ShopOffer[] = [
     id: 'hammer4',
     label: 'Gold hammer (lv4)',
     price: PRICES[2] ?? 80,
-    apply: (s) => {
-      if (s.hammerLv >= 4) return false
-      s.hammerLv = 4
-      s.gold = true
+    apply: (state) => {
+      if (state.hammerLv >= 4) return false
+      state.hammerLv = 4
+      state.gold = true
       return true
     },
   },
@@ -49,8 +49,8 @@ export const SHOP_OFFERS: ShopOffer[] = [
     id: 'heart1',
     label: 'Heart +8',
     price: PRICES[3] ?? 90,
-    apply: (s) => {
-      heal(s, 8)
+    apply: (state) => {
+      heal(state, 8)
       return true
     },
   },
@@ -58,9 +58,9 @@ export const SHOP_OFFERS: ShopOffer[] = [
     id: 'wing',
     label: 'Wing',
     price: PRICES[4] ?? 120,
-    apply: (s) => {
-      if (s.wing) return false
-      s.wing = true
+    apply: (state) => {
+      if (state.wing) return false
+      state.wing = true
       return true
     },
   },
@@ -68,8 +68,8 @@ export const SHOP_OFFERS: ShopOffer[] = [
     id: 'heart2',
     label: 'Heart +16',
     price: PRICES[5] ?? 150,
-    apply: (s) => {
-      heal(s, 16)
+    apply: (state) => {
+      heal(state, 16)
       return true
     },
   },
@@ -77,8 +77,8 @@ export const SHOP_OFFERS: ShopOffer[] = [
     id: 'continue',
     label: 'Continue +1',
     price: PRICES[6] ?? 200,
-    apply: (s) => {
-      s.continues += 1
+    apply: (state) => {
+      state.continues += 1
       return true
     },
   },
@@ -86,8 +86,8 @@ export const SHOP_OFFERS: ShopOffer[] = [
     id: 'heart3',
     label: 'Full heal',
     price: PRICES[7] ?? 300,
-    apply: (s) => {
-      s.hp = s.hpMax
+    apply: (state) => {
+      state.hp = state.hpMax
       return true
     },
   },
@@ -95,14 +95,14 @@ export const SHOP_OFFERS: ShopOffer[] = [
 
 /** Hammer tier an offer sells (hammer2 → 2), or null for consumables. */
 export function offerHammerLv(offer: ShopOffer): number | null {
-  const m = /^hammer(\d)$/.exec(offer.id)
-  return m ? Number(m[1]) : null
+  const match = /^hammer(\d)$/.exec(offer.id)
+  return match ? Number(match[1]) : null
 }
 
 /** Hammers at or below the current tier and an already-earned wing can't be bought again. */
 export function offerOwned(state: GameState, offer: ShopOffer): boolean {
-  const lv = offerHammerLv(offer)
-  if (lv !== null) return state.hammerLv >= lv
+  const hammerLevel = offerHammerLv(offer)
+  if (hammerLevel !== null) return state.hammerLv >= hammerLevel
   return offer.id === 'wing' && state.wing
 }
 

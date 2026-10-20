@@ -2,8 +2,8 @@ import { lazy, Suspense, useMemo } from 'react'
 import { Tontie3D } from '@components/Tontie3D/Tontie3D'
 
 const TontiePlayer = lazy(() =>
-  import('@components/TontiePlayer/TontiePlayer').then((m) => ({
-    default: m.TontiePlayer,
+  import('@components/TontiePlayer/TontiePlayer').then((module) => ({
+    default: module.TontiePlayer,
   })),
 )
 

@@ -1,9 +1,11 @@
 import { useFrame } from '@react-three/fiber'
 import { useRef, type ReactNode } from 'react'
 import type { Group, Mesh } from 'three'
-import { pinkSnackPose } from './plushAnimation'
+import { themeColors } from '@/components/Tontie3D/theme'
+import { pinkSnackPose } from '@game3d/plushAnimation'
 
-const SPRINKLES = ['#ffe48e', '#f8efe5', '#a9dce1', '#bc82da']
+const plush = themeColors.plush
+const SPRINKLES = plush.snackSprinkles
 
 function Donut({ bitten = false }: { bitten?: boolean }) {
   const arc = bitten ? Math.PI * 1.5 : Math.PI * 2
@@ -11,24 +13,34 @@ function Donut({ bitten = false }: { bitten?: boolean }) {
     <group rotation={[0, 0, Math.PI / 2]}>
       <mesh castShadow>
         <torusGeometry args={[0.088, 0.043, 12, 40, arc]} />
-        <meshStandardMaterial color="#d99a4f" roughness={0.82} />
+        <meshStandardMaterial color={plush.snackBread} roughness={0.82} />
       </mesh>
       <mesh position={[0, 0, 0.024]} scale={[1, 1, 0.65]} castShadow>
         <torusGeometry args={[0.088, 0.039, 12, 40, arc]} />
-        <meshPhysicalMaterial color="#f696bd" roughness={0.4} clearcoat={0.3} />
+        <meshPhysicalMaterial
+          color={plush.snackPink}
+          roughness={0.4}
+          clearcoat={0.3}
+        />
       </mesh>
-      {Array.from({ length: 16 }, (_, i) => {
-        const a = ((i + 0.35) * Math.PI) / 8
-        if (a > arc) return null
-        const r = 0.088 + Math.sin(i * 7) * 0.014
+      {Array.from({ length: 16 }, (_, sprinkleIndex) => {
+        const angle = ((sprinkleIndex + 0.35) * Math.PI) / 8
+        if (angle > arc) return null
+        const radius = 0.088 + Math.sin(sprinkleIndex * 7) * 0.014
         return (
           <mesh
-            key={i}
-            position={[Math.cos(a) * r, Math.sin(a) * r, 0.05]}
-            rotation={[0, 0, i * 2.4]}
+            key={sprinkleIndex}
+            position={[
+              Math.cos(angle) * radius,
+              Math.sin(angle) * radius,
+              0.05,
+            ]}
+            rotation={[0, 0, sprinkleIndex * 2.4]}
           >
             <capsuleGeometry args={[0.004, 0.016, 2, 6]} />
-            <meshStandardMaterial color={SPRINKLES[i % SPRINKLES.length]} />
+            <meshStandardMaterial
+              color={SPRINKLES[sprinkleIndex % SPRINKLES.length]}
+            />
           </mesh>
         )
       })}
@@ -67,10 +79,14 @@ export function PinkSnack3D({ children }: { children: ReactNode }) {
     }
     if (crumbs.current) {
       crumbs.current.visible = pose.crumb !== null
-      const t = pose.crumb ?? 0
-      crumbs.current.position.set(-0.16 - t * 0.025, 0.37 - t * t * 0.27, 0.35)
-      crumbs.current.rotation.z = t * 2
-      crumbs.current.scale.setScalar(1 - t * 0.7)
+      const crumbPhase = pose.crumb ?? 0
+      crumbs.current.position.set(
+        -0.16 - crumbPhase * 0.025,
+        0.37 - crumbPhase * crumbPhase * 0.27,
+        0.35,
+      )
+      crumbs.current.rotation.z = crumbPhase * 2
+      crumbs.current.scale.setScalar(1 - crumbPhase * 0.7)
     }
   })
   return (
@@ -94,13 +110,20 @@ export function PinkSnack3D({ children }: { children: ReactNode }) {
         scale={[0.03, 0.009, 0.009]}
       >
         <sphereGeometry args={[1, 16, 12]} />
-        <meshStandardMaterial color="#743456" roughness={0.9} />
+        <meshStandardMaterial color={plush.snackInk} roughness={0.9} />
       </mesh>
       <group ref={crumbs} visible={false}>
-        {[0, 1, 2].map((i) => (
-          <mesh key={i} position={[(i - 1) * 0.023, -i * 0.018, i * 0.009]}>
+        {[0, 1, 2].map((crumbIndex) => (
+          <mesh
+            key={crumbIndex}
+            position={[
+              (crumbIndex - 1) * 0.023,
+              -crumbIndex * 0.018,
+              crumbIndex * 0.009,
+            ]}
+          >
             <dodecahedronGeometry args={[0.009, 0]} />
-            <meshStandardMaterial color="#e8b66d" roughness={0.9} />
+            <meshStandardMaterial color={plush.snackChip} roughness={0.9} />
           </mesh>
         ))}
       </group>

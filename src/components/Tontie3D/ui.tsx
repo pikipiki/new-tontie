@@ -1,7 +1,14 @@
 import Box from '@mui/material/Box'
 import ButtonBase from '@mui/material/ButtonBase'
 import type { ReactNode } from 'react'
-import { INK } from './theme'
+import {
+  INK,
+  OVERLAY_BG_CLEAR,
+  OVERLAY_BG_DARK,
+  OVERLAY_BG_WOOD,
+  themeColors,
+  WHITE,
+} from './theme'
 
 export function GameButton({
   children,
@@ -36,17 +43,23 @@ export function GameButton({
         fontWeight: 900,
         fontSize: icon ? 22 : 18,
         letterSpacing: 0.5,
-        color: variant === 'primary' ? INK : '#fff',
-        bgcolor: variant === 'primary' ? '#ffe14d' : 'rgba(0,0,0,0.28)',
+        color: variant === 'primary' ? INK : WHITE,
+        bgcolor:
+          variant === 'primary'
+            ? themeColors.yellowBright
+            : themeColors.uiChipBg,
         border: variant === 'primary' ? `3px solid ${INK}` : 'none',
         boxShadow: variant === 'primary' ? `0 4px 0 ${INK}` : 'none',
-        outline: selected ? '3px solid #fff' : 'none',
+        outline: selected ? `3px solid ${WHITE}` : 'none',
         transition: 'transform 80ms ease, box-shadow 80ms ease',
         '&:active': {
           transform: 'translateY(3px)',
           boxShadow: variant === 'primary' ? `0 1px 0 ${INK}` : 'none',
         },
-        '&.Mui-focusVisible': { outline: '3px solid #fff', outlineOffset: 2 },
+        '&.Mui-focusVisible': {
+          outline: `3px solid ${WHITE}`,
+          outlineOffset: 2,
+        },
         '&.Mui-disabled': { opacity: 0.45 },
       }}
     >
@@ -67,12 +80,12 @@ export function Overlay({
   leaving?: boolean
   tone?: 'dark' | 'clear' | 'wood'
 }) {
-  const background =
-    tone === 'clear'
-      ? 'radial-gradient(ellipse at center, rgba(20,12,50,0.15) 0%, rgba(20,12,50,0.55) 100%)'
-      : tone === 'wood'
-        ? 'radial-gradient(ellipse at 50% 30%, rgba(60,30,10,0.55) 0%, rgba(25,10,0,0.88) 100%)'
-        : 'radial-gradient(ellipse at center, rgba(28,18,64,0.45) 0%, rgba(12,8,30,0.82) 100%)'
+  let background = OVERLAY_BG_DARK
+  if (tone === 'clear') {
+    background = OVERLAY_BG_CLEAR
+  } else if (tone === 'wood') {
+    background = OVERLAY_BG_WOOD
+  }
   return (
     <Box
       role="dialog"
@@ -94,7 +107,7 @@ export function Overlay({
         background,
         backdropFilter: 'blur(3px)',
         WebkitBackdropFilter: 'blur(3px)',
-        color: '#fff',
+        color: WHITE,
         textAlign: 'center',
         pointerEvents: leaving ? 'none' : 'auto',
         animation: leaving

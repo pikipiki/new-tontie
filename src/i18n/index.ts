@@ -1,17 +1,14 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import en from './en.json'
-import fr from './fr.json'
+import english from './en.json'
+import french from './fr.json'
 
 void i18n.use(initReactI18next).init({
   resources: {
-    fr: { translation: fr },
-    en: { translation: en },
+    fr: { translation: french },
+    en: { translation: english },
   },
-  lng:
-    typeof navigator !== 'undefined' && !navigator.language.startsWith('fr')
-      ? 'en'
-      : 'fr',
+  lng: 'en',
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
 })

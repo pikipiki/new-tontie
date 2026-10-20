@@ -1,3 +1,5 @@
+import { themeColors } from '@/components/Tontie3D/theme'
+
 export interface BurstStyle {
   count: number
   colors: readonly string[]
@@ -13,7 +15,7 @@ export interface BurstStyle {
 export const BURSTS = {
   hit: {
     count: 10,
-    colors: ['#ffffff', '#fff4a8', '#ffd84a'],
+    colors: themeColors.burst.hit,
     speed: 2.6,
     lift: 0.45,
     gravity: 4,
@@ -23,7 +25,7 @@ export const BURSTS = {
   },
   kill: {
     count: 18,
-    colors: ['#ffffff', '#ffe066', '#ff8fb1', '#8fe3ff'],
+    colors: themeColors.burst.kill,
     speed: 3.2,
     lift: 0.7,
     gravity: 6,
@@ -33,7 +35,7 @@ export const BURSTS = {
   },
   bomb: {
     count: 26,
-    colors: ['#ff6a00', '#ffd000', '#3a3a3a', '#ff2d00'],
+    colors: themeColors.burst.bomb,
     speed: 3.8,
     lift: 0.6,
     gravity: 3,
@@ -43,7 +45,7 @@ export const BURSTS = {
   },
   miss: {
     count: 10,
-    colors: ['#c9a46a', '#a7834f', '#e2cfa3'],
+    colors: themeColors.burst.miss,
     speed: 1.4,
     lift: 0.15,
     gravity: 1.5,
@@ -53,7 +55,7 @@ export const BURSTS = {
   },
   pickup: {
     count: 16,
-    colors: ['#ffe066', '#fff7c2', '#ffd000'],
+    colors: themeColors.burst.pickup,
     speed: 1.6,
     lift: 0.95,
     gravity: -0.6,

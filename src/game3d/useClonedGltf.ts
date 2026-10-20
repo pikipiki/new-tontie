@@ -24,7 +24,7 @@ export function useClonedGltf(url: string): Group {
         return material
       }
       obj.material = Array.isArray(obj.material)
-        ? obj.material.map((m: MeshStandardMaterial) => copy(m))
+        ? obj.material.map((material: MeshStandardMaterial) => copy(material))
         : copy(obj.material as MeshStandardMaterial)
       obj.castShadow = true
       obj.receiveShadow = true

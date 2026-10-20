@@ -12,20 +12,20 @@ export function rollSpawnDecision(
   random: () => number,
 ): SpawnDecision {
   const { level } = state
-  let k: number
+  let shopRoll: number
 
   if (level === 10 || level === 20) {
-    k = Math.floor(random() * 35)
+    shopRoll = Math.floor(random() * 35)
   } else if (state.shopL === 0) {
     const divisor = Math.max(1, state.lvUpSikakuK / FPS)
-    k = Math.floor(random() * divisor)
+    shopRoll = Math.floor(random() * divisor)
   } else {
-    k = 1
+    shopRoll = 1
   }
 
-  if (k !== 0) {
-    const k2 = Math.floor(random() * 80)
-    if (k2 !== 0) {
+  if (shopRoll !== 0) {
+    const treasureRoll = Math.floor(random() * 80)
+    if (treasureRoll !== 0) {
       const catalogFrame = Math.floor(random() * level + 5)
       return { type: 'mob', catalogFrame }
     }

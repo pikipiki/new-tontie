@@ -36,20 +36,27 @@ export function heal(state: GameState, amount: number): void {
 
 export function enemyFromCatalogFrame(frame: number): EnemySpawn {
   const row = catalogForFrame(frame)
-  const hp = row.hp ?? 1
+  const hitPoints = row.hp ?? 1
   const attack = row.attack ?? 0
   const score = row.score ?? 0
   const item = mapCatalogItem(row.item)
 
   if (row.enemyI === 'boss') {
-    return { kind: 'boss', hp, maxHp: hp, attack, score, catalogFrame: frame }
+    return {
+      kind: 'boss',
+      hp: hitPoints,
+      maxHp: hitPoints,
+      attack,
+      score,
+      catalogFrame: frame,
+    }
   }
 
   if (row.nikai || row.enemyI === 2) {
     return {
       kind: 'twoHit',
-      hp,
-      maxHp: hp,
+      hp: hitPoints,
+      maxHp: hitPoints,
       attack,
       score,
       catalogFrame: frame,
@@ -86,8 +93,8 @@ export function enemyFromCatalogFrame(frame: number): EnemySpawn {
 
   return {
     kind: 'mob',
-    hp,
-    maxHp: hp,
+    hp: hitPoints,
+    maxHp: hitPoints,
     attack,
     score,
     catalogFrame: frame,
@@ -109,6 +116,36 @@ export function treasureEnemy(random: () => number): EnemySpawn {
 
 export function shopEnemy(): EnemySpawn {
   return { kind: 'shop', hp: 1, maxHp: 1, attack: 0, score: 0 }
+}
+
+function forEachPacifiableHole(
+  state: GameState,
+  eachHole: (hole: HoleIndex, slot: GameState['holes'][HoleIndex]) => void,
+): void {
+  for (const hole of HOLES) {
+    const slot = state.holes[hole]
+    if (
+      slot.phase !== 'off' &&
+      slot.enemy.kind !== 'none' &&
+      slot.enemy.kind !== 'boss'
+    ) {
+      eachHole(hole, slot)
+    }
+  }
+}
+
+function applyAllCoin(state: GameState): void {
+  forEachPacifiableHole(state, (_hole, slot) => {
+    addCoin(state, Math.min(30, Math.floor(slot.enemy.score / 5)))
+    slot.enemy.attack = 0
+  })
+}
+
+function applyAllLife(state: GameState): void {
+  forEachPacifiableHole(state, (_hole, slot) => {
+    slot.enemy.attack = 0
+  })
+  heal(state, 12)
 }
 
 /** DefineSprite_669 takara() + item() */
@@ -136,30 +173,10 @@ export function applyItem(
       state.wing = true
       break
     case 'allcoin':
-      for (const h of HOLES) {
-        const slot = state.holes[h]
-        if (
-          slot.phase !== 'off' &&
-          slot.enemy.kind !== 'none' &&
-          slot.enemy.kind !== 'boss'
-        ) {
-          addCoin(state, Math.min(30, Math.floor(slot.enemy.score / 5)))
-          slot.enemy.attack = 0
-        }
-      }
+      applyAllCoin(state)
       break
     case 'alllife':
-      for (const h of HOLES) {
-        const slot = state.holes[h]
-        if (
-          slot.phase !== 'off' &&
-          slot.enemy.kind !== 'none' &&
-          slot.enemy.kind !== 'boss'
-        ) {
-          slot.enemy.attack = 0
-        }
-      }
-      heal(state, 12)
+      applyAllLife(state)
       break
     case 'hammer1':
       state.hammerLv = 1

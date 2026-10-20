@@ -1,5 +1,8 @@
 import { Html } from '@react-three/drei'
-import { SCORE_POP_MS } from './fx'
+import { themeColors } from '@/components/Tontie3D/theme'
+import { SCORE_POP_MS } from '@game3d/fx'
+
+const scene = themeColors.scene
 
 /** Yellow felt "+points" lettering that floats up out of the hole after a kill. */
 export function ScorePop3D({ points }: { points: number }) {
@@ -18,10 +21,10 @@ export function ScorePop3D({ points }: { points: number }) {
           fontSize: 30,
           lineHeight: 1,
           whiteSpace: 'nowrap',
-          color: '#ffd23a',
-          WebkitTextStroke: '5px #4b1f8f',
+          color: scene.scoreGold,
+          WebkitTextStroke: `5px ${scene.scoreStroke}`,
           paintOrder: 'stroke fill',
-          textShadow: '0 4px 0 #2a0f55, 0 0 14px rgba(255,140,220,0.65)',
+          textShadow: `0 4px 0 ${scene.scoreShadow}, 0 0 14px ${scene.scoreGlow}`,
           animation: `tontie-score-pop ${String(SCORE_POP_MS)}ms ease-out forwards`,
         }}
       >

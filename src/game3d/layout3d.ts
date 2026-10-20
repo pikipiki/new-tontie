@@ -1,5 +1,5 @@
-import { HOLE_POS } from '@/game/layout'
-import type { HoleIndex, MolePhase } from '@/game/types'
+import { HOLE_POS } from '@game/layout'
+import type { HoleIndex, MolePhase } from '@game/types'
 
 /** Flash board 400×400 → world units (board ≈ 4.2 wide). */
 const SCALE = 4.2 / 400
@@ -7,10 +7,10 @@ const ORIGIN_X = 200
 const ORIGIN_Z = 200
 
 export function holeWorldPosition(hole: HoleIndex): [number, number, number] {
-  const { x, y } = HOLE_POS[hole]
-  const wx = (x + 36 - ORIGIN_X) * SCALE
-  const wz = (y + 36 - ORIGIN_Z) * SCALE
-  return [wx, 0, wz]
+  const { x: gridX, y: gridY } = HOLE_POS[hole]
+  const worldX = (gridX + 36 - ORIGIN_X) * SCALE
+  const worldZ = (gridY + 36 - ORIGIN_Z) * SCALE
+  return [worldX, 0, worldZ]
 }
 
 /**
@@ -35,14 +35,14 @@ export function moleLiftWorld(
   if (phase === 'off') {
     return -depth
   }
-  const k = Math.min(1, phaseTicks / Math.max(1, koma))
+  const phaseBlend = Math.min(1, phaseTicks / Math.max(1, koma))
   if (phase === 'rising') {
-    return -depth + (1 - (1 - k) ** 2) * travel
+    return -depth + (1 - (1 - phaseBlend) ** 2) * travel
   }
   if (phase === 'top') {
     return -MOLE_TOP_SINK
   }
-  return -MOLE_TOP_SINK - k * k * travel
+  return -MOLE_TOP_SINK - phaseBlend * phaseBlend * travel
 }
 
 /** Fraction of the strike clip at which the head lands (impact ring / burst). */
@@ -50,37 +50,40 @@ export const HAMMER_IMPACT_T = 0.42
 const HAMMER_RAISED = -1.05
 const HAMMER_WINDUP = -1.45
 
-function easeInCubic(x: number): number {
-  return x * x * x
+function easeInCubic(value: number): number {
+  return value * value * value
 }
 
-function easeOutCubic(x: number): number {
-  return 1 - (1 - x) ** 3
+function easeOutCubic(value: number): number {
+  return 1 - (1 - value) ** 3
 }
 
 /**
  * Swing angle around the grip (radians about +Z; 0 = head flat on the target, negative = raised)
  * and visibility scale, for strike progress t in [0, 1].
  */
-export function hammerSwing(t: number): { angle: number; scale: number } {
-  const c = Math.min(1, Math.max(0, t))
-  if (c < 0.22) {
-    const k = easeOutCubic(c / 0.22)
+export function hammerSwing(progress: number): {
+  angle: number
+  scale: number
+} {
+  const clamped = Math.min(1, Math.max(0, progress))
+  if (clamped < 0.22) {
+    const blend = easeOutCubic(clamped / 0.22)
     return {
-      angle: HAMMER_RAISED + (HAMMER_WINDUP - HAMMER_RAISED) * k,
-      scale: 0.85 + 0.15 * k,
+      angle: HAMMER_RAISED + (HAMMER_WINDUP - HAMMER_RAISED) * blend,
+      scale: 0.85 + 0.15 * blend,
     }
   }
-  if (c < HAMMER_IMPACT_T) {
-    const k = easeInCubic((c - 0.22) / (HAMMER_IMPACT_T - 0.22))
-    return { angle: HAMMER_WINDUP * (1 - k), scale: 1 }
+  if (clamped < HAMMER_IMPACT_T) {
+    const blend = easeInCubic((clamped - 0.22) / (HAMMER_IMPACT_T - 0.22))
+    return { angle: HAMMER_WINDUP * (1 - blend), scale: 1 }
   }
-  if (c < 0.62) {
-    const k = (c - HAMMER_IMPACT_T) / (0.62 - HAMMER_IMPACT_T)
-    return { angle: -0.12 * Math.sin(k * Math.PI), scale: 1 }
+  if (clamped < 0.62) {
+    const blend = (clamped - HAMMER_IMPACT_T) / (0.62 - HAMMER_IMPACT_T)
+    return { angle: -0.12 * Math.sin(blend * Math.PI), scale: 1 }
   }
-  const k = easeOutCubic((c - 0.62) / 0.38)
-  return { angle: HAMMER_RAISED * k, scale: 1 - 0.9 * k }
+  const blend = easeOutCubic((clamped - 0.62) / 0.38)
+  return { angle: HAMMER_RAISED * blend, scale: 1 - 0.9 * blend }
 }
 
 /** hammer.glb: head centre this far along -X from the pivot (the player's shoulder). */
@@ -111,19 +114,23 @@ export interface StrikePose {
  * (top of the monster, or the pit when empty). It floats above its target and swings down.
  */
 export function strikePose(hitY: number): StrikePose {
-  const [sx, sy, sz] = PLAYER_SHOULDER
+  const [shoulderLocalX, shoulderLocalY, shoulderLocalZ] = PLAYER_SHOULDER
   const headY = hitY + HAMMER_HEAD_HALF_HEIGHT + 0.01
-  const pivotY = hitY + PLAYER_HOVER + sy
+  const pivotY = hitY + PLAYER_HOVER + shoulderLocalY
   const tilt = Math.asin(Math.min(1, (pivotY - headY) / HAMMER_REACH))
   const pivotX = HAMMER_REACH * Math.cos(tilt)
   const cos = Math.cos(PLAYER_YAW)
   const sin = Math.sin(PLAYER_YAW)
-  const shoulderX = sx * cos + sz * sin
-  const shoulderZ = -sx * sin + sz * cos
+  const shoulderX = shoulderLocalX * cos + shoulderLocalZ * sin
+  const shoulderZ = -shoulderLocalX * sin + shoulderLocalZ * cos
   return {
     pivot: [pivotX, pivotY, HAMMER_LANE_Z],
     tilt,
-    body: [pivotX - shoulderX, pivotY - sy, HAMMER_LANE_Z - shoulderZ],
+    body: [
+      pivotX - shoulderX,
+      pivotY - shoulderLocalY,
+      HAMMER_LANE_Z - shoulderZ,
+    ],
   }
 }
 

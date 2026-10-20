@@ -16,8 +16,8 @@ export interface CatalogEntry {
 
 const entries = catalogJson.entries as CatalogEntry[]
 const byFrame = new Map<number, CatalogEntry>()
-for (const e of entries) {
-  byFrame.set(e.frame, e)
+for (const entry of entries) {
+  byFrame.set(entry.frame, entry)
 }
 
 export function catalogForFrame(frame: number): CatalogEntry {
@@ -26,9 +26,9 @@ export function catalogForFrame(frame: number): CatalogEntry {
     return hit
   }
   let best = entries[0]
-  for (const e of entries) {
-    if (e.frame <= frame) {
-      best = e
+  for (const entry of entries) {
+    if (entry.frame <= frame) {
+      best = entry
     }
   }
   return best ?? { frame, hp: 1, attack: 10, score: 5 }

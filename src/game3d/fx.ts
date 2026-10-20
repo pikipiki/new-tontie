@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
-import type { GameEvent, GameState, HoleIndex } from '@/game/types'
-import { HAMMER_STRIKE_FRAMES, FPS } from '@/game/spec'
+import type { GameEvent, GameState, HoleIndex } from '@game/types'
+import { HAMMER_STRIKE_FRAMES, FPS } from '@game/spec'
 
 /** doka clip length (8 frames @ 17 fps). */
 export const STRIKE_MS = (HAMMER_STRIKE_FRAMES / FPS) * 1000
@@ -46,8 +46,8 @@ const NEVER = -1e9
 
 export function createFx(): GameFx {
   const holes = {} as Record<HoleIndex, HoleFx>
-  for (const h of HOLES) {
-    holes[h] = {
+  for (const holeIndex of HOLES) {
+    holes[holeIndex] = {
       strikeAt: NEVER,
       hitAt: NEVER,
       killAt: NEVER,
@@ -72,21 +72,21 @@ export function createFx(): GameFx {
 
 /** 0..1 while the effect started at `at` is running, otherwise null. */
 export function fxProgress(
-  at: number,
+  startedAt: number,
   now: number,
   durationMs: number,
 ): number | null {
-  const t = (now - at) / durationMs
-  return t >= 0 && t < 1 ? t : null
+  const progress = (now - startedAt) / durationMs
+  return progress >= 0 && progress < 1 ? progress : null
 }
 
 export function recordEvent(
-  fx: GameFx,
+  gameFx: GameFx,
   event: GameEvent,
   state: GameState,
   now: number,
 ): void {
-  const slot = event.hole === undefined ? null : fx.holes[event.hole]
+  const slot = event.hole === undefined ? null : gameFx.holes[event.hole]
   switch (event.kind) {
     case 'hit':
       if (slot) slot.hitAt = now
@@ -106,29 +106,33 @@ export function recordEvent(
       if (slot) slot.pickupAt = now
       break
     case 'damage':
-      fx.damageAt = now
+      gameFx.damageAt = now
       break
     case 'guard':
-      fx.guardAt = now
+      gameFx.guardAt = now
       break
     case 'intro':
-      fx.introAt = now
+      gameFx.introAt = now
       break
     case 'roundStart':
-      fx.startAt = now
+      gameFx.startAt = now
       break
     case 'levelUp':
-      fx.clearAt = now
+      gameFx.clearAt = now
       break
     case 'buy':
     case 'noBuy':
-      fx.shop = { offer: event.offer ?? -1, ok: event.kind === 'buy', at: now }
+      gameFx.shop = {
+        offer: event.offer ?? -1,
+        ok: event.kind === 'buy',
+        at: now,
+      }
       break
     case 'boss':
-      fx.banner = { kind: 'boss', level: state.level, at: now }
+      gameFx.banner = { kind: 'boss', level: state.level, at: now }
       break
     case 'hurry':
-      fx.banner = { kind: 'hurry', level: state.level, at: now }
+      gameFx.banner = { kind: 'hurry', level: state.level, at: now }
       break
     default:
       break
@@ -136,9 +140,13 @@ export function recordEvent(
 }
 
 /** Mirror engine hammer strikes (tap or ray gun) into wall-clock timestamps for smooth swings. */
-export function syncStrikes(fx: GameFx, state: GameState, now: number): void {
+export function syncStrikes(
+  gameFx: GameFx,
+  state: GameState,
+  now: number,
+): void {
   for (const strike of state.hammerStrikes) {
-    const slot = fx.holes[strike.hole]
+    const slot = gameFx.holes[strike.hole]
     if (strike.frame <= 1 && now - slot.strikeAt > STRIKE_MS * 0.5) {
       slot.strikeAt = now
     }
@@ -146,9 +154,13 @@ export function syncStrikes(fx: GameFx, state: GameState, now: number): void {
 }
 
 /** Interactive welcome cast uses the same single flying player as the live game. */
-export function previewStrike(fx: GameFx, hole: HoleIndex, now: number): void {
-  fx.holes[hole].strikeAt = now
-  fx.holes[hole].hitAt = now
+export function previewStrike(
+  gameFx: GameFx,
+  hole: HoleIndex,
+  now: number,
+): void {
+  gameFx.holes[hole].strikeAt = now
+  gameFx.holes[hole].hitAt = now
 }
 
 export const GameFxContext = createContext<GameFx>(createFx())

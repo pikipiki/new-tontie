@@ -4,9 +4,9 @@ import {
   findNodesByPrefix,
   setNodesScaleY,
   showDamageState,
-} from './sceneMutations'
-import { PlushGoonk3D } from './PlushGoonk3D'
-import { useClonedGltf } from './useClonedGltf'
+} from '@game3d/sceneMutations'
+import { PlushGoonk3D } from '@game3d/PlushGoonk3D'
+import { useClonedGltf } from '@game3d/useClonedGltf'
 
 const BLINK_MS = 140
 
@@ -33,8 +33,11 @@ function GltfMobModel3D({
   useFrame(() => {
     if (eyes.length === 0) return
     const period = (damaged ? 1300 : 2600) + (seed % 5) * 380
-    const t = (performance.now() + seed * 977) % period
-    const lid = t < BLINK_MS ? Math.abs(Math.cos((t / BLINK_MS) * Math.PI)) : 1
+    const blinkPhase = (performance.now() + seed * 977) % period
+    const lid =
+      blinkPhase < BLINK_MS
+        ? Math.abs(Math.cos((blinkPhase / BLINK_MS) * Math.PI))
+        : 1
     setNodesScaleY(eyes, Math.max(0.08, lid))
   })
 

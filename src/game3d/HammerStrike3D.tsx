@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
-import type { HoleIndex } from '@/game/types'
-import { ImpactRing3D } from './Burst3D'
-import { useGameFx } from './fx'
-import { PINK_FLIGHT_MS } from './plushAnimation'
-import { applyHammerAppearance } from './hammerAppearance'
-import { useClonedGltf } from './useClonedGltf'
+import { themeColors } from '@/components/Tontie3D/theme'
+import type { HoleIndex } from '@game/types'
+import { ImpactRing3D } from '@game3d/Burst3D'
+import { useGameFx } from '@game3d/fx'
+import { PINK_FLIGHT_MS } from '@game3d/plushAnimation'
+import { applyHammerAppearance } from '@game3d/hammerAppearance'
+import { useClonedGltf } from '@game3d/useClonedGltf'
 
 const HAMMER_GLB = '/game/models/hammer.glb'
 
@@ -40,7 +41,7 @@ export function HammerModel({
                 >
                   <sphereGeometry args={[1, 16, 10]} />
                   <meshPhysicalMaterial
-                    color="#fff3cc"
+                    color={themeColors.scene.hammerFlash}
                     roughness={0.7}
                     sheen={0.5}
                   />
@@ -63,11 +64,11 @@ export function HammerStrike3D({
   hitY: number
   hammerLv: number
 }) {
-  const fx = useGameFx()
+  const gameFx = useGameFx()
   return (
     <ImpactRing3D
-      startAt={fx.holes[hole].strikeAt + PINK_FLIGHT_MS * 0.42}
-      y={hitY + 0.01}
+      startAt={gameFx.holes[hole].strikeAt + PINK_FLIGHT_MS * 0.42}
+      posY={hitY + 0.01}
     />
   )
 }

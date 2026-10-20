@@ -1,14 +1,17 @@
 import { RoundedBox } from '@react-three/drei'
 import { useEffect, useMemo } from 'react'
 import { CanvasTexture, SRGBColorSpace } from 'three'
-import { BOARD_SURFACE_Y } from './layout3d'
+import { themeColors } from '@/components/Tontie3D/theme'
+import { BOARD_SURFACE_Y } from '@game3d/layout3d'
+
+const scene = themeColors.scene
 
 /** Local canvas lettering avoids font downloads and keeps the cabinet signage portable. */
 function Lettering({
   text,
   width,
   height,
-  color = '#e85657',
+  color = scene.signDefault,
   logo = false,
 }: {
   text: string
@@ -28,26 +31,19 @@ function Lettering({
     ctx.font = `900 ${logo ? '154' : '120'}px "Arial Rounded MT Bold", "Nunito", sans-serif`
     if (logo) {
       ctx.lineJoin = 'round'
-      const colors = [
-        '#c65c90',
-        '#945ba1',
-        '#d27a9e',
-        '#e6a65e',
-        '#9b68b7',
-        '#9561a7',
-        '#a473bd',
-      ]
+      const colors = scene.signPalette
       const spacing = 108
-      Array.from(text).forEach((char, i) => {
-        const x = canvas.width / 2 + (i - (text.length - 1) / 2) * spacing
-        ctx.strokeStyle = '#71364f'
+      Array.from(text).forEach((char, charIndex) => {
+        const charX =
+          canvas.width / 2 + (charIndex - (text.length - 1) / 2) * spacing
+        ctx.strokeStyle = scene.signStrokeDark
         ctx.lineWidth = 42
-        ctx.strokeText(char, x, 136)
-        ctx.strokeStyle = '#f5cfb6'
+        ctx.strokeText(char, charX, 136)
+        ctx.strokeStyle = scene.signStrokeLight
         ctx.lineWidth = 23
-        ctx.strokeText(char, x, 125)
-        ctx.fillStyle = colors[i % colors.length] ?? color
-        ctx.fillText(char, x, 125)
+        ctx.strokeText(char, charX, 125)
+        ctx.fillStyle = colors[charIndex % colors.length] ?? color
+        ctx.fillText(char, charX, 125)
       })
     } else {
       ctx.fillStyle = color
@@ -98,20 +94,24 @@ const DIGITS = [
   '1111011',
 ]
 
-function Digit({ digit, x }: { digit: string; x: number }) {
+function Digit({ digit, posX }: { digit: string; posX: number }) {
   const segments =
     (digit === ' ' ? undefined : DIGITS[Number(digit)]) ?? '0000000'
   return (
-    <group position={[x, 0, 0]} scale={[0.32, 0.39, 1]}>
-      {SEGMENTS.map(([sx, sy, vertical], i) => (
+    <group position={[posX, 0, 0]} scale={[0.32, 0.39, 1]}>
+      {SEGMENTS.map(([segmentPosX, segmentPosY, vertical], segmentIndex) => (
         <mesh
-          key={i}
-          position={[sx, sy, 0]}
+          key={segmentIndex}
+          position={[segmentPosX, segmentPosY, 0]}
           rotation={[0, 0, vertical ? Math.PI / 2 : 0]}
         >
           <planeGeometry args={[0.36, 0.065]} />
           <meshBasicMaterial
-            color={segments[i] === '1' ? '#ff493e' : '#35131a'}
+            color={
+              segments[segmentIndex] === '1'
+                ? themeColors.ledRedBright
+                : themeColors.ledOff
+            }
             toneMapped={false}
           />
         </mesh>
@@ -124,33 +124,33 @@ function Display({
   value,
   digits,
   label,
-  x,
+  posX,
   width,
 }: {
   value: number
   digits: number
   label: string
-  x: number
+  posX: number
   width: number
 }) {
   const string = String(
     Math.min(Math.max(0, Math.floor(value)), 10 ** digits - 1),
   ).padStart(digits, ' ')
   return (
-    <group position={[x, 0.97, 0.12]}>
+    <group position={[posX, 0.97, 0.12]}>
       <RoundedBox args={[width, 0.5, 0.025]} radius={0.045} smoothness={3}>
-        <meshStandardMaterial color="#481b25" roughness={0.6} />
+        <meshStandardMaterial color={scene.signFrame} roughness={0.6} />
       </RoundedBox>
       <mesh position={[0, 0, 0.02]}>
         <planeGeometry args={[width - 0.04, 0.46]} />
-        <meshStandardMaterial color="#130e14" roughness={0.42} />
+        <meshStandardMaterial color={scene.signBezel} roughness={0.42} />
       </mesh>
       <group position={[0, 0, 0.038]}>
-        {Array.from(string).map((digit, i) => (
+        {Array.from(string).map((digit, digitIndex) => (
           <Digit
-            key={i}
+            key={digitIndex}
             digit={digit === ' ' ? ' ' : digit}
-            x={(i - (digits - 1) / 2) * 0.225}
+            posX={(digitIndex - (digits - 1) / 2) * 0.225}
           />
         ))}
       </group>
@@ -179,7 +179,7 @@ export function CabinetSign3D({
         smoothness={5}
         castShadow
       >
-        <meshStandardMaterial color="#9e4d75" roughness={0.94} />
+        <meshStandardMaterial color={scene.signPanel} roughness={0.94} />
       </RoundedBox>
       <RoundedBox
         position={[0, 1.1, 0.09]}
@@ -187,15 +187,27 @@ export function CabinetSign3D({
         radius={0.07}
         smoothness={4}
       >
-        <meshStandardMaterial color="#21141e" roughness={0.7} />
+        <meshStandardMaterial color={scene.signBase} roughness={0.7} />
       </RoundedBox>
-      <Display value={seconds} digits={2} label="TIME" x={-1.35} width={0.72} />
-      <Display value={score} digits={5} label="SCORE" x={-0.05} width={1.55} />
+      <Display
+        value={seconds}
+        digits={2}
+        label="TIME"
+        posX={-1.35}
+        width={0.72}
+      />
+      <Display
+        value={score}
+        digits={5}
+        label="SCORE"
+        posX={-0.05}
+        width={1.55}
+      />
       <Display
         value={high}
         digits={4}
         label="HIGH SCORE"
-        x={1.31}
+        posX={1.31}
         width={1.04}
       />
       <group position={[0, 1.93, 0.17]}>
@@ -206,7 +218,7 @@ export function CabinetSign3D({
           text="P A I N G P A I N G   •   P L U S H   A R C A D E"
           width={2.5}
           height={0.1}
-          color="#f2c5bd"
+          color={scene.signAccent}
         />
       </group>
     </group>

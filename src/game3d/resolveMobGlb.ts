@@ -1,5 +1,5 @@
-import type { EnemySpawn } from '@/game/types'
-import modelsManifest from '../../reference/models.manifest.json'
+import type { EnemySpawn } from '@game/types'
+import modelsManifest from '@reference/models.manifest.json'
 
 type ModelsManifest = {
   mobs: Record<string, { glb: string; size?: number[] }>
@@ -20,9 +20,9 @@ export function mobGlbHeight(key: string): number {
 export function mobGlbSize(key: string): [number, number, number] {
   if (key === '5' || key === 'default') return [0.88, 0.78, 0.74]
   if (key === '6') return [0.88, 0.9, 0.74]
-  const [w = 0.5, h = FALLBACK_MOB_HEIGHT, d = 0.4] =
+  const [width = 0.5, height = FALLBACK_MOB_HEIGHT, depth = 0.4] =
     manifest.mobs[key]?.size ?? []
-  return [w, h, d]
+  return [width, height, depth]
 }
 
 export function mobModelKey(enemy: EnemySpawn): string {

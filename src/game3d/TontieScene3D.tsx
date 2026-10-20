@@ -1,14 +1,18 @@
 import { Suspense } from 'react'
-import { HOLE_ORDER } from '@/game/layout'
-import { FPS } from '@/game/spec'
-import type { GameState, HoleIndex } from '@/game/types'
-import { SKY } from '@/components/Tontie3D/theme'
-import { ArcadeRoom3D } from './ArcadeRoom3D'
-import { BoardScene3D } from './BoardScene3D'
-import { CabinetSign3D } from './CabinetSign3D'
-import { CameraRig3D } from './CameraRig3D'
-import { HoleSlot3D } from './HoleSlot3D'
-import { CabinetPatches3D, PlushAttract3D, PlushPlayer3D } from './PlushCast3D'
+import { HOLE_ORDER } from '@game/layout'
+import { FPS } from '@game/spec'
+import type { GameState, HoleIndex } from '@game/types'
+import { SKY, themeColors } from '@/components/Tontie3D/theme'
+import { ArcadeRoom3D } from '@game3d/ArcadeRoom3D'
+import { BoardScene3D } from '@game3d/BoardScene3D'
+import { CabinetSign3D } from '@game3d/CabinetSign3D'
+import { CameraRig3D } from '@game3d/CameraRig3D'
+import { HoleSlot3D } from '@game3d/HoleSlot3D'
+import {
+  CabinetPatches3D,
+  PlushAttract3D,
+  PlushPlayer3D,
+} from '@game3d/PlushCast3D'
 
 export function TontieScene3D({
   state,
@@ -30,10 +34,14 @@ export function TontieScene3D({
       <color attach="background" args={[SKY]} />
       <fog attach="fog" args={[SKY, 12, 28]} />
       <CameraRig3D photo={photo} />
-      <hemisphereLight color="#efcadd" groundColor="#44314d" intensity={0.75} />
+      <hemisphereLight
+        color={themeColors.scene.hemiSky}
+        groundColor={themeColors.scene.hemiGround}
+        intensity={0.75}
+      />
       <directionalLight
         position={[-3, 7, 5]}
-        color="#ffe0c1"
+        color={themeColors.scene.keyLight}
         intensity={3.2}
         castShadow
         shadow-mapSize={[2048, 2048]}
@@ -45,10 +53,14 @@ export function TontieScene3D({
         shadow-bias={-0.0001}
         shadow-radius={4}
       />
-      <directionalLight position={[4, 3, -3]} intensity={2.4} color="#bb8df8" />
+      <directionalLight
+        position={[4, 3, -3]}
+        intensity={2.4}
+        color={themeColors.scene.rimPurple}
+      />
       <pointLight
         position={[-3, 2, 1]}
-        color="#ff409e"
+        color={themeColors.scene.accentPink}
         intensity={8}
         distance={8}
         decay={2}

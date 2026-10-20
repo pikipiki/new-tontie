@@ -39,6 +39,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': srcRoot,
+      '@game': path.resolve(srcRoot, 'game'),
+      '@game3d': path.resolve(srcRoot, 'game3d'),
+      '@reference': path.resolve(dirname, 'reference'),
       '@components': path.resolve(srcRoot, 'components'),
       '@constants': path.resolve(srcRoot, 'constants'),
       '@hooks': path.resolve(srcRoot, 'hooks'),
@@ -48,6 +51,22 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    include: ['src/**/__tests__/**/*.test.ts', 'tests/e2e/**/*.test.ts'],
     css: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      include: ['src/game/**/*.ts'],
+      exclude: [
+        'src/game/**/__tests__/**',
+        'src/game/__tests__/helpers/**',
+      ],
+      thresholds: {
+        lines: 100,
+        functions: 100,
+        statements: 100,
+        branches: 100,
+      },
+    },
   },
 })
