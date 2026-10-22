@@ -1,40 +1,40 @@
-import { useFrame } from '@react-three/fiber'
+import { useMemo } from 'react'
+import { useFrame, useThree } from '@react-three/fiber'
 import { Vector3 } from 'three'
 import { DAMAGE_MS, fxProgress, useGameFx } from '@game3d/fx'
-import { cameraFit, CAMERA_TARGET, sceneCameraView } from '@game3d/layout3d'
+import { cameraFit, sceneCameraView } from '@game3d/layout3d'
 import { frameCamera } from '@game3d/sceneMutations'
 
-const target = new Vector3(...CAMERA_TARGET)
-const base = new Vector3()
-const shaken = new Vector3()
-
-/** Keeps the whole board in view for any viewport ratio and shakes the view on damage. */
+/** Recompute framing on resize; keep mutable scratch vectors local to this canvas. */
 export function CameraRig3D({ photo = false }: { photo?: boolean }) {
   const gameFx = useGameFx()
-
-  useFrame(({ camera, size }) => {
-    const fit = cameraFit(size.width / Math.max(1, size.height))
-    const aspect = size.width / Math.max(1, size.height)
-    const view = sceneCameraView(aspect, photo)
-    target.set(...view.target)
-    base
-      .set(...view.position)
+  const width = useThree((state) => state.size.width)
+  const height = useThree((state) => state.size.height)
+  const view = useMemo(() => {
+    const aspect = width / Math.max(1, height)
+    const fit = cameraFit(aspect)
+    const composition = sceneCameraView(aspect, photo)
+    const target = new Vector3(...composition.target)
+    const base = new Vector3(...composition.position)
       .sub(target)
-      .multiplyScalar(fit.distanceScale * view.distanceScale)
+      .multiplyScalar(fit.distanceScale * composition.distanceScale)
       .add(target)
+    return { target, base, shaken: new Vector3(), fov: fit.fov }
+  }, [width, height, photo])
+
+  useFrame(({ camera }) => {
     const shakePhase = fxProgress(gameFx.damageAt, performance.now(), DAMAGE_MS)
     if (shakePhase === null) {
-      frameCamera(camera, fit.fov, base, target)
+      frameCamera(camera, view.fov, view.base, view.target)
       return
     }
-    const amp = 0.09 * (1 - shakePhase)
-    shaken.set(
-      base.x + Math.sin(shakePhase * 61) * amp,
-      base.y + Math.sin(shakePhase * 47 + 1) * amp * 0.6,
-      base.z,
+    const amplitude = 0.09 * (1 - shakePhase)
+    view.shaken.set(
+      view.base.x + Math.sin(shakePhase * 61) * amplitude,
+      view.base.y + Math.sin(shakePhase * 47 + 1) * amplitude * 0.6,
+      view.base.z,
     )
-    frameCamera(camera, fit.fov, shaken, target)
+    frameCamera(camera, view.fov, view.shaken, view.target)
   })
-
   return null
 }

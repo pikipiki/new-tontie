@@ -7,7 +7,7 @@ import {
   type GameEventPresenter,
 } from '@game3d/presentation'
 import { createFx } from '@game3d/fxState'
-import { GameSession } from '@hooks/useTontieGameSession'
+import { GameSession } from '@/session/GameSession'
 
 describe('GameEventPresenter', () => {
   it('composes sinks in order', () => {

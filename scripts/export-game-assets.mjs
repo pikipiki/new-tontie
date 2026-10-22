@@ -22,7 +22,10 @@ const javaHome = process.env.JAVA_HOME
   : 'java'
 
 function runJava(args) {
-  const r = spawnSync(javaHome, ['-jar', jar, ...args], { stdio: 'inherit', cwd: root })
+  const r = spawnSync(javaHome, ['-jar', jar, ...args], {
+    stdio: 'inherit',
+    cwd: root,
+  })
   if (r.status !== 0) {
     process.exit(r.status ?? 1)
   }
@@ -93,11 +96,36 @@ if (fs.existsSync(mobCatalogTmp)) {
 // DefineSprite_458 frame → child sprite placed at the lowest depth (from -swf2xml).
 // Rendering 458 directly advances the child timelines (hit clouds); child frame 1 is the idle pose.
 const MOB_CHILD_SPRITE = {
-  5: 81, 6: 273, 7: 279, 8: 295, 9: 299, 10: 304, 11: 315, 12: 319, 13: 330, 14: 339,
-  15: 351, 16: 366, 17: 372, 18: 380, 19: 389, 20: 402, 21: 406, 22: 408, 23: 411, 24: 423,
+  5: 81,
+  6: 273,
+  7: 279,
+  8: 295,
+  9: 299,
+  10: 304,
+  11: 315,
+  12: 319,
+  13: 330,
+  14: 339,
+  15: 351,
+  16: 366,
+  17: 372,
+  18: 380,
+  19: 389,
+  20: 402,
+  21: 406,
+  22: 408,
+  23: 411,
+  24: 423,
 }
 console.log('Exporting enemy idle sprites (DefineSprite_458 children)…')
-runJava(['-export', 'sprite', mobCatalogTmp, swf, '-exportIds', Object.values(MOB_CHILD_SPRITE).join(',')])
+runJava([
+  '-export',
+  'sprite',
+  mobCatalogTmp,
+  swf,
+  '-exportIds',
+  Object.values(MOB_CHILD_SPRITE).join(','),
+])
 const mobsOut = path.join(outDir, 'mobs')
 fs.mkdirSync(mobsOut, { recursive: true })
 for (const [frame, id] of Object.entries(MOB_CHILD_SPRITE)) {

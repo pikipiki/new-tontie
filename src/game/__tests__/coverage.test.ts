@@ -1,3 +1,6 @@
+import { existsSync, readFileSync } from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import gameSpec from '@reference/game-spec.json'
 import manifest from '@reference/reconstruction-manifest.json'
@@ -34,9 +37,21 @@ describe('reconstruction coverage', () => {
   })
 
   it('every manifest surface has an owner export path', () => {
+    const root = path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      '../../..',
+    )
     for (const surface of manifest.surfaces) {
       expect(surface.owner).toMatch(/^src\//)
       expect(surface.export.length).toBeGreaterThan(0)
+      const ownerPath = path.join(root, surface.owner)
+      expect(existsSync(ownerPath), surface.owner).toBe(true)
+      const declaration = new RegExp(
+        String.raw`export\s+(?:async\s+)?(?:function|const|let|class)\s+${surface.export}\b`,
+      )
+      expect(readFileSync(ownerPath, 'utf8'), surface.surface_id).toMatch(
+        declaration,
+      )
     }
   })
 })

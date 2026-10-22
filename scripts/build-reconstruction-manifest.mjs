@@ -17,7 +17,8 @@ const surfaces = [
   {
     surface_id: 'spawn.DefineSprite_459',
     family: 'as2',
-    location: 'reference/decompiled/ffdec/scripts/DefineSprite_459/frame_1/PlaceObject2_458_1/CLIPACTIONRECORD onClipEvent(load).as',
+    location:
+      'reference/decompiled/ffdec/scripts/DefineSprite_459/frame_1/PlaceObject2_458_1/CLIPACTIONRECORD onClipEvent(load).as',
     owner: 'src/game/spawn.ts',
     export: 'rollSpawnDecision',
   },
@@ -25,13 +26,14 @@ const surfaces = [
     surface_id: 'enemies.DefineSprite_458',
     family: 'as2',
     location: 'reference/decompiled/ffdec/scripts/DefineSprite_458',
-    owner: 'src/game/catalog.ts',
+    owner: 'src/game/combat.ts',
     export: 'enemyFromCatalogFrame',
   },
   {
     surface_id: 'combat.DefineSprite_669',
     family: 'as2',
-    location: 'reference/decompiled/ffdec/scripts/DefineSprite_669/frame_1/DoAction.as',
+    location:
+      'reference/decompiled/ffdec/scripts/DefineSprite_669/frame_1/DoAction.as',
     owner: 'src/game/combat.ts',
     export: 'applyItem',
   },
@@ -45,15 +47,17 @@ const surfaces = [
   {
     surface_id: 'shop.DefineSprite_607',
     family: 'as2',
-    location: 'reference/decompiled/ffdec/scripts/DefineSprite_607/frame_4/DoAction.as',
+    location:
+      'reference/decompiled/ffdec/scripts/DefineSprite_607/frame_4/DoAction.as',
     owner: 'src/game/shop.ts',
     export: 'SHOP_OFFERS',
   },
   {
     surface_id: 'loop.spawn_timer',
     family: 'as2',
-    location: 'reference/decompiled/ffdec/scripts/frame_41/PlaceObject2_560_182/CLIPACTIONRECORD onClipEvent(enterFrame).as',
-    owner: 'src/game/engine.ts',
+    location:
+      'reference/decompiled/ffdec/scripts/frame_41/PlaceObject2_560_182/CLIPACTIONRECORD onClipEvent(enterFrame).as',
+    owner: 'src/game/engine/holes.ts',
     export: 'trySpawn',
   },
   {
@@ -67,7 +71,7 @@ const surfaces = [
     surface_id: 'audio.sound_banks',
     family: 'as2',
     location: 'DefineSprite_65 (sound) + DefineSprite_71 (sound2)',
-    owner: 'src/game/audio.ts',
+    owner: 'src/audio/banks.ts',
     export: 'SOUND_BANK',
   },
 ]
@@ -78,8 +82,15 @@ const manifest = {
   boundary: 'native-typescript-webgl',
   surfaces,
   nonGoals: [
-    { id: 'timeline.cinematics', reason: '749 AS timeline scripts — animations served by board sprite + simplified mole motion' },
-    { id: 'cheats.pass1-4', reason: 'Easter egg start codes; optional future title screen' },
+    {
+      id: 'timeline.cinematics',
+      reason:
+        '749 AS timeline scripts — animations served by board sprite + simplified mole motion',
+    },
+    {
+      id: 'cheats.pass1-4',
+      reason: 'Easter egg start codes; optional future title screen',
+    },
   ],
 }
 

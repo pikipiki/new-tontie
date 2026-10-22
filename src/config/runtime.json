@@ -1,0 +1,9 @@
+{
+  "maxCatchUpMs": 250,
+  "audio": {
+    "effectsGain": 0.9,
+    "musicGain": 0.55,
+    "effectsRampSeconds": 0.01,
+    "musicRampSeconds": 0.05
+  }
+}

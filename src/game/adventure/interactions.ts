@@ -1,3 +1,4 @@
+import type { AdventureActor, AdventureState } from './types'
 import { stealWeapon, moveWeaponWithSwap } from './weapons'
 import { STEAL_END } from './stealTiming'
 import type { GameState, HoleIndex } from '../types'
@@ -8,10 +9,12 @@ import { swapReserved, SWAP_WARNING_FRAMES } from './swaps'
 import { announce } from './state'
 import { removeActor } from './spawn'
 
-function playTrick(state: GameState, hole: HoleIndex): void {
-  const adventure = state.adventure
-  const actor = adventure?.actors[hole]
-  if (!adventure || !actor) return
+function playTrick(
+  state: GameState,
+  adventure: AdventureState,
+  actor: AdventureActor,
+  hole: HoleIndex,
+): void {
   if (actor.role === 'thief') {
     adventure.charge = Math.max(0, adventure.charge - 1)
     state.money = Math.max(0, state.money - 5)
@@ -51,11 +54,13 @@ function playTrick(state: GameState, hole: HoleIndex): void {
       )
   }
 }
-function finishSwap(state: GameState, hole: HoleIndex): void {
-  const adventure = state.adventure
-  const actor = adventure?.actors[hole]
-  const other = actor?.swapWith
-  if (!adventure || !actor || !other) return
+function finishSwap(
+  state: GameState,
+  adventure: AdventureState,
+  actor: AdventureActor,
+  hole: HoleIndex,
+  other: HoleIndex,
+): void {
   actor.swapWith = null
   const friend = adventure.actors[other]
   if (!friend || state.holes[other].phase === 'off') return
@@ -100,10 +105,10 @@ export function tickActors(state: GameState): void {
     }
     if (actor.age === FPS * 2 && !actor.acted) {
       actor.acted = true
-      playTrick(state, hole)
+      playTrick(state, adventure, actor, hole)
     }
     if (actor.swapWith && actor.age >= FPS * 2 + SWAP_WARNING_FRAMES)
-      finishSwap(state, hole)
+      finishSwap(state, adventure, actor, hole, actor.swapWith)
     if (shouldEscape(state, hole, actor.age)) escapeActor(state, hole)
   }
 }

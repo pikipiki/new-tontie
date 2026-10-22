@@ -1,3 +1,4 @@
+import type { AdventureActor, AdventureRole, AdventureState } from './types'
 import { recoverWeapon } from './weapons'
 import type { GameState, HoleIndex } from '../types'
 import { FPS } from '../spec'
@@ -10,13 +11,10 @@ import { removeActor } from './spawn'
 import { announce } from './state'
 
 function advanceMission(
-  state: GameState,
-  hole: HoleIndex,
+  adventure: AdventureState,
+  role: AdventureRole,
   helmetBroken: boolean,
 ): void {
-  const adventure = state.adventure
-  const role = adventure?.actors[hole]?.role
-  if (!adventure) return
   const kind = missionFor(adventure.stage).kind
   if (kind === 'helmets' && helmetBroken) adventure.progress += 1
   if (helmetBroken) return
@@ -27,10 +25,13 @@ function advanceMission(
   )
     adventure.progress += 1
 }
-function hitActor(state: GameState, hole: HoleIndex, laser: boolean): boolean {
-  const adventure = state.adventure
-  const actor = adventure?.actors[hole]
-  if (!adventure || !actor) return false
+function hitActor(
+  state: GameState,
+  adventure: AdventureState,
+  actor: AdventureActor,
+  hole: HoleIndex,
+  laser: boolean,
+): boolean {
   const slot = state.holes[hole]
   if (actor.role === 'innocent') {
     hurt(state, 8, hole)
@@ -40,11 +41,11 @@ function hitActor(state: GameState, hole: HoleIndex, laser: boolean): boolean {
   }
   if (slot.nikaiRemaining > 0) {
     slot.nikaiRemaining = 0
-    advanceMission(state, hole, true)
+    advanceMission(adventure, actor.role, true)
     emit(state, { kind: 'hit', hole, sfx: 'kan' })
     if (!laser || !adventure.upgrades.includes('laser')) return false
   }
-  advanceMission(state, hole, false)
+  advanceMission(adventure, actor.role, false)
   const multiplier =
     (adventure.frenzyFrames > 0 ? 2 : 1) *
     (adventure.upgrades.includes('bounty') ? 2 : 1)
@@ -61,15 +62,17 @@ export function resolveAdventureHits(state: GameState): void {
   const adventure = state.adventure
   if (!adventure) return
   while (state.pendingHits.length > 0) {
-    const hole = state.pendingHits.shift()
-    if (!hole) break
-    resolveAdventureHit(state, hole)
+    const hole = state.pendingHits[0] as HoleIndex
+    state.pendingHits.shift()
+    resolveAdventureHit(state, adventure, hole)
   }
 }
 
-function resolveAdventureHit(state: GameState, hole: HoleIndex): void {
-  const adventure = state.adventure
-  if (!adventure) return
+function resolveAdventureHit(
+  state: GameState,
+  adventure: AdventureState,
+  hole: HoleIndex,
+): void {
   if (adventure.stolenWeapon) {
     recoverWeapon(state, hole)
     return
@@ -86,33 +89,36 @@ function resolveAdventureHit(state: GameState, hole: HoleIndex): void {
     strikeConductor(state, hole, laser)
     return
   }
-  if (!adventure.actors[hole]) {
+  const actor = adventure.actors[hole]
+  if (!actor) {
     state.levelStats.misses += 1
     if (!laser) hurt(state, 3, hole)
     emit(state, { kind: 'miss', hole, sfx: 'karaburi' })
     return
   }
-  const killed = hitActor(state, hole, laser)
-  if (!laser) bounceHammer(state, hole, killed)
+  const killed = hitActor(state, adventure, actor, hole, laser)
+  if (!laser) bounceHammer(state, adventure, hole, killed)
 }
 
 function bounceHammer(
   state: GameState,
+  adventure: AdventureState,
   hole: HoleIndex,
   killed: boolean,
 ): void {
   if (!killed) return
-  const adventure = state.adventure
-  if (!adventure?.upgrades.includes('ricochet')) return
-  const other = HOLES.find(
-    (target) =>
-      target !== hole &&
-      adventure.actors[target] &&
-      adventure.actors[target].role !== 'innocent' &&
-      adventure.actors[target].role !== 'boss',
-  )
-  if (other) {
-    triggerHammerStrike(state, other)
-    hitActor(state, other, false)
+  if (!adventure.upgrades.includes('ricochet')) return
+  for (const target of HOLES) {
+    const actor = adventure.actors[target]
+    if (
+      target === hole ||
+      !actor ||
+      actor.role === 'innocent' ||
+      actor.role === 'boss'
+    )
+      continue
+    triggerHammerStrike(state, target)
+    hitActor(state, adventure, actor, target, false)
+    return
   }
 }

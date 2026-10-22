@@ -2,37 +2,69 @@
 
 Faithful local port of [Tontie v1](https://www.eyezmaze.com/game/tontie.html) (EYEZMAZE).
 
-- **Play (default):** **React Three Fiber 3D** scene + TypeScript engine in `src/game/` — no Ruffle, runs with `npm run dev`
-- **Reference mode:** add `?ruffle=1` for canonical `tontie.swf` + self-hosted Ruffle (SHA-256 checked at load)
+- **Adventure (default):** six-mission _Paingpaing’s Adventure_ rendered with **React Three Fiber**
+  on top of the pure TypeScript engine in `src/game/` — see [docs/adventure-mode.md](docs/adventure-mode.md)
+- **Classic:** faithful Flash rules (same engine, no adventure layer), selectable from the welcome
+  screen and the end-of-run panel
+- **Reference mode:** add `?ruffle=1` to play the canonical `tontie.swf` with self-hosted Ruffle.
+  The SWF bytes are size- and SHA-256-checked, then handed to Ruffle directly (no second download,
+  `allowScriptAccess: false`)
 - **Logic source:** ffdec AS (`DefineSprite_459` spawn, `458` stats catalog, `669` combat/items)
 - **REA:** SWF not openable in REA; analysis via **ffdec** → `reference/decompiled/` and `reference/game-spec.json`
 - **Stack:** Vite, React 19, TypeScript, MUI (shell only), i18next — same family as `automate-videos`
 
 ## Contributing
 
-- [CONTRIBUTING.md](CONTRIBUTING.md) — PR process, tests, feature registration
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — layers and extension points
+- [CONTRIBUTING.md](CONTRIBUTING.md) — setup, PR process, tests, feature registration
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — layers, dependency rules and extension points
 - [docs/OWNERSHIP.md](docs/OWNERSHIP.md) — squad boundaries and review rules
 - [docs/DEPLOY-FREE.md](docs/DEPLOY-FREE.md) — GitHub Pages, Netlify, itch.io
+- [SECURITY.md](SECURITY.md) — threat model, protections in place and how to report an issue
 
 ## Commands
 
+Requires **Node 24+** (`engines` in `package.json`; CI uses Node 24).
+
 ```bash
 npm install
+npx playwright install chromium   # once, for browser tests (macOS uses installed Chrome if present)
 npm run dev
-npm test
 npm run build
+```
+
+| Command                      | What it checks                                                                   |
+| ---------------------------- | -------------------------------------------------------------------------------- |
+| `npm test`                   | Vitest unit/integration suite (engine, audio, session, 3D helpers, UI)           |
+| `npm run test:coverage`      | Same suite with the **100 %** gate on `src/game` and `src/audio`                 |
+| `npm run test:replay`        | Engine replay fingerprints only (`tests/e2e`, `reference/replays/baseline.json`) |
+| `npm run test:e2e`           | **Playwright** in a real browser: builds production, serves it on port 5196      |
+| `npm run check:architecture` | Unreachable files, runtime import cycles and forbidden layer dependencies        |
+| `npm run lint`               | Prettier check + ESLint with zero warnings                                       |
+| `npm run test:all`           | Architecture, lint, tests, coverage and Playwright in sequence                   |
+
+Optional asset tooling:
+
+```bash
 npm run export:assets   # Java + ffdec → public/game/sprites (optional visuals)
+npm run build:manifest  # reference/reconstruction-manifest.json (REA surfaces)
 blender --background --python scripts/blender/plush_photoreal.py   # photoreal Goonk plushies → reference/plush/goonk-plush.blend + renders
 ```
 
-Regression: `npm test` — RNG fingerprints + `reference/replays/baseline.json`.
+Dev console (development builds only): `window.tontieReplay({ seed, inputs: [{ frame, hole }] })`
+replays the native engine. It is never installed in production builds.
 
-```bash
-npm run build:manifest   # reference/reconstruction-manifest.json (REA surfaces)
-```
+## Tunable settings
 
-Dev console: `window.tontieReplay({ seed, inputs: [{ frame, hole }] })` replays the native engine.
+Shared, named parameters live in JSON so they can be adjusted without touching code:
+
+| File                              | Contents                                                                   |
+| --------------------------------- | -------------------------------------------------------------------------- |
+| `src/config/presentation.json`    | Render quality (DPR, antialias), camera framing, plush mesh density, FX ms |
+| `src/config/runtime.json`         | Game-loop catch-up limit and audio mixing gains/ramps                      |
+| `src/game/adventure/content.json` | Adventure missions, upgrade texts and role names (validated at load)       |
+| `reference/game-spec.json`        | Flash-derived timings, bosses, shop and enemy data (fidelity source)       |
+
+Model-specific vertex coordinates stay in their model files on purpose.
 
 ## Controls (from the original)
 
@@ -42,12 +74,12 @@ Dev console: `window.tontieReplay({ seed, inputs: [{ frame, hole }] })` replays 
 
 ## Reference files
 
-| Path | Purpose |
-|------|---------|
-| `reference/tontie.swf` | Downloaded artifact |
-| `reference/game-spec.json` | Timings, bosses, shop, enemy types |
-| `reference/reverse-engineering.md` | REA + ffdec notes |
-| `reference/decompiled/ffdec/` | Exported ActionScript, shapes, sounds |
+| Path                               | Purpose                               |
+| ---------------------------------- | ------------------------------------- |
+| `reference/tontie.swf`             | Downloaded artifact                   |
+| `reference/game-spec.json`         | Timings, bosses, shop, enemy types    |
+| `reference/reverse-engineering.md` | REA + ffdec notes                     |
+| `reference/decompiled/ffdec/`      | Exported ActionScript, shapes, sounds |
 
 ## Plush arcade scene
 

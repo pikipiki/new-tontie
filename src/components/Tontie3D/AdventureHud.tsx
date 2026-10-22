@@ -2,8 +2,8 @@ import type { AdventureState } from '@game/adventure/types'
 import Box from '@mui/material/Box'
 import { SugarButton } from './AdventureSugarButton'
 import type { TontieGame } from '@/hooks/useTontieGame'
-import { missionFor } from '@game/adventure/content'
-import { themeColors as colors } from './theme'
+import { missionFor, MISSION_COUNT } from '@game/adventure/content'
+import { SHORT_LANDSCAPE, themeColors as colors } from './theme'
 
 export function AdventureHud({ game }: { game: TontieGame }) {
   const adventure = game.state.adventure
@@ -23,6 +23,10 @@ export function AdventureHud({ game }: { game: TontieGame }) {
         px: 2,
         pt: 'max(7px, env(safe-area-inset-top))',
         pb: 0.5,
+        [SHORT_LANDSCAPE]: {
+          pt: 'max(4px, env(safe-area-inset-top))',
+          pb: 0.2,
+        },
         width: 'min(100%, 760px)',
         mx: 'auto',
         boxSizing: 'border-box',
@@ -39,7 +43,7 @@ export function AdventureHud({ game }: { game: TontieGame }) {
               color: colors.cabinetPink,
             }}
           >
-            ADVENTURE {adventure.stage} / 6 · ★ {game.state.score}
+            ADVENTURE {adventure.stage} / {MISSION_COUNT} · ★ {game.state.score}
           </Box>
           <Box
             sx={{
@@ -55,33 +59,48 @@ export function AdventureHud({ game }: { game: TontieGame }) {
           <Box sx={{ fontSize: 12, color: colors.cream, fontWeight: 800 }}>
             {detail}
           </Box>
-          <Box
-            role="progressbar"
-            aria-label="Mission progress"
-            aria-valuenow={adventure.progress}
-            aria-valuemin={0}
-            aria-valuemax={mission.goal}
-            sx={{
-              mt: 0.5,
-              height: 4,
-              borderRadius: 2,
-              bgcolor: colors.purpleInk,
-              overflow: 'hidden',
-            }}
-          >
-            <Box
-              sx={{
-                width: `${String(Math.min(100, (adventure.progress / mission.goal) * 100))}%`,
-                height: '100%',
-                bgcolor: colors.cabinetPink,
-                transition: 'width 150ms',
-              }}
-            />
-          </Box>
+          <AdventureProgressBar
+            progress={adventure.progress}
+            goal={mission.goal}
+          />
         </Box>
         <SugarButton game={game} />
       </Box>
       <AdventureNotice adventure={adventure} />
+    </Box>
+  )
+}
+
+function AdventureProgressBar({
+  progress,
+  goal,
+}: {
+  progress: number
+  goal: number
+}) {
+  return (
+    <Box
+      role="progressbar"
+      aria-label="Mission progress"
+      aria-valuenow={progress}
+      aria-valuemin={0}
+      aria-valuemax={goal}
+      sx={{
+        mt: 0.5,
+        height: 4,
+        borderRadius: 2,
+        bgcolor: colors.purpleInk,
+        overflow: 'hidden',
+      }}
+    >
+      <Box
+        sx={{
+          width: `${String(Math.min(100, (progress / goal) * 100))}%`,
+          height: '100%',
+          bgcolor: colors.cabinetPink,
+          transition: 'width 150ms',
+        }}
+      />
     </Box>
   )
 }

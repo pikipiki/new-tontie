@@ -33,8 +33,10 @@ describe('playable cabinet composition', () => {
     [390, 844],
     [768, 1024],
     [1448, 1086],
+    [844, 390],
   ] as const) {
     it(`keeps nine separated targets and the pink companion visible at ${String(width)}×${String(height)}`, () => {
+      const isShortLandscape = height < 500
       const projectHole = (hole: HoleIndex) => {
         const [posX, , posZ] = holeWorldPosition(hole)
         return screenPoint(
@@ -47,11 +49,13 @@ describe('playable cabinet composition', () => {
       for (const point of points) {
         expect(point.x).toBeGreaterThan(44)
         expect(point.x).toBeLessThan(width - 44)
-        expect(point.y).toBeGreaterThan(44)
-        expect(point.y).toBeLessThan(height - 160)
+        expect(point.y).toBeGreaterThan(isShortLandscape ? 20 : 44)
+        expect(point.y).toBeLessThan(height - (isShortLandscape ? 120 : 160))
       }
       // A phone's rows must not collapse into visually overlapping tap centres.
-      expect(projectHole(4).y - projectHole(7).y).toBeGreaterThan(42)
+      expect(projectHole(4).y - projectHole(7).y).toBeGreaterThan(
+        isShortLandscape ? 22 : 42,
+      )
       expect(projectHole(8).x - projectHole(7).x).toBeGreaterThan(44)
       const [posX, posY, posZ] = PINK_LEDGE_POSITION
       const pinkTop = screenPoint(
@@ -61,8 +65,10 @@ describe('playable cabinet composition', () => {
       )
       const pinkFeet = screenPoint(width, height, new Vector3(posX, posY, posZ))
       // The entire character starts below the front row, rather than covering its targets.
-      expect(pinkTop.y).toBeGreaterThan(projectHole(1).y + 24)
-      expect(pinkFeet.y).toBeLessThan(height - 80)
+      expect(pinkTop.y).toBeGreaterThan(
+        projectHole(1).y + (isShortLandscape ? 14 : 24),
+      )
+      expect(pinkFeet.y).toBeLessThan(height - (isShortLandscape ? 60 : 80))
       expect(pinkTop.x).toBeGreaterThan(32)
     })
   }

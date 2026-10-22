@@ -1,7 +1,7 @@
 import { UpgradeCard } from './AdventureUpgradeCard'
 import Box from '@mui/material/Box'
 import type { TontieGame } from '@/hooks/useTontieGame'
-import { missionFor, UPGRADES } from '@game/adventure/content'
+import { missionFor, MISSION_COUNT, UPGRADES } from '@game/adventure/content'
 import { themeColors as colors } from './theme'
 import { GameButton, Overlay } from './ui'
 
@@ -53,7 +53,7 @@ export function AdventureBriefing({
           {mission.title}
         </Box>
         <Box sx={{ color: colors.cream, fontWeight: 800, mt: 0.5 }}>
-          MISSION {adventure.stage} / 6 ·{' '}
+          MISSION {adventure.stage} / {MISSION_COUNT} ·{' '}
           {mission.seconds +
             (adventure.upgrades.includes('extraTime') ? 10 : 0)}{' '}
           SECONDS

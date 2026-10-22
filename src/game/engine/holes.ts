@@ -6,7 +6,7 @@ import {
 } from '../enemies'
 import { BOSS_HOLE } from '../spec'
 import type { EnemySpawn, GameState, HoleIndex } from '../types'
-import { countsAsMonster, emit, HOLES, hurt } from './shared'
+import { countsAsMonster, emit, HOLES, retireHole } from './shared'
 
 function spawnNikaiHits(enemy: EnemySpawn): number {
   if (enemy.nikai) {
@@ -73,26 +73,6 @@ export function trySpawn(state: GameState, random: () => number): void {
   activateHole(state, hole, enemy)
 }
 
-export function retireHole(
-  state: GameState,
-  hole: HoleIndex,
-  escaped: boolean,
-): void {
-  const slot = state.holes[hole]
-  if (slot.phase === 'off') {
-    return
-  }
-  if (escaped && countsAsMonster(slot.enemy)) state.levelStats.lost += 1
-  if (escaped && slot.enemy.attack > 0) {
-    hurt(state, slot.enemy.attack, hole)
-  }
-  slot.phase = 'off'
-  slot.phaseTicks = 0
-  slot.enemy = { kind: 'none', hp: 0, maxHp: 0, attack: 0, score: 0 }
-  slot.nikaiRemaining = 0
-  state.moguraOn = Math.max(0, state.moguraOn - 1)
-}
-
 export function tickHole(state: GameState, hole: HoleIndex): void {
   const slot = state.holes[hole]
   if (slot.phase === 'off') {
@@ -121,3 +101,5 @@ export function tickHole(state: GameState, hole: HoleIndex): void {
     retireHole(state, hole, true)
   }
 }
+
+export { retireHole } from './shared'

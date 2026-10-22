@@ -24,6 +24,10 @@ export {
 
 import { themeColors } from '@game3d/theme'
 
+/** Phones held sideways: too short for a header and footer above and below the board. */
+export const SHORT_LANDSCAPE =
+  '@media (max-height: 500px) and (orientation: landscape)'
+
 export const WOOD_GRADIENT = `repeating-linear-gradient(92deg, ${themeColors.shopWoodStripe} 0 2px, rgba(0,0,0,0) 2px 11px), linear-gradient(180deg, ${themeColors.shopWoodTop} 0%, ${themeColors.shopWoodBottom} 100%)`
 export const WOOD_DARK_GRADIENT = `repeating-linear-gradient(92deg, ${themeColors.shopWoodDarkStripe} 0 2px, rgba(0,0,0,0) 2px 9px), linear-gradient(180deg, ${themeColors.shopWoodDarkTop} 0%, ${themeColors.shopWoodDarkBottom} 100%)`
 

@@ -1,10 +1,10 @@
-import { isBossLevel } from './features'
+import { isBossLevel } from './features/bossLevels'
 import { rollSpawnDecision } from './spawn'
 import { BOSS_HOLE } from './spec'
 import { enemyFromCatalogFrame, shopEnemy, treasureEnemy } from './combat'
 import type { EnemySpawn, GameState, HoleIndex } from './types'
 
-export { bossForLevel, isBossLevel } from './features'
+export { bossForLevel, isBossLevel } from './features/bossLevels'
 
 export function rollEnemyForHole(
   state: GameState,

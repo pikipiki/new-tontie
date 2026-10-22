@@ -1,9 +1,9 @@
-import './tontiePreload'
+import config from '@/config/presentation.json'
 import { AdventureHud } from './AdventureHud'
 import Box from '@mui/material/Box'
 import { useState, type MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { isMuted, setMuted } from '@game/audio'
+import { isMuted, setMuted } from '@/audio'
 import { useTontieGame } from '@/hooks/useTontieGame'
 import { GameStatusAnnouncer } from './GameStatusAnnouncer'
 import { BottomBar, TopBar } from './TontieHud'
@@ -24,7 +24,9 @@ export function Tontie3D() {
     () => new URLSearchParams(window.location.search).get('scene') === '1',
   )
   const [muted, setMutedState] = useState(isMuted)
-  const [dpr, setDpr] = useState(() => Math.min(1.5, window.devicePixelRatio))
+  const [dpr, setDpr] = useState(() =>
+    Math.min(config.quality.maxDpr, window.devicePixelRatio),
+  )
   const now = game.clock
 
   const toggleMute = () => {
@@ -69,7 +71,7 @@ export function Tontie3D() {
         photo={photo}
         dpr={dpr}
         onDeclineDpr={() => {
-          setDpr(1)
+          setDpr(config.quality.fallbackDpr)
         }}
       />
       {!photo && (

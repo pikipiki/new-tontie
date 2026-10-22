@@ -1,3 +1,4 @@
+import config from '@/config/presentation.json'
 import Box from '@mui/material/Box'
 import { PerformanceMonitor } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
@@ -31,15 +32,15 @@ export function Tontie3DViewport({
         dpr={dpr}
         gl={{
           alpha: false,
-          antialias: window.devicePixelRatio < 2,
+          antialias: window.devicePixelRatio < config.quality.antialiasBelowDpr,
           powerPreference: 'high-performance',
           stencil: false,
         }}
         camera={{
           position: CAMERA_POSITION,
           fov: BASE_FOV,
-          near: 0.08,
-          far: 40,
+          near: config.quality.cameraNear,
+          far: config.quality.cameraFar,
         }}
         style={{ position: 'absolute', inset: 0, touchAction: 'none' }}
       >

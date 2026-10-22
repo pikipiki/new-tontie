@@ -75,21 +75,20 @@ export function pendingSwapCue(
   adventure: AdventureState,
   hole: HoleIndex,
 ): SwapCue | undefined {
-  const source = HOLES.find(
-    (other) =>
-      adventure.actors[other]?.swapWith === hole ||
-      (other === hole && adventure.actors[other]?.swapWith),
-  )
-  if (!source) return undefined
-  const actor = adventure.actors[source]
-  const partner = source === hole ? actor?.swapWith : source
-  if (!actor || !partner || !adventure.actors[partner]) return undefined
-  return {
-    partner,
-    progress: Math.min(
-      1,
-      Math.max(0, (actor.age - FPS * 2) / SWAP_WARNING_FRAMES),
-    ),
-    reverse: source !== hole,
+  for (const source of HOLES) {
+    const actor = adventure.actors[source]
+    const target = actor?.swapWith
+    if (!actor || !target || (target !== hole && source !== hole)) continue
+    const partner = source === hole ? target : source
+    if (!adventure.actors[partner]) return undefined
+    return {
+      partner,
+      progress: Math.min(
+        1,
+        Math.max(0, (actor.age - FPS * 2) / SWAP_WARNING_FRAMES),
+      ),
+      reverse: source !== hole,
+    }
   }
+  return undefined
 }

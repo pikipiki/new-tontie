@@ -4,18 +4,25 @@ export function showBootstrapFailure(reason: string): void {
   if (!root) {
     return
   }
-  root.innerHTML = `
+  const container = document.createElement('div')
+  container.innerHTML = `
     <div role="alert" style="min-height:100dvh;display:grid;place-items:center;padding:24px;background:#24123a;color:#fffdf7;font-family:system-ui,sans-serif;text-align:center">
       <div style="max-width:420px">
         <h1 style="font-size:1.25rem;margin:0 0 8px">Game could not load</h1>
         <p style="margin:0 0 16px;opacity:0.95">Игра не загрузилась. Обновите страницу или проверьте интернет.</p>
-        <p style="font-size:12px;opacity:0.75;word-break:break-word">${reason}</p>
-        <button type="button" onclick="location.reload()" style="margin-top:16px;padding:12px 20px;font-size:16px;border-radius:12px;border:none;background:#5a8fd4;color:#fff;font-weight:700">
+        <p style="font-size:12px;opacity:0.75;word-break:break-word"><span data-error-detail></span></p>
+        <button type="button" style="margin-top:16px;padding:12px 20px;font-size:16px;border-radius:12px;border:none;background:#5a8fd4;color:#fff;font-weight:700">
           Reload / Обновить
         </button>
       </div>
     </div>
   `
+  const detail = container.querySelector('[data-error-detail]')
+  if (detail) detail.textContent = reason
+  container.querySelector('button')?.addEventListener('click', () => {
+    window.location.reload()
+  })
+  root.replaceChildren(container)
 }
 
 export function installGlobalFailureHandlers(): void {

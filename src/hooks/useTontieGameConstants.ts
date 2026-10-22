@@ -1,3 +1,4 @@
+import runtime from '@/config/runtime.json'
 import { SHOP_OFFERS } from '@game/shop'
 
 /** Shop grid: the offers, then EXIT in the last cell (3 columns). */
@@ -13,4 +14,4 @@ export const SHOP_MOVES: Partial<Record<string, number>> = {
 }
 
 /** Avoid a burst of catch-up ticks after the tab was in the background. */
-export const MAX_CATCH_UP_MS = 250
+export const MAX_CATCH_UP_MS = runtime.maxCatchUpMs

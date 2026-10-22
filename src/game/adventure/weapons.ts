@@ -2,7 +2,7 @@ import type { GameState, HoleIndex } from '../types'
 import type { StolenWeapon } from './types'
 import { FPS } from '../spec'
 import { emit } from '../engine/shared'
-import { announce } from './state'
+import { announce } from '../engine/shared'
 import { STEAL_END } from './stealTiming'
 
 export function stealBusy(stolen: Pick<StolenWeapon, 'age' | 'holder'>) {

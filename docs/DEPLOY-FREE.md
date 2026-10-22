@@ -2,11 +2,11 @@
 
 ## URLs de prod
 
-| Hébergeur | URL | Mise à jour |
-|-----------|-----|-------------|
-| **GitHub Pages** (prod, `main`) | https://pikipiki.github.io/new-tontie/ | `git push` sur `main` |
+| Hébergeur                                     | URL                                                       | Mise à jour                               |
+| --------------------------------------------- | --------------------------------------------------------- | ----------------------------------------- |
+| **GitHub Pages** (prod, `main`)               | https://pikipiki.github.io/new-tontie/                    | `git push` sur `main`                     |
 | **GitHub Pages** (`codex/playful-adventures`) | https://pikipiki.github.io/new-tontie-playful-adventures/ | `git push` sur `codex/playful-adventures` |
-| **Netlify** | https://tontie-goonks.netlify.app/ | `git push` (branche connectée) |
+| **Netlify**                                   | https://tontie-goonks.netlify.app/                        | `git push` (branche connectée)            |
 
 Le repo doit être **public** pour GitHub Pages (compte perso gratuit).
 

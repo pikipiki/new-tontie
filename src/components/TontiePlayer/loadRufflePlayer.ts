@@ -1,29 +1,30 @@
 import { publicUrl } from '@constants/publicUrl'
-import { CANONICAL_SWF, verifyCanonicalSwf } from '@/fidelity/swfManifest'
+import { loadCanonicalSwf } from '@/fidelity/swfManifest'
 
 interface RufflePlayerElement extends HTMLElement {
-  ruffle: () => { load: (url: string) => void }
+  ruffle: () => {
+    load: (options: {
+      data: Uint8Array
+      swfFileName: string
+      allowScriptAccess: boolean
+    }) => Promise<void>
+  }
 }
 
-const SWF_URL = CANONICAL_SWF.url
 const GAME_WIDTH = 400
 const GAME_HEIGHT = 400
 
 export async function loadRufflePlayer(
   host: HTMLDivElement,
   isCancelled: () => boolean,
-  onFidelity: (ok: boolean) => void,
   onError: (message: string) => void,
 ): Promise<void> {
-  const fidelityOk = await verifyCanonicalSwf()
+  const swfBytes = await loadCanonicalSwf()
   if (isCancelled()) {
     return
   }
-  onFidelity(fidelityOk)
-  if (!fidelityOk) {
-    onError(
-      'SWF hash/size mismatch — run: cp reference/tontie.swf public/game/tontie.swf',
-    )
+  if (!swfBytes) {
+    onError('Original game file mismatch. Please reload the page.')
     return
   }
 
@@ -40,19 +41,22 @@ export async function loadRufflePlayer(
     return
   }
 
-  const newest = ruffleGlobal.newest
-  if (!newest) {
+  const factory = window.RufflePlayer.newest?.()
+  if (!factory) {
     onError('Ruffle failed to initialize')
     return
   }
-  const factory = newest()
 
   const player = factory.createPlayer() as RufflePlayerElement
-  player.style.width = `${String(GAME_WIDTH)}px`
-  player.style.height = `${String(GAME_HEIGHT)}px`
+  player.style.width = '100%'
+  player.style.height = '100%'
   player.tabIndex = 0
   host.replaceChildren(player)
-  player.ruffle().load(SWF_URL)
+  await player.ruffle().load({
+    data: swfBytes,
+    swfFileName: 'tontie.swf',
+    allowScriptAccess: false,
+  })
 }
 
 export { GAME_WIDTH, GAME_HEIGHT }

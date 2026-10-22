@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { MUSIC_BANK, SOUND_BANK, soundUrl } from '@game/audio'
+import { MUSIC_BANK, SOUND_BANK, soundUrl } from '@/audio'
 import {
   BOMB_FRAMES,
   buyShopIndex,

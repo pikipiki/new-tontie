@@ -1,10 +1,10 @@
 import { applyLevelUpRamp } from '../difficulty'
-import { syncPlayerAttack } from '../combat'
-import { levelOpensShop } from '../features'
+import { syncPlayerAttack } from '../stats'
+import { levelOpensShop } from '../features/shopLevels'
 import { FPS, ROUND_SECONDS } from '../spec'
 import type { GameState } from '../types'
 import { introCatalogFrame, LEVEL_CLEAR_FRAMES, statPercent } from './constants'
-import { retireHole } from './holes'
+import { retireHole } from './shared'
 import { emit, freshStats, HOLES } from './shared'
 
 export function endRound(state: GameState): void {

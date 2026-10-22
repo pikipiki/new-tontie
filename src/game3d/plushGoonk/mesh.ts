@@ -1,3 +1,4 @@
+import { plush as config } from '@/config/presentation.json'
 import {
   BufferGeometry,
   CatmullRomCurve3,
@@ -10,8 +11,8 @@ export function stuffedBody() {
   const positions: number[] = [],
     uvs: number[] = [],
     indices: number[] = []
-  const rows = 64,
-    columns = 96
+  const rows = config.bodyRows,
+    columns = config.bodyColumns
   for (let row = 0; row <= rows; row++)
     for (let col = 0; col <= columns; col++) {
       positions.push(
@@ -50,8 +51,8 @@ export function stuffedTube(
   const positions: number[] = [],
     uvs: number[] = [],
     indices: number[] = []
-  const rows = 32,
-    sides = 24
+  const rows = config.tubeRows,
+    sides = config.tubeSides
   for (let row = 0; row <= rows; row++) {
     const rowAlong = row / rows,
       center = curve.getPoint(rowAlong),
@@ -113,3 +114,27 @@ export const PINK_NOSE = stuffedTube(
   0.018,
   0.83,
 )
+
+function createFurGeometry() {
+  const positions: number[] = []
+  let seed = 37
+  const random = () => {
+    seed = (seed * 16807) % 2147483647
+    return seed / 2147483647
+  }
+  for (let strand = 0; strand < config.furStrands; strand++) {
+    const alongProfile = 0.04 + random() * 0.91,
+      angle = random() * Math.PI * 2
+    const point = bodyPoint(alongProfile, angle, 0.001)
+    const end = bodyPoint(
+      alongProfile + 0.003 * random(),
+      angle + 0.004,
+      0.004 + random() * 0.003,
+    )
+    positions.push(...point.toArray(), ...end.toArray())
+  }
+  const geometry = new BufferGeometry()
+  geometry.setAttribute('position', new Float32BufferAttribute(positions, 3))
+  return geometry
+}
+export const PLUSH_FUR = createFurGeometry()

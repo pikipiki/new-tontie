@@ -1,0 +1,9 @@
+node_modules
+dist
+reference
+public
+.cache
+coverage
+artifacts
+reports
+scripts/mesh-pipeline/.venv

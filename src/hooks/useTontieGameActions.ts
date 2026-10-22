@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { setMusicPaused, stopMusic, unlockAudio } from '@game/audio'
+import { setMusicPaused, stopMusic, unlockAudio } from '@/audio'
 import {
   buyShopIndex,
   closeShop,
@@ -9,7 +9,7 @@ import {
   togglePause,
 } from '@game/engine'
 import type { HoleIndex } from '@game/types'
-import type { GameSession } from './useTontieGameSession'
+import type { GameSession } from '@/session/GameSession'
 
 export function useTontieGameActions(
   session: GameSession,

@@ -1,11 +1,7 @@
+import { installReplayDevTools } from '@/session/replayTools'
 import { describe, expect, it } from 'vitest'
 import baseline from '@reference/replays/baseline.json'
-import {
-  installReplayDevTools,
-  runReplay,
-  runReplayState,
-  type ReplayInput,
-} from '@game/replay-run'
+import { runReplay, runReplayState, type ReplayInput } from '@game/replay-run'
 
 describe('replay scripts', () => {
   it('baseline.json stays stable', () => {

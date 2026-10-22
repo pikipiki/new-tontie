@@ -1,40 +1,17 @@
 import { rollTreasureItem } from './catalog'
-import {
-  ensureGameFeaturesLoaded,
-  getItemEffects,
-  resolveEnemyFromCatalogFrame,
-} from './features'
+import { ensureGameFeaturesLoaded, getItemEffects } from './features/registry'
+import { resolveEnemyFromCatalogFrame } from './features/enemyBuilders'
 import { addCoin } from './money'
-import { hammerDamage } from './spec'
+import { syncPlayerAttack } from './stats'
+export { applyDamage, applyCoinDamage, syncPlayerAttack } from './stats'
 import type { EnemySpawn, GameState, ItemId } from './types'
 
 export { heal } from './stats'
-
-export function syncPlayerAttack(state: GameState): void {
-  state.playerAttack = hammerDamage(state.hammerLv)
-}
 
 /**
  * frame_20 damage() — stone blocks positive damage once per hit animation (simplified).
  * Returns false when the stone absorbed the hit.
  */
-export function applyDamage(state: GameState, amount: number): boolean {
-  if (amount <= 0) {
-    state.hp = Math.min(state.hpMax, state.hp - amount)
-    return true
-  }
-  if (state.stone) {
-    state.stone = false
-    return false
-  }
-  state.hp -= amount
-  return true
-}
-
-export function applyCoinDamage(state: GameState, amount: number): void {
-  state.money = Math.max(0, state.money - amount)
-}
-
 export function enemyFromCatalogFrame(frame: number): EnemySpawn {
   ensureGameFeaturesLoaded()
   return resolveEnemyFromCatalogFrame(frame)

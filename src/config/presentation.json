@@ -1,0 +1,36 @@
+{
+  "quality": {
+    "maxDpr": 1.5,
+    "fallbackDpr": 1,
+    "antialiasBelowDpr": 2,
+    "cameraNear": 0.08,
+    "cameraFar": 40
+  },
+  "camera": {
+    "baseFov": 39,
+    "maxPortraitFov": 56,
+    "portraitPadding": 1.03,
+    "portraitBreakpoint": 0.8,
+    "landscapeDistanceScale": 1.34
+  },
+  "plush": {
+    "bodyRows": 64,
+    "bodyColumns": 96,
+    "tubeRows": 32,
+    "tubeSides": 24,
+    "furStrands": 9000,
+    "velourSize": 512,
+    "velourStrokes": 31000
+  },
+  "effectsMs": {
+    "hit": 280,
+    "kill": 560,
+    "scorePop": 900,
+    "miss": 420,
+    "pickup": 700,
+    "damage": 450,
+    "banner": 1400,
+    "panelOut": 520,
+    "shopFlash": 650
+  }
+}

@@ -45,11 +45,3 @@ export function runReplayState(script: ReplayScript): GameState {
 export function runReplay(script: ReplayScript): string {
   return stateFingerprint(runReplayState(script))
 }
-
-export function installReplayDevTools(enabled = import.meta.env.DEV): void {
-  if (enabled) {
-    ;(
-      window as unknown as { tontieReplay: typeof runReplayState }
-    ).tontieReplay = runReplayState
-  }
-}

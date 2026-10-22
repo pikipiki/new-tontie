@@ -7,18 +7,21 @@
 <!-- Engine | 3D | UI | Fidelity | Platform -->
 
 - [ ] Engine (`src/game`)
-- [ ] 3D (`src/game3d`)
-- [ ] UI (`src/components`, `src/hooks`)
-- [ ] Fidelity (`reference/`, replays)
-- [ ] Platform (tooling, CI)
+- [ ] Audio (`src/audio`)
+- [ ] 3D (`src/game3d`, `src/config/presentation.json`)
+- [ ] UI (`src/components`, `src/hooks`, `src/session`)
+- [ ] Fidelity (`reference/`, `src/fidelity`, replays)
+- [ ] Platform (tooling, CI, CSP)
 
 ## Test plan
 
+- [ ] `npm run check:architecture`
 - [ ] `npm run lint`
 - [ ] `npm test`
-- [ ] `npm run test:coverage` (if `src/game` touched)
-- [ ] `npm run test:e2e` (if simulation / replay touched)
-- [ ] `npm run build`
+- [ ] `npm run test:coverage` (if `src/game` or `src/audio` touched)
+- [ ] `npm run test:replay` (if simulation / replay touched)
+- [ ] `npm run test:e2e` (Playwright; if UI, rendering, Ruffle or build touched)
+- [ ] `npm audit --audit-level=low` (if dependencies changed)
 - [ ] Manual: <!-- e.g. level 1 shop, boss 10, ?ruffle=1 -->
 
 ## Fidelity / registry

@@ -5,3 +5,14 @@ dist
 public/game/frames
 public/ruffle
 coverage
+
+# Reproducible exports, local tooling and generated verification output.
+.cache/
+.scannerwork/
+**/.venv/
+**/__pycache__/
+*.pyc
+*.tsbuildinfo
+artifacts/
+.env.*
+!.env.example

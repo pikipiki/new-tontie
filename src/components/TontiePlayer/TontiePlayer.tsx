@@ -4,20 +4,8 @@ import Typography from '@mui/material/Typography'
 import { useEffect, useRef, useState } from 'react'
 import { GAME_HEIGHT, GAME_WIDTH, loadRufflePlayer } from './loadRufflePlayer'
 
-declare global {
-  interface Window {
-    RufflePlayer?: {
-      config?: { publicPath?: string }
-      newest?: () => {
-        createPlayer: () => HTMLElement
-      }
-    }
-  }
-}
-
 export function TontiePlayer() {
   const hostRef = useRef<HTMLDivElement>(null)
-  const [fidelityOk, setFidelityOk] = useState<boolean | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -28,10 +16,14 @@ export function TontiePlayer() {
     if (!host) {
       return
     }
-    void loadRufflePlayer(host, isCancelled, setFidelityOk, setLoadError).catch(
-      () => {
+    void loadRufflePlayer(host, isCancelled, setLoadError).catch(
+      (error: unknown) => {
         if (!isCancelled()) {
-          setLoadError('Failed to load Ruffle runtime')
+          setLoadError(
+            error instanceof Error
+              ? error.message
+              : 'Failed to load Ruffle runtime',
+          )
         }
       },
     )
@@ -45,14 +37,14 @@ export function TontiePlayer() {
 
   return (
     <Box component="main" aria-label="Original Flash game (Ruffle)">
-      {fidelityOk === false && (
+      {loadError && (
         <Typography
           role="alert"
           color="error"
           variant="body2"
           sx={{ mb: 1, fontWeight: 700 }}
         >
-          {loadError ?? 'Error'}
+          {loadError}
         </Typography>
       )}
       <Box
@@ -67,7 +59,9 @@ export function TontiePlayer() {
         }}
         sx={{
           width: GAME_WIDTH,
-          height: GAME_HEIGHT,
+          height: 'auto',
+          maxWidth: '100vw',
+          aspectRatio: `${String(GAME_WIDTH)} / ${String(GAME_HEIGHT)}`,
           mx: 'auto',
           border: `2px solid ${themeColors.playerBorder}`,
           boxShadow: `4px 4px 0 ${themeColors.playerShadow}`,

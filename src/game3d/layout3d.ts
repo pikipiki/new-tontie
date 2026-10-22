@@ -15,7 +15,7 @@ export {
   MOLE_HIDE_DEPTH,
   MOLE_TOP_SINK,
   moleLiftWorld,
-} from '@game3d/layout/mole'
+} from '@game3d/layout/board'
 
 export {
   HAMMER_HEAD_HALF_HEIGHT,
@@ -38,4 +38,4 @@ export {
   sceneCameraView,
 } from '@game3d/layout/camera'
 
-export { PINK_LEDGE_POSITION, PINK_LEDGE_SCALE } from '@game3d/layout/stage'
+export { PINK_LEDGE_POSITION, PINK_LEDGE_SCALE } from '@game3d/layout/board'

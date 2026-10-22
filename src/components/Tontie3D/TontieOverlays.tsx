@@ -8,7 +8,14 @@ import type { GameState, HoleIndex } from '@game/types'
 import type { TontieGame } from '@/hooks/useTontieGame'
 import { CartoonTitle, LevelClearPanel, LevelIntroPanel } from './LevelPanels'
 import { ShopPanel } from './ShopPanel'
-import { PURPLE, panelCard, srOnlyFocusable, themeColors, WHITE } from './theme'
+import {
+  PURPLE,
+  SHORT_LANDSCAPE,
+  panelCard,
+  srOnlyFocusable,
+  themeColors,
+  WHITE,
+} from './theme'
 import { GameButton, Overlay } from './ui'
 
 export function WelcomePanel({ game }: { game: TontieGame }) {
@@ -18,7 +25,7 @@ export function WelcomePanel({ game }: { game: TontieGame }) {
       sx={{
         position: 'absolute',
         bottom: 'max(154px, calc(env(safe-area-inset-bottom) + 142px))',
-        '@media (max-height: 500px) and (orientation: landscape)': {
+        [SHORT_LANDSCAPE]: {
           bottom: 98,
         },
         left: { xs: '50%', sm: 'auto' },

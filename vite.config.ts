@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
+import { productionSecurityPlugin } from './scripts/vite/security.mjs'
 import { defineConfig, type Plugin } from 'vite'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -39,7 +40,7 @@ const pagesBase = process.env.GITHUB_PAGES === 'true' ? './' : undefined
 
 export default defineConfig({
   base: process.env.VITE_BASE_PATH ?? pagesBase ?? '/',
-  plugins: [ruffleAssetsPlugin(), react()],
+  plugins: [productionSecurityPlugin(), ruffleAssetsPlugin(), react()],
   resolve: {
     alias: {
       '@': srcRoot,
@@ -66,11 +67,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
-      include: ['src/game/**/*.ts'],
-      exclude: [
-        'src/game/**/__tests__/**',
-        'src/game/__tests__/helpers/**',
-      ],
+      include: ['src/game/**/*.ts', 'src/audio/**/*.ts'],
+      exclude: ['src/**/__tests__/**', 'src/game/__tests__/helpers/**'],
       thresholds: {
         lines: 100,
         functions: 100,

@@ -9,6 +9,13 @@
 # Engine & fidelity tests
 /src/game/ @pikipiki
 /tests/e2e/ @pikipiki
+/src/fidelity/ @pikipiki
+
+# Browser audio
+/src/audio/ @pikipiki
+
+# Shared JSON configuration
+/src/config/ @pikipiki
 
 # 3D presentation
 /src/game3d/ @pikipiki
@@ -16,6 +23,7 @@
 # UI shell & app wiring
 /src/components/ @pikipiki
 /src/hooks/ @pikipiki
+/src/session/ @pikipiki
 /src/pages/ @pikipiki
 /src/constants/ @pikipiki
 /src/i18n/ @pikipiki
@@ -26,6 +34,9 @@
 # Platform & tooling
 /scripts/ @pikipiki
 /.github/ @pikipiki
+/e2e/ @pikipiki
+/playwright.config.mjs @pikipiki
+/SECURITY.md @pikipiki
 /vite.config.ts @pikipiki
 /eslint.config.js @pikipiki
 /sonar-project.properties @pikipiki

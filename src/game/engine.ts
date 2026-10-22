@@ -225,7 +225,7 @@ export function tick(state: GameState, random: () => number): GameState {
 
 export function numpadToHole(key: string): HoleIndex | null {
   const digit = Number(key)
-  if (digit >= 1 && digit <= 9) {
+  if (Number.isInteger(digit) && digit >= 1 && digit <= 9) {
     return digit as HoleIndex
   }
   return null

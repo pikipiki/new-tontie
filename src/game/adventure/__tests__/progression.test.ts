@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { continueGame, queueHit, startLevel, tick } from '../../engine'
 import { HOLES } from '../../engine/shared'
-import { GameSession } from '../../../hooks/useTontieGameSession'
+import { GameSession } from '@/session/GameSession'
 import { missionFor } from '../content'
 import { chooseUpgrade, finishAdventureStage, prepareAdventure } from '../state'
 import { resolveAdventureHits } from '../combat'

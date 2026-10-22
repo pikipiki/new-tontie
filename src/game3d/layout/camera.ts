@@ -1,8 +1,10 @@
+import { camera as config } from '@/config/presentation.json'
+
 export const CAMERA_POSITION: [number, number, number] = [3.4, 4.6, 6.5]
 export const CAMERA_TARGET: [number, number, number] = [-0.1, 0.85, 0.1]
 /** Vertical FOV that frames the board on a square viewport (the SWF stage is 400×400). */
-export const BASE_FOV = 39
-const MAX_PORTRAIT_FOV = 56
+export const BASE_FOV = config.baseFov
+const MAX_PORTRAIT_FOV = config.maxPortraitFov
 
 /**
  * Portrait phones: widen the FOV up to a limit, then dolly back along the view axis
@@ -20,7 +22,7 @@ export function cameraFit(aspect: number): {
   const tan = Math.min(Math.tan((MAX_PORTRAIT_FOV / 2) * toRad), needTan)
   return {
     fov: (2 * Math.atan(tan)) / toRad,
-    distanceScale: (needTan / tan) * 1.03,
+    distanceScale: (needTan / tan) * config.portraitPadding,
   }
 }
 
@@ -39,8 +41,11 @@ export function sceneCameraView(
       distanceScale: 1,
     }
   return {
-    position: aspect < 0.8 ? [0, 6.9, 4.9] : [0, 5.9, 6.1],
-    target: [0, 0.6, 0.2],
-    distanceScale: aspect >= 0.8 ? 1.16 : 1,
+    position:
+      aspect < config.portraitBreakpoint ? [0, 6.9, 4.9] : [0, 5.9, 6.1],
+    target:
+      aspect < config.portraitBreakpoint ? [0, 0.6, 0.2] : [0, 0.45, 0.35],
+    distanceScale:
+      aspect >= config.portraitBreakpoint ? config.landscapeDistanceScale : 1,
   }
 }

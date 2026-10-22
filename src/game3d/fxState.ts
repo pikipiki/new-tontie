@@ -1,19 +1,20 @@
+import { effectsMs } from '@/config/presentation.json'
 import type { GameEvent, GameState, HoleIndex } from '@game/types'
 import { HOLE_ORDER } from '@game/layout'
 import { HAMMER_STRIKE_FRAMES, FPS } from '@game/spec'
 
 /** doka clip length (8 frames @ 17 fps). */
 export const STRIKE_MS = (HAMMER_STRIKE_FRAMES / FPS) * 1000
-export const HIT_MS = 280
-export const KILL_MS = 560
-export const SCORE_POP_MS = 900
-export const MISS_MS = 420
-export const PICKUP_MS = 700
-export const DAMAGE_MS = 450
-export const BANNER_MS = 1400
+export const HIT_MS = effectsMs.hit
+export const KILL_MS = effectsMs.kill
+export const SCORE_POP_MS = effectsMs.scorePop
+export const MISS_MS = effectsMs.miss
+export const PICKUP_MS = effectsMs.pickup
+export const DAMAGE_MS = effectsMs.damage
+export const BANNER_MS = effectsMs.banner
 /** up_boad "go": the hammer slams START and the panel puffs away. */
-export const PANEL_OUT_MS = 520
-export const SHOP_FLASH_MS = 650
+export const PANEL_OUT_MS = effectsMs.panelOut
+export const SHOP_FLASH_MS = effectsMs.shopFlash
 
 export type BannerKind = 'boss' | 'hurry'
 

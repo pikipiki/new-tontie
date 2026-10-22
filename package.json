@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "format": "prettier --write src tests package.json",
-    "format:check": "prettier --check src tests package.json",
+    "format": "prettier --write src tests e2e scripts/*.mjs scripts/vite '*.{json,js,mjs,ts,html,md}' docs .github",
+    "format:check": "prettier --check src tests e2e scripts/*.mjs scripts/vite '*.{json,js,mjs,ts,html,md}' docs .github",
     "lint": "npm run format:check && eslint . --max-warnings 0",
     "sync:swf": "cp reference/tontie.swf public/game/tontie.swf",
     "build:catalog": "node scripts/build-enemy-catalog.mjs",
@@ -17,14 +17,18 @@
     "mesh:blender": "blender --background --python scripts/blender/batch_export.py",
     "build:manifest": "node scripts/build-reconstruction-manifest.mjs",
     "test": "vitest run",
-    "test:e2e": "vitest run tests/e2e",
+    "test:e2e": "playwright test",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "sonar": "sh -c 'set -a; [ -f .env ] && . ./.env; set +a; npm run test:coverage && npx sonar-scanner -Dsonar.host.url=${SONAR_HOST_URL:-http://localhost:9000} ${SONAR_TOKEN:+-Dsonar.token=$SONAR_TOKEN}'"
+    "sonar": "node --env-file-if-exists=.env scripts/run-sonar.mjs",
+    "check:architecture": "node scripts/check-architecture.mjs",
+    "test:replay": "vitest run tests/e2e",
+    "test:all": "npm run check:architecture && npm run lint && npm test && npm run test:coverage && npm run test:e2e"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@fontsource/nunito": "^5.3.0",
     "@mui/material": "^9.5.0",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
@@ -37,6 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@playwright/test": "1.64.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^24.19.2",
@@ -58,5 +63,8 @@
     "vite": "^8.3.0",
     "vitest": "^5.0.5",
     "vitest-axe": "^0.1.0"
+  },
+  "engines": {
+    "node": ">=24.0.0"
   }
 }

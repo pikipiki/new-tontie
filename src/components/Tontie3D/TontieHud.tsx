@@ -3,7 +3,15 @@ import { useTranslation } from 'react-i18next'
 import { BANNER_MS, type GameFx } from '@game3d/fx'
 import { FPS } from '@game/spec'
 import type { TontieGame } from '@/hooks/useTontieGame'
-import { INK, RED, themeColors, WHITE, YELLOW, srOnly } from './theme'
+import {
+  INK,
+  RED,
+  SHORT_LANDSCAPE,
+  themeColors,
+  WHITE,
+  YELLOW,
+  srOnly,
+} from './theme'
 import { Hearts } from './Hearts'
 import { LaserAmmoDisplay } from './LaserAmmoDisplay'
 import { BottomBarControls, BottomBarWallet } from './BottomBarControls'
@@ -54,7 +62,7 @@ export function BottomBar({
         borderRadius: '24px',
         display: 'grid',
         gap: 0.5,
-        '@media (max-height: 500px) and (orientation: landscape)': {
+        [SHORT_LANDSCAPE]: {
           gridTemplateColumns: 'minmax(0, 1.3fr) minmax(0, 1fr)',
           gap: 1.5,
           alignItems: 'center',

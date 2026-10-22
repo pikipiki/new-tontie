@@ -61,7 +61,9 @@ export function tickConductor(state: GameState): void {
     boss.warning = true
     boss.frames = FPS * 2
     announce(state, 'DRUM WAVE! You missed the weak spot')
-    boss.weak = BOSS_HOLES[(BOSS_HOLES.indexOf(boss.weak) + 1) % 3] ?? 8
+    boss.weak = BOSS_HOLES[
+      (BOSS_HOLES.indexOf(boss.weak) + 1) % BOSS_HOLES.length
+    ] as HoleIndex
   }
 }
 export function strikeConductor(
@@ -87,7 +89,9 @@ export function strikeConductor(
   adventure.progress = boss.maxHp - boss.hp
   state.score += 100 * damage * (adventure.frenzyFrames > 0 ? 2 : 1)
   emit(state, { kind: 'hit', hole, sfx: 'hit' })
-  boss.weak = BOSS_HOLES[(BOSS_HOLES.indexOf(hole) + 1) % 3] ?? 8
+  boss.weak = BOSS_HOLES[
+    (BOSS_HOLES.indexOf(hole) + 1) % BOSS_HOLES.length
+  ] as HoleIndex
   boss.warning = true
   boss.frames = Math.round(FPS * 1.1)
   announce(state, 'Nice! Follow the next lane')

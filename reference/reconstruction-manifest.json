@@ -21,7 +21,7 @@
       "surface_id": "enemies.DefineSprite_458",
       "family": "as2",
       "location": "reference/decompiled/ffdec/scripts/DefineSprite_458",
-      "owner": "src/game/catalog.ts",
+      "owner": "src/game/combat.ts",
       "export": "enemyFromCatalogFrame"
     },
     {
@@ -49,7 +49,7 @@
       "surface_id": "loop.spawn_timer",
       "family": "as2",
       "location": "reference/decompiled/ffdec/scripts/frame_41/PlaceObject2_560_182/CLIPACTIONRECORD onClipEvent(enterFrame).as",
-      "owner": "src/game/engine.ts",
+      "owner": "src/game/engine/holes.ts",
       "export": "trySpawn"
     },
     {
@@ -63,7 +63,7 @@
       "surface_id": "audio.sound_banks",
       "family": "as2",
       "location": "DefineSprite_65 (sound) + DefineSprite_71 (sound2)",
-      "owner": "src/game/audio.ts",
+      "owner": "src/audio/banks.ts",
       "export": "SOUND_BANK"
     }
   ],

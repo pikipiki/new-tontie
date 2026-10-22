@@ -23,11 +23,11 @@ const HOLE_ANCHORS = [
   [270, 258],
 ]
 
-const py = `import sys
+const py = `import sys, json
 from PIL import Image
 
 src, dst = sys.argv[1], sys.argv[2]
-holes = eval(sys.argv[3])
+holes = json.loads(sys.argv[3])
 raw = Image.open(src).convert('RGB')
 img = raw.copy()
 w, h = img.size
@@ -77,9 +77,13 @@ export function cleanBoardHoles(inputPath, outputPath) {
     console.warn('clean-board-holes: missing', inputPath)
     return false
   }
-  const r = spawnSync('python3', ['-c', py, inputPath, outputPath, JSON.stringify(HOLE_ANCHORS)], {
-    encoding: 'utf8',
-  })
+  const r = spawnSync(
+    'python3',
+    ['-c', py, inputPath, outputPath, JSON.stringify(HOLE_ANCHORS)],
+    {
+      encoding: 'utf8',
+    },
+  )
   if (r.status !== 0) {
     console.error(r.stderr || r.stdout)
     return false
@@ -88,8 +92,11 @@ export function cleanBoardHoles(inputPath, outputPath) {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const input = process.argv[2] ?? path.join(root, 'public/game/sprites/board-gameplay.png')
-  const output = process.argv[3] ?? path.join(root, 'public/game/sprites/board-gameplay-clean.png')
+  const input =
+    process.argv[2] ?? path.join(root, 'public/game/sprites/board-gameplay.png')
+  const output =
+    process.argv[3] ??
+    path.join(root, 'public/game/sprites/board-gameplay-clean.png')
   if (!cleanBoardHoles(input, output)) {
     process.exit(1)
   }

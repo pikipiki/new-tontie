@@ -1,10 +1,9 @@
+import { HOLE_ORDER as HOLES } from '../layout'
 import { heal } from '../stats'
 import { LASER_AMMO } from '../spec'
 import { addCoin } from '../money'
 import type { GameState, HoleIndex } from '../types'
 import type { ItemEffectFeature } from './types'
-
-const HOLES: HoleIndex[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 function forEachPacifiableHole(
   state: GameState,

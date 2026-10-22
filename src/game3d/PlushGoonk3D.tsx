@@ -2,9 +2,14 @@ import { useEffect, useState } from 'react'
 import { PINK_FLIGHT_MS } from '@game3d/plushAnimation'
 import { CryingFace } from '@game3d/plushGoonk/CryingFace'
 import { FlatEye } from '@game3d/plushGoonk/FlatEye'
-import { FurPile } from '@game3d/plushGoonk/FurPile'
+import { themeColors } from '@game3d/theme'
 import { PorcelainBowl, ShatteredHelmet } from '@game3d/plushGoonk/helmet'
-import { PINK_NOSE, PLUSH_BODY, VIOLET_NOSE } from '@game3d/plushGoonk/mesh'
+import {
+  PINK_NOSE,
+  PLUSH_BODY,
+  PLUSH_FUR,
+  VIOLET_NOSE,
+} from '@game3d/plushGoonk/mesh'
 import {
   PlushGoonkArms,
   PlushGoonkFeet,
@@ -107,5 +112,19 @@ export function PlushGoonk3D({
       <GoonkBowl bowl={bowl} frightened={frightened} shatter={shatter} />
       {frightened && <CryingFace />}
     </group>
+  )
+}
+
+function FurPile({ pink }: { pink: boolean }) {
+  return (
+    <lineSegments>
+      <primitive attach="geometry" object={PLUSH_FUR} />
+      <lineBasicMaterial
+        color={pink ? themeColors.plush.furPink : themeColors.plush.furPurple}
+        transparent
+        opacity={0.23}
+        depthWrite={false}
+      />
+    </lineSegments>
   )
 }

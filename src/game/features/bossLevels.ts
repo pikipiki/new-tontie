@@ -6,6 +6,7 @@ import type { EnemySpawn } from '../types'
 const bossByLevel = new Map<number, number>()
 
 export function registerBossLevel(level: number, catalogFrame: number): void {
+  ensureGameFeaturesLoaded()
   if (bossByLevel.has(level)) {
     throw new Error(`boss level already registered: ${String(level)}`)
   }
@@ -29,6 +30,7 @@ export function bossForLevel(level: number): EnemySpawn {
 }
 
 export function listBossLevels(): readonly number[] {
+  ensureGameFeaturesLoaded()
   return [...bossByLevel.keys()].sort((left, right) => left - right)
 }
 

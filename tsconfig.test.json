@@ -7,12 +7,14 @@
       "vitest/globals",
       "node",
       "@testing-library/jest-dom/vitest"
-    ]
+    ],
+    "lib": ["ES2024", "DOM", "DOM.Iterable"]
   },
   "include": [
     "src/**/__tests__/**/*",
     "src/test/vitest-axe.d.ts",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    "e2e/**/*.ts"
   ],
   "exclude": []
 }

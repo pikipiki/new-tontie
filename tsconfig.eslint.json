@@ -1,5 +1,8 @@
 {
   "extends": "./tsconfig.app.json",
   "include": ["src", "tests", "vite.config.ts"],
-  "exclude": []
+  "exclude": [],
+  "compilerOptions": {
+    "lib": ["ES2024", "DOM", "DOM.Iterable"]
+  }
 }

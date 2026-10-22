@@ -16,6 +16,8 @@ export default tseslint.config(
       '.cache',
       'scripts/mesh-pipeline/.venv',
       'coverage/**',
+      'artifacts/**',
+      'reports/**',
     ],
   },
   js.configs.recommended,
@@ -79,10 +81,6 @@ export default tseslint.config(
     rules: { 'id-length': 'off' },
   },
   {
-    files: ['src/game/audioInternal.ts'],
-    rules: { 'max-lines': 'off' },
-  },
-  {
     files: [
       'src/**/__tests__/**/*.{ts,tsx}',
       'tests/**/*.{ts,tsx}',
@@ -98,8 +96,8 @@ export default tseslint.config(
   },
   {
     files: [
-      'src/game/__tests__/audio/audioInternal.*.test.ts',
-      'src/game/__tests__/helpers/audioInternal.harness.ts',
+      'src/audio/__tests__/audioInternal.*.test.ts',
+      'src/audio/__tests__/harness.ts',
     ],
     rules: {
       'sonarjs/assertions-in-tests': 'off',
@@ -114,7 +112,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['src/hooks/useTontieGameSession.ts'],
+    files: ['src/session/GameSession.ts'],
     rules: { 'sonarjs/pseudo-random': 'off' },
   },
   eslintConfigPrettier,

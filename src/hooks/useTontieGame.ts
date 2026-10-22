@@ -1,12 +1,12 @@
 import { chooseUpgrade } from '@game/adventure/state'
 import { activateSugarRush } from '@game/adventure/donut'
 import { useCallback, useEffect, useState } from 'react'
-import { installAudioLifecycle, stopMusic, setMusicPaused } from '@game/audio'
+import { installAudioLifecycle, stopMusic, setMusicPaused } from '@/audio'
 import { SHOP_CELLS, SHOP_EXIT_INDEX } from './useTontieGameConstants'
 import { useTontieGameActions } from './useTontieGameActions'
 import { useTontieGameKeyboard } from './useTontieGameKeyboard'
 import { useTontieGameLoop } from './useTontieGameLoop'
-import { GameSession } from './useTontieGameSession'
+import { GameSession } from '@/session/GameSession'
 import type { TontieGame } from './useTontieGameTypes'
 
 export { SHOP_CELLS, SHOP_EXIT_INDEX }

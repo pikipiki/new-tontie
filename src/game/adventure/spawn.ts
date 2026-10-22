@@ -4,7 +4,7 @@ import { FPS } from '../spec'
 import { HOLES, emptyHole } from '../engine/shared'
 import { activateHole } from '../engine/holes'
 import { missionFor } from './content'
-import type { AdventureRole } from './types'
+import type { AdventureRole, AdventureState } from './types'
 
 export function removeActor(state: GameState, hole: HoleIndex): void {
   dropWeapon(state, hole)
@@ -18,9 +18,7 @@ export function removeActor(state: GameState, hole: HoleIndex): void {
     }
   }
 }
-function nextRole(state: GameState): AdventureRole {
-  const adventure = state.adventure
-  if (!adventure) return 'thief'
+function nextRole(adventure: AdventureState): AdventureRole {
   const count = adventure.spawned
   const kind = missionFor(adventure.stage).kind
   if (kind === 'boss') {
@@ -54,7 +52,7 @@ export function spawnAdventure(state: GameState, random: () => number): void {
     ]
   if (!hole) return
   adventure.spawned += 1
-  const role = nextRole(state)
+  const role = nextRole(adventure)
   const helmet = role === 'helmet'
   activateHole(state, hole, {
     kind: helmet ? 'twoHit' : 'mob',

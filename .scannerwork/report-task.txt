@@ -1,6 +1,0 @@
-projectKey=tontie-re
-serverUrl=http://localhost:9000
-serverVersion=26.9.0.129388
-dashboardUrl=http://localhost:9000/dashboard?id=tontie-re
-ceTaskId=c92bf58e-1438-44ed-9ef7-4e0fbde9aea5
-ceTaskUrl=http://localhost:9000/api/ce/task?id=c92bf58e-1438-44ed-9ef7-4e0fbde9aea5

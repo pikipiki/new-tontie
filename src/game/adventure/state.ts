@@ -2,7 +2,7 @@ import { restoreWeapon } from './weapons'
 import type { GameState } from '../types'
 import { FPS } from '../spec'
 import { emptyHole, emit, freshStats, HOLES } from '../engine/shared'
-import { missionFor, UPGRADES } from './content'
+import { missionFor, MISSION_COUNT, UPGRADES } from './content'
 import type { AdventureState, UpgradeId } from './types'
 
 export function createAdventure(): AdventureState {
@@ -28,11 +28,6 @@ export function createAdventure(): AdventureState {
     noticeFrames: 0,
     failure: '',
   }
-}
-export function announce(state: GameState, message: string): void {
-  if (!state.adventure) return
-  state.adventure.notice = message
-  state.adventure.noticeFrames = FPS * 3
 }
 export function clearBoard(state: GameState): void {
   restoreWeapon(state)
@@ -81,7 +76,7 @@ export function finishAdventureStage(
   clearBoard(state)
   state.pikoOk = false
   state.hp = Math.min(state.hpMax, state.hp + 8)
-  if (adventure.stage === 6) {
+  if (adventure.stage === MISSION_COUNT) {
     state.phase = 'win'
     emit(state, { kind: 'win', sfx: 'last', music: 'stop' })
     return
@@ -90,13 +85,18 @@ export function finishAdventureStage(
     (upgrade) => !adventure.upgrades.includes(upgrade),
   )
   adventure.offers = []
+  if (available.length === 0) {
+    adventure.stage += 1
+    prepareAdventure(state)
+    emit(state, { kind: 'intro', sfx: 'panel' })
+    return
+  }
   while (adventure.offers.length < 3 && available.length) {
     const index = Math.min(
       available.length - 1,
       Math.floor(random() * available.length),
     )
-    const [offer] = available.splice(index, 1)
-    if (offer) adventure.offers.push(offer)
+    adventure.offers.push(...available.splice(index, 1))
   }
   state.phase = 'levelClear'
   emit(state, { kind: 'levelUp', sfx: 'level_up', music: 'stop' })
@@ -125,3 +125,5 @@ export function failAdventure(state: GameState, reason: string): void {
   state.pendingHits = []
   emit(state, { kind: 'gameOver', sfx: 'last', music: 'gameover' })
 }
+
+export { announce } from '../engine/shared'

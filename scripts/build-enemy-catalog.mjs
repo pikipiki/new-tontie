@@ -7,11 +7,16 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const base = path.join(root, 'reference/decompiled/ffdec/scripts/DefineSprite_458')
+const base = path.join(
+  root,
+  'reference/decompiled/ffdec/scripts/DefineSprite_458',
+)
 
 function parseLoadFile(filePath) {
   const text = fs.readFileSync(filePath, 'utf8')
-  const frame = Number(path.basename(path.dirname(path.dirname(filePath))).replace('frame_', ''))
+  const frame = Number(
+    path.basename(path.dirname(path.dirname(filePath))).replace('frame_', ''),
+  )
   const entry = { frame, source: path.relative(root, filePath) }
   const hp = text.match(/\bhp\s*=\s*(-?\d+)/)
   const attack = text.match(/\battack\s*=\s*(-?\d+)/)
@@ -21,7 +26,8 @@ function parseLoadFile(filePath) {
   if (score) entry.score = Number(score[1])
   const item = text.match(/item\s*=\s*"([^"]+)"/)
   if (item) entry.item = item[1]
-  if (text.includes('enemy_i = "boss"') || text.includes('enemyI = "boss"')) entry.enemyI = 'boss'
+  if (text.includes('enemy_i = "boss"') || text.includes('enemyI = "boss"'))
+    entry.enemyI = 'boss'
   if (text.includes('enemy_i = 2')) entry.enemyI = 2
   if (text.includes('nikai = 1')) entry.nikai = true
   if (text.includes('hit = 2')) entry.hitMode = 2
@@ -63,7 +69,8 @@ fs.writeFileSync(
   JSON.stringify(
     {
       generatedFrom: 'DefineSprite_458',
-      spawnFormula: 'Math.floor(Math.random() * _root.lv + 5) /* DefineSprite_459 */',
+      spawnFormula:
+        'Math.floor(Math.random() * _root.lv + 5) /* DefineSprite_459 */',
       entries: catalog,
     },
     null,

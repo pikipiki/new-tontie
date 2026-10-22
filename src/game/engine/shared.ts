@@ -1,4 +1,5 @@
-import { applyDamage } from '../combat'
+import { applyDamage } from '../stats'
+import { FPS } from '../spec'
 import type {
   EnemySpawn,
   GameEvent,
@@ -8,6 +9,7 @@ import type {
   LevelStats,
 } from '../types'
 
+/** Ascending order is replay-sensitive; the visual HOLE_ORDER runs top to bottom. */
 export const HOLES: HoleIndex[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 const MAX_EVENTS = 64
@@ -51,4 +53,30 @@ export function emptyHole(): HoleState {
     enemy: { kind: 'none', hp: 0, maxHp: 0, attack: 0, score: 0 },
     nikaiRemaining: 0,
   }
+}
+
+export function retireHole(
+  state: GameState,
+  hole: HoleIndex,
+  escaped: boolean,
+): void {
+  const slot = state.holes[hole]
+  if (slot.phase === 'off') {
+    return
+  }
+  if (escaped && countsAsMonster(slot.enemy)) state.levelStats.lost += 1
+  if (escaped && slot.enemy.attack > 0) {
+    hurt(state, slot.enemy.attack, hole)
+  }
+  slot.phase = 'off'
+  slot.phaseTicks = 0
+  slot.enemy = { kind: 'none', hp: 0, maxHp: 0, attack: 0, score: 0 }
+  slot.nikaiRemaining = 0
+  state.moguraOn = Math.max(0, state.moguraOn - 1)
+}
+
+export function announce(state: GameState, message: string): void {
+  if (!state.adventure) return
+  state.adventure.notice = message
+  state.adventure.noticeFrames = FPS * 3
 }

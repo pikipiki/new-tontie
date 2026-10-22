@@ -1,3 +1,4 @@
+import { plush as config } from '@/config/presentation.json'
 import { themeColors } from '@game3d/theme'
 import { CanvasTexture, RepeatWrapping, SRGBColorSpace } from 'three'
 
@@ -6,18 +7,18 @@ const plush = themeColors.plush
 /** Fine directional pile, with larger patches of brushed velour, generated locally. */
 function velourTexture() {
   const canvas = document.createElement('canvas')
-  canvas.width = canvas.height = 512
+  canvas.width = canvas.height = config.velourSize
   const ctx = canvas.getContext('2d')
   if (!ctx) throw new Error('Canvas unavailable')
-  const pixels = ctx.createImageData(512, 512)
+  const pixels = ctx.createImageData(config.velourSize, config.velourSize)
   let seed = 731
   const random = () => {
     seed = (seed * 16807) % 2147483647
     return seed / 2147483647
   }
-  for (let row = 0; row < 512; row++)
-    for (let col = 0; col < 512; col++) {
-      const index = (row * 512 + col) * 4
+  for (let row = 0; row < config.velourSize; row++)
+    for (let col = 0; col < config.velourSize; col++) {
+      const index = (row * config.velourSize + col) * 4
       const mottle =
         Math.sin(col * 0.047 + Math.sin(row * 0.019) * 3) *
         Math.cos(row * 0.043) *
@@ -30,9 +31,9 @@ function velourTexture() {
       pixels.data[index + 3] = 255
     }
   ctx.putImageData(pixels, 0, 0)
-  for (let stroke = 0; stroke < 31000; stroke++) {
-    const col = random() * 512,
-      row = random() * 512
+  for (let stroke = 0; stroke < config.velourStrokes; stroke++) {
+    const col = random() * config.velourSize,
+      row = random() * config.velourSize
     ctx.strokeStyle = random() > 0.5 ? plush.velourLight : plush.velourDark
     ctx.lineWidth = 0.45 + random() * 0.55
     ctx.beginPath()
