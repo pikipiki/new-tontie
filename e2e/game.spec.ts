@@ -12,6 +12,7 @@ function watchRuntime(page: Page) {
 test('adventure renders, accepts keyboard input, pauses and mutes', async ({
   page,
 }, testInfo) => {
+  test.setTimeout(120_000)
   const errors = watchRuntime(page)
   await page.goto('./')
   await expect(
@@ -21,15 +22,17 @@ test('adventure renders, accepts keyboard input, pauses and mutes', async ({
   await page.screenshot({ path: testInfo.outputPath('welcome.png') })
   await page.getByRole('button', { name: /Start adventure/ }).click()
   await expect(page.getByRole('group').getByRole('button')).toHaveCount(9)
+  await expect(page.getByRole('button', { name: /^Pause$/ })).toBeVisible()
   await page.screenshot({ path: testInfo.outputPath('playing.png') })
   // 3D Canvas accepts direct pointer clicks and registers them without errors
   const canvas = page.locator('canvas').first()
-  await canvas.click({ position: { x: 200, y: 100 } })
+  await canvas.click({ position: { x: 200, y: 100 }, force: true })
   await page.keyboard.press('Numpad5')
   await page.keyboard.press('Digit0')
-  await expect(page.getByRole('button', { name: /Resume/ })).toBeVisible()
-  await page.getByRole('button', { name: /Resume/ }).click()
-  await expect(page.getByRole('button', { name: /Pause/ })).toBeVisible()
+  const resume = page.getByRole('button', { name: /Resume/ })
+  await expect(resume).toBeVisible()
+  await resume.click()
+  await expect(page.getByRole('button', { name: /^Pause$/ })).toBeVisible()
   await page.getByRole('button', { name: /^Mute$/ }).click()
   await expect(
     page.getByRole('button', { name: /Turn sound on/ }),

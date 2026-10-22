@@ -30,6 +30,7 @@ export {
   drainEvents,
   HURRY_FRAMES,
   introCatalogFrame,
+  isIdlePhase,
   LEVEL_CLEAR_FRAMES,
   numpadToHole,
   queueHit,

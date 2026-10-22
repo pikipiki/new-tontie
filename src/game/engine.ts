@@ -183,6 +183,17 @@ export function buyShopIndex(state: GameState, index: number): boolean {
   return purchased
 }
 
+/** Overlays and menus: no simulation step, so the render loop can skip React flushes. */
+export function isIdlePhase(phase: GameState['phase']): boolean {
+  return (
+    phase === 'levelIntro' ||
+    phase === 'paused' ||
+    phase === 'shop' ||
+    phase === 'gameOver' ||
+    phase === 'win'
+  )
+}
+
 export function tick(state: GameState, random: () => number): GameState {
   ensureGameFeaturesLoaded()
   if (state.adventure) {
@@ -196,13 +207,7 @@ export function tick(state: GameState, random: () => number): GameState {
     }
     return state
   }
-  if (
-    state.phase === 'levelIntro' ||
-    state.phase === 'paused' ||
-    state.phase === 'shop' ||
-    state.phase === 'gameOver' ||
-    state.phase === 'win'
-  ) {
+  if (isIdlePhase(state.phase)) {
     return state
   }
 

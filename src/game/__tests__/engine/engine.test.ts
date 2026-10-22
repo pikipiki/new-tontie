@@ -4,6 +4,7 @@ import catalog from '@reference/enemy-catalog.json'
 import { bossForLevel, isBossLevel } from '@game/enemies'
 import {
   createInitialState,
+  isIdlePhase,
   numpadToHole,
   queueHit,
   startLevel,
@@ -61,6 +62,13 @@ describe('game engine', () => {
     state.phase = 'shop'
     togglePause(state)
     expect(state.phase).toBe('shop')
+  })
+
+  it('treats menus and pause as idle, not the live round', () => {
+    expect(isIdlePhase('paused')).toBe(true)
+    expect(isIdlePhase('shop')).toBe(true)
+    expect(isIdlePhase('playing')).toBe(false)
+    expect(isIdlePhase('levelClear')).toBe(false)
   })
 
   it('accepts hammer input on active mole', () => {

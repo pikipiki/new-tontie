@@ -5,6 +5,7 @@ import { Canvas } from '@react-three/fiber'
 import { GameFxContext } from '@game3d/fx'
 import { BASE_FOV, CAMERA_POSITION } from '@game3d/layout3d'
 import { TontieScene3D } from '@game3d/TontieScene3D'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 import type { TontieGame } from '@/hooks/useTontieGame'
 import { Banner } from './TontieHud'
 
@@ -25,11 +26,15 @@ export function Tontie3DViewport({
   dpr,
   onDeclineDpr,
 }: Tontie3DViewportProps) {
+  const reducedMotion = useReducedMotion()
+  const freezeCanvas = game.state.phase === 'paused'
+  const renderDpr = reducedMotion ? config.quality.fallbackDpr : dpr
   return (
     <Box sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
       <Canvas
-        shadows="percentage"
-        dpr={dpr}
+        shadows={reducedMotion ? false : 'percentage'}
+        dpr={renderDpr}
+        frameloop={freezeCanvas ? 'demand' : 'always'}
         gl={{
           alpha: false,
           antialias: window.devicePixelRatio < config.quality.antialiasBelowDpr,
