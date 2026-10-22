@@ -1,4 +1,4 @@
-import catalogJson from '../../reference/enemy-catalog.json'
+import catalogJson from '@reference/enemy-catalog.json'
 import type { ItemId } from './types'
 
 export interface CatalogEntry {

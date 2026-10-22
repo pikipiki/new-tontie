@@ -1,4 +1,4 @@
-import gameSpec from '../../../reference/game-spec.json'
+import gameSpec from '@reference/game-spec.json'
 import { resolveEnemyFromCatalogFrame } from './enemyBuilders'
 import { ensureGameFeaturesLoaded } from './featureBoot'
 import type { EnemySpawn } from '../types'

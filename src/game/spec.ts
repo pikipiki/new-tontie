@@ -1,4 +1,4 @@
-import gameSpec from '../../reference/game-spec.json'
+import gameSpec from '@reference/game-spec.json'
 import type { HoleIndex } from './types'
 
 export const FPS = gameSpec.runtime.fps

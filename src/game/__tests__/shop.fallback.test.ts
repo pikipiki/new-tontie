@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@reference/game-spec.json', async (importOriginal) => {
   const actual =
@@ -11,15 +11,34 @@ vi.mock('@reference/game-spec.json', async (importOriginal) => {
   }
 })
 
+afterEach(() => {
+  vi.doUnmock('@reference/game-spec.json')
+  vi.resetModules()
+})
+
 describe('shop offer fallbacks (empty game-spec.shop.offers)', () => {
   it('uses built-in default rows and prices', async () => {
-    const { SHOP_OFFERS } = await import('@game/shop')
-    expect(SHOP_OFFERS.map((row) => row.price)).toEqual([
+    vi.resetModules()
+    const { createBuiltinShopOffers } =
+      await import('@game/features/shopOffers')
+    const offers = createBuiltinShopOffers()
+    expect(offers.map((row) => row.price)).toEqual([
       10, 50, 80, 90, 120, 150, 200, 300,
+    ])
+    expect(offers.map((row) => row.id)).toEqual([
+      'hammer2',
+      'hammer3',
+      'hammer4',
+      'heart1',
+      'wing',
+      'heart2',
+      'continue',
+      'heart3',
     ])
   })
 
   it('refuses unknown indices and broke players', async () => {
+    vi.resetModules()
     const { buyShopOffer } = await import('@game/shop')
     const { createInitialState } = await import('@game/engine')
     const state = createInitialState()

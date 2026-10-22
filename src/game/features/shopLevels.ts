@@ -1,4 +1,4 @@
-import gameSpec from '../../../reference/game-spec.json'
+import gameSpec from '@reference/game-spec.json'
 import { ensureGameFeaturesLoaded } from './featureBoot'
 
 const shopLevels = new Set<number>()

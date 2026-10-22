@@ -1,4 +1,4 @@
-import gameSpec from '../../../reference/game-spec.json'
+import gameSpec from '@reference/game-spec.json'
 import type { ShopOfferFeature } from './types'
 import { applyShopEffect, type ShopEffectSpec } from './shopOfferEffects'
 
